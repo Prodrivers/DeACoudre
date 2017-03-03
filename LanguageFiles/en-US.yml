@@ -1,0 +1,296 @@
+###################################################################
+#   Language file - English                                       #
+#   Made by PoutineQc                                             #
+#   For the plugin DeACoudre                                      #
+###################################################################
+
+languageName: "english"
+
+
+#   Genereal Plugin Messages
+###################################################################
+
+prefixLong: "&1[&3DeACoudre&1]"
+prefixShort: "&1[&3DaC&1] "
+
+pluginDevelopper: "&3Developped by: &7%developper%"
+pluginVersion: "&3Version: &7%version%"
+pluginHelp: "&3Type &b/%command% help &3 for the list of commands."
+
+
+#   Error Messages
+###################################################################
+
+errorNoPermission: "&cYou don't have the permission to do that!"
+errorPermissionHelp: "&cYou do not have any permissions in this category."
+errorArenaNotExist: "&cNot a valid arena name."
+errorCommandNotFound: "&eCommand does not exist &b(&3/dac help &bfor help)&e."
+errorArenaOrCommandNotFound: "&eCommand or arena not found &b(&3/dac help &bfor help)&e."
+errorInGame: "&cYou can't do that during a game."
+errorNotInGame: "&cYou are not in a game at the moment."
+errorAlreadyInGame: "&cYou are already in a game. Do &d/dac quit &cto quit it."
+errorGameStarted: "&cThe game is already started."
+errorTeleport: "&cYou can't teleport away while in a DeACoudre game."
+
+
+#   Help Messages
+###################################################################
+
+helpDescriptionAll: "&7All Commands"
+helpDescriptionGeneral: "&7General player commands"
+helpDescriptionGame: "&7Commands to simply play the game"
+helpDescriptionArena: "&7Commands to setup the arenas"
+helpDescriptionAdmin: "&7Admin maintenance commands"
+
+cmd-desc-language: "&7Change your own language for DeACoudre's plugin."
+cmd-desc-stats: "&7Opens your DeACoudre's stats."
+cmd-desc-list: "&7Opens a list of all the arenas."
+cmd-desc-info: "&7Display every information from the selected arena."
+cmd-desc-join: "&7Join the specified game or open a GUI to choose."
+cmd-desc-quit: "&7Leave your current game."
+cmd-desc-color: "&7Choose your block color for the game."
+cmd-desc-start: "&7Initiate the starting countdown."
+cmd-desc-new: "&7Creates a new DeACoudre arena."
+cmd-desc-delete: "&7Delete the specified arena."
+cmd-desc-setpool: "&7Set the delimitation of the selected arena with a World Edit region."
+cmd-desc-setlobby: "&7Set the lobby of the selected arena."
+cmd-desc-setplateform: "&7Set the start point of the selected arena."
+cmd-desc-setminplayer: "&7Set the minimum amount of player for an arena."
+cmd-desc-setmaxplayer: "&7Set the maximum amount of player for an arena."
+cmd-desc-setcolor: "&7Set the block colors for the arena"
+cmd-desc-reload: "&7Reload the config, the player data and the language files."
+cmd-desc-forcestart: "&7Force the starting of a game for testing purposes."
+cmd-desc-filetomysql: "&7Use this command once the first time you connect to the database with the DeACoudre to copy the file data to the database."
+
+
+#   Language Messages
+###################################################################
+
+languageList: "&3Available languages:"
+languageNotFound: "&cLanguage not found. &8/%cmd% language &cfor a list of available languages"
+languageChangeSuccess: "&aLanguage successfully set to %language%"
+
+
+#   All Game Messages
+###################################################################
+
+joinGuiTitle: "&2Arena List &0: &3DeACoudre"
+joinGuiTooltip: "&7Click on the arena\n&7you wish to join\n&7Right click to display\n&7it's infos"
+joinStateUnset: "&cThis arena is not ready to use. Ask an admin to finish setting it up."
+joinStateFull: "&cThe arena is full."
+joinStateStarted: "&cThe game has already started."
+joinAsSpectator: "&bJoining the lobby as a spectator."
+joinGamePlayer: "&aJoined the lobby from the arena &2%arenaName% &a(&2%amountInGame%&a)"
+joinGameOthers: "&f%player% &3just joined the DaC lobby &a(&2%amountInGame%&a)."
+joinNewPlaceOthers: "&f%player% &3is added to the game to replace &f%leaver%&3."
+joinNewPlacePlayer: "&3You are added to the game to replace &f%leaver%&3!"
+joinInfoMissingName: "&cYou need to choose an arena."
+joinInfoTooltip: "&8[&7Tip&8] &7You may also do &8/%cmd% list &7and right click an arena to display it's information."
+
+quitGamePlayer: "&aYou left the DaC game."
+quitGameOthers: "&f%player% &3left the DaC game."
+
+colorGuiTitle: "&6Choose Color &0: &3DeACoudre"
+colorGuiCurrent: "Current Color:"
+colorChoosen: "&dYou have choosen the &f%material% &d: &f%color%&d."
+colorRandom: "&dYou let the fate decide of your color."
+colorAlreadyPicked: "&cThis color has been picked while you were choosing. Sorry, try again."
+
+startRandomColor: "&5You were randomly assigned the &f%material% &5: &f%color%&5."
+startRandomOrder: "&9Random Position Order List:"
+startPosition: "&9%posNo% - &f%player%"
+startAlreadyStarted: "&cThe countdown has already been started."
+startStopped: "&cThere is not enough players to start a game anymore. The countdown has been stopped."
+startErrorQuantity: "&cThere must be between &4%minPlayers% &cand &4%maxPlayers% &cplayers to start the game."
+startCooldown: "&cYou can't start a game so fast after the last was aborted. Wait 30 seconds."
+startAutoFail: "&cThe counter did not autostart because the last one was aborted less than 30 seconds ago."
+startBroadcast: "&6A new game of DaC will start in %time% seconds in the arena &3%arena%&6. All interested players may do &4/dac join %arena% &6to join the game."
+
+gameNewRound: "&8Round %round% has started"
+gameTurnPlayer: "&d&lIt's your turn to play!"
+gameTurnOthers: "&dIt's &f%player%&d's turn to play!"
+gameSuccessPlayer: "&dYou successfully jumped"
+gameSuccessOthers: "&f%player% &dsuccessfully jumped"
+gamePointsUpPlayer: "&6Congratuation! &dYou just did a DaC! (&5%points%&d)"
+gamePointsUpOthers: "&f%player% &djust did a DaC! (&5%points%&d)"
+gamePointsDownPlayer: "&eYou lost a life (&6%points%&e)"
+gamePointsDownOthers: "&f%player% &ehas lost a life (&6%points%&e)"
+gamePointsConfirmationPlayer: "&dOh dear, you don't have any life left. Waiting for confirmation..."
+gamePointsConfirmationOthers: "&f%player% &dfailed and has no points left. Waiting for confirmation..."
+gamePointsReviveHint: "&8(&7You may get it back if everybody else fails and someone losses his final life this round&8)"
+gamePointsReviveLastLastPlayer: "&dYou Lost you last life, but you are given another chance since everybody also failed this round."
+gamePointsReviveLastLastOthers: "&f%player% &dhas lost his last life but is given another chance since everybody else did fail this round.."
+gamePointsReviveLastMultiplePlayer: "&dYou failed.. as did everyone else this round and someone lost his last life. Your are given another chance"
+gamePointsReviveLastMultipleOthers: "&f%player% &dhas failed but is given another chance since everybody else did fail this round and someone lost his last life.."
+gamePointsRevivePlayer: "&dYou are also receiving another chance. (&5%points%&d)"
+gamePointsReviveOthers: "&f%player% &dhas been given another chance. (&5%points%&d)"
+gamePointsEliminatePlayer: "&cOh dear, you don't have any life left. You are now eliminated."
+gamePointsEliminateOthers: "&f%player% &chas been eliminated."
+gamePointsFlushPlayer: "&f%player%&c's success means your loss. You are eliminated."
+gamePointsFlushOthers: "&cDue to &f%player%&c's success, &f%looser% &cis now eliminated."
+gameTimeOutPlayer: "&cIt took you too long to play. You are now eliminated."
+gameTimeOutOthers: "&f%player% &ctook too long to play. He is now eliminated."
+
+endingBroadcastSingle: "&6Congratulation to &f%player% &6who just won a game of DaC in the arena &3%arenaName%&6."
+endingStall: "&eThe game got stale since no successful move has been made for &6%time% &emoves.\n&6Calculating who will be the winner... &7(The one with the most lives)"
+endingBroadcastMultiple: "&6Congratulation to &f%players% &6who just finished completely the arena &3%arenaName%&6."
+endingRewardMoney: "&dYou receive &5%currency%%amount% &dfor your win."
+endingRewardItemsSpaceMultiple: "&cYou don't have place in you inventory for all your rewards."
+endingRewardItemsSpaceOne: "&cYou don't have place in you inventory for your reward."
+endingRewardItemsReceive: "&aYou win %amount% &f%item% &afor your victory."
+endingTeleport: "&dGame is over. Teleporting back in 5 seconds..."
+endingSimulation: "&6The simulation is over!"
+
+
+#   Challenge Messages
+###################################################################
+
+challengeDisplayPlayed: "Play %amount% game(s)"
+challengeDisplayWin: "Win %amount% game(s)"
+challengeDisplayLost: "Loose %amount% game(s)"
+challengeDisplayDaC: "Achieve %amount% DaC(s)"
+challengeDisplayCompleteArena: "Complete an Arena"
+challengeDisplay8PlayersGame: "Play a 8 players game"
+challengeDisplayReachRound100: "Reach round 100"
+challengeDisplayAnswerToLife: "The answer to life the universe and everything"
+challengeDisplayFight: "Fight!"
+challengeDisplayMinecraftSnail: "The Minecraft snail"
+challengeRewardMoney: "&dYou receive &5%currency%%amount% &dfor the completion of your challenge."
+challengeBroadcast: "&f%player% &6just achieved the challenge: &4%challenge%"
+
+
+#   Sign Messages
+###################################################################
+
+signJoin: "&aJoin Arena"
+signPlay: "&bPlay"
+signQuit: "&cQuit Arena"
+signColor: "&6Change Color"
+signStart: "&9Start Game"
+signStats: "&5Stats"
+
+signNotValid1: "&cNone valid"
+signNotValid2: "&csign parameters"
+signNotValid3: "&cTry again"
+
+signNoPermission0: "&cYou don't have"
+signNoPermission1: "&cthe permissions"
+signNoPermission2: "&cto create a DaC"
+signNoPermission3: "&csign, &4Sorry..."
+
+
+#   Arena Edit Messages
+###################################################################
+
+editErrorNoArena: "&cYou must provide an arena name for this command."
+editErrorNoParameter: "&eYou must choose what you want to do with this arena."
+editNewNoName: "&cYou must provide a name for the new arena."
+editNewExists: "&cAn arena named &4%arenaName% &calready exists."
+editNewLong: "&cThe arena's name can't be more than one word."
+editNewSuccess: "&aNew arena &2%arenaName% &asuccessfully created."
+editDeleteSuccess: "&aSuccessfully deleted the arena &2%arenaName%"
+editLobbySuccess: "&aLobby sucessfully set for the arena &2%arenaName%&a."
+editPlateformSuccess: "&aPlateform sucessfully set for the arena &2%arenaName%&a."
+editPoolNoSelection: "&cYou must first make a selection with world edit."
+editPoolSuccess: "&aPool sucessfully set for the arena &2%arenaName%&a."
+editLimitMinSuccess: "&aSuccessfully set to &2%amount% &athe minimum amount of players for the arena &2%arenaName%"
+editLimitMaxSuccess: "&aSuccessfully set to &2%amount% &athe maximum amount of players for the arena &2%arenaName%"
+editLimitGameActive: "&cYou can't edit the amount of player while there is a game active"
+editLimitNaN: "&cThe amount must be a natural number."
+editLimitNoParameter: "&cYou must provide a number."
+editLimitMinBelowMin: "&cThe min amount can't be below 2"
+editLimitMaxAboveMax: "&cThe max amount can't be above 12."
+editLimitErrorMinMax: "&cThe max can't be above the min (and vice-versa)"
+editColorGuiTitle: "&eEdit Colors &0: &3DeACoudre"
+editColorGuiTooltip: "&eThe enchanted blocks are\n&ethe curently selected ones.\n&eClick a block to\n&eenable or disable it."
+editColorColorLessPlayer: "&cCan't have less available colors than max players."
+editColorNoPool: "&cYou can't edit the colors before the pool has been defined."
+editColorChoosen: "&cYou can't remove this block right now. It has already been choosen by a player."
+editColorActive: "&cYou can't edit the colors while a game is active."
+
+
+#   Admin Commands Messages
+###################################################################
+
+reloadSucess: "&aDaC has been successfully reloaded."
+forcestartError: "&cMust have only one player in a game to forcestart it."
+convertAlreadyDone: "&cThe conversion to mysql has already been done."
+convertStart: "&aBegining the conversion. This may take a very long time.."
+convertNoMysql: "&cYou must have a mysql connection to do this command."
+convertComplete: "&aThe file to mysql conversion is finished!"
+
+
+#   KeyWords
+###################################################################
+
+keyWordGeneralAnd: " &6and &f"
+keyWordGeneralComma: "&6, &f"
+keyWordGeneralMinimum: "Minimum"
+keyWordGeneralMaximum: "Maximum"
+keyWordGeneralHours: "hours"
+keyWordGeneralMinutes: "minutes"
+keyWordGeneralSeconds: "seconds"
+
+keyWordColorWool: "Wool"
+keyWordColorClay: "Clay"
+keyWordColorWhite: "&fWhite"
+keyWordColorOrange: "&6Orange"
+keyWordColorMagenta: "&dMagenta"
+keyWordColorLightBlue: "&9Light Blue"
+keyWordColorYellow: "&eYellow"
+keyWordColorLime: "&aLime"
+keyWordColorPink: "&dPink"
+keyWordColorGrey: "&8Grey"
+keyWordColorLightGrey: "&7Light Grey"
+keyWordColorCyan: "&bCyan"
+keyWordColorPurple: "&5Purple"
+keyWordColorBlue: "&1Blue"
+keyWordColorBrown: "&fBrown"
+keyWordColorGreen: "&2Green"
+keyWordColorRed: "&4Red"
+keyWordColorBlack: "&fBlack"
+keyWordColorRandom: "&6R&da&2n&9d&co&3m"
+
+keyWordGameState: "game state"
+keyWordGameStateStarted: "&cAlready Started"
+keyWordGameStateFull: "&cArena Full"
+keyWordGameStateReady: "&aReady"
+keyWordGameStateUnset: "&7Arena Unset"
+keyWordGameStateStartup: "&9Startup"
+keyWordGameStateActive: "&cActive"
+
+keyWordChallenges: "&dChallenges"
+keyWordStats: "&5Stats"
+keyWordStatsTop10: "Top 10"
+keyWordStatsReward: "Reward"
+keyWordStatsGamesPlayed: "Games Played"
+keyWordStatsGamesWon: "Games Won"
+keyWordStatsGamesLost: "Games Lost"
+keyWordStatsDacsDone: "DaCs Achieved"
+keyWordStatsTimePlayed: "Time Played"
+keyWordStatsMoneyGot: "Money Got"
+keyWordStatsProgression: "Progression"
+keyWordStatsCompleted: "Completed"
+keyWordStatsNotCompleted: "Not Completed"
+
+keyWordHelp: "Help"
+keyWordHelpCategory: "Category"
+keyWordHelpPage: "Page"
+keyWordHelpAdvanced: "Advanced Information"
+keyWordHelpInformation: "Information"
+keyWordHelpCurrent: "Current"
+keyWordHelpAmountPlayer: "amount of players"
+keyWordHelpWorld: "World"
+keyWordHelpLobby: "Lobby"
+keyWordHelpPlateform: "Plateform"
+keyWordHelpPool: "Pool"
+
+keyWordScoreboardPlayers: "&6Players"
+keyWordScoreboardPoints: "&6Points"
+keyWordScoreboardRound: "Round"
+
+keyWordJumpFast: "Jump!"
+
+keyWordGuiPreviousPage: "&dPrevious Page"
+keyWordGuiNextPage: "&dNext Page"
+keyWordGuiInstrictions: "&6Instructions"

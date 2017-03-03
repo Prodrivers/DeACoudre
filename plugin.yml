@@ -1,0 +1,144 @@
+name: DeACoudre
+version: 2.2.2
+description: The famous DeACoudre plugin remastered.
+load: postworld
+author: PoutineQc
+website: http://poutineqc.ca/plugins/DaC/
+main : me.poutineqc.deacoudre.DeACoudre
+database: false
+depend: [WorldEdit]
+softdepend: [Vault]
+prefix: DaC
+
+commands:
+  DaC:
+    description: DaC commands
+    aliases: [dac, deacoudre]
+    usage:  /<command>
+
+permissions:
+  dac.*:
+    description: Gives access to all DaC commands
+    children:
+      dac.player.*: true
+      dac.admin.*: true
+  dac.player.*:
+    description: Gives access to all commands simply needed to play the game
+    children:
+      dac.player.help: true
+      dac.player.language: true
+      dac.player.list: true
+      dac.player.info: true
+      dac.player.stats: true
+      dac.player.play.*: true
+  dac.player.help:
+    description: Allows to get DaC help
+    default: true
+  dac.player.language:
+    description: Allows to change personnal language
+    default: true
+  dac.player.list:
+    description: Allows to see all existing arenas
+    default: true
+  dac.player.info:
+    description: Allows to see information about arenas
+    default: true
+  dac.player.stats:
+    description: Allows to use open the stats GUI
+    default: true
+  dac.player.play.*:
+    description: Gives access to all commands simply needed to play the game
+    children:
+      dac.player.play.join: true
+      dac.player.play.quit: true
+      dac.player.play.color: true
+      dac.player.play.start: true
+  dac.player.join:
+    description: Allows to join a game
+    default: true
+  dac.player.quit:
+    description: Allows to quit a game
+    default: true
+  dac.player.color:
+    description: Allows to choose a color for the game
+    default: true
+  dac.player.start:
+    description: Allows to start the countdown for a game
+    default: true
+  dac.admin.*:
+    description: Gives access to all commands needed to setup arenas.
+    children:
+      dac.admin.info: true
+      dac.admin.makesigns: true
+      dac.admin.forcestart: true
+      dac.admin.reload: true
+      dac.admin.filetomysql: true
+      dac.admin.edit.*: true
+      dacreward.multiplier.2: true
+  dac.player.info:
+    description: Allows to see advanced information about arenas
+    default: op
+  dac.admin.makesigns:
+    description: Allows to make signs
+    default: op
+  dac.admin.help:
+    description: Allows to see the admin's help
+    default: op
+  dac.admin.forcestart:
+    description: Allows to forcestart the begining of a game with only one player for testing.
+    default: op
+  dac.admin.reload:
+    description: Allows to reload the config and the language files
+    default: op
+  dac.admin.filetomysql:
+    description: Allows to convert the file data to the mysql database
+    default: op
+  dac.admin.edit.*:
+    description: Gives access to all commands needed to setup arenas.
+    children:
+      dac.admin.edit.new: true
+      dac.admin.edit.delete: true
+      dac.admin.edit.lobby: true
+      dac.admin.edit.plateform: true
+      dac.admin.edit.pool: true
+      dac.admin.edit.color: true
+      dac.admin.edit.amountplayer.*: true
+  dac.admin.edit.new:
+    description: Allows to create a new arena
+    default: op
+  dac.admin.edit.delete:
+    description: Allows to delete an arena
+    default: op
+  dac.admin.edit.lobby:
+    description: Allows to set an arena's lobby
+    default: op
+  dac.admin.edit.plateform:
+    description: Allows to set an arena's plateform
+    default: op
+  dac.admin.edit.pool:
+    description: Allows to set an arena's pool
+    default: op
+  dac.admin.edit.color:
+    description: Allows to set the arena's pillars's material
+    default: op
+  dac.admin.edit.amountplayer.*:
+    description: Gives access to all languages permissions
+    children:
+      dac.admin.edit.amountplayer.minplayer: true
+      dac.admin.edit.amountplayer.maxplayer: true
+  dac.admin.edit.amountplayer.minplayer:
+    description: Allows to set the arena's min amount of players
+    default: op
+  dac.admin.edit.amountplayer.maxplayer:
+    description: Allows to set the arena's max amount of players
+    default: op
+  dacreward.multiplier.1:
+    description: Gives a 25% bonus money reward
+    default: false
+  dacreward.multiplier.2:
+    description: Gives a 50% bonus money reward
+    default: false
+  dacreward.multiplier.4:
+    description: Gives a 100% bonus money reward
+    default: false
+      

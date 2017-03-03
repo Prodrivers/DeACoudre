@@ -1,0 +1,296 @@
+###################################################################
+#   Language file - Francais                                      #
+#   Made by PoutineQc                                             #
+#   For the plugin DeACoudre                                      #
+###################################################################
+
+languageName: "francais"
+
+
+#   Genereal Plugin Messages
+###################################################################
+
+prefixLong: "&1[&3DeACoudre&1]"
+prefixShort: "&1[&3DaC&1] "
+
+pluginDevelopper: "&3Développé par: &7%developper%"
+pluginVersion: "&3Version: &7%version%"
+pluginHelp: "&3Fais &b/%command% help &3 pour la liste des commandes."
+
+
+#   Error Messages
+###################################################################
+
+errorNoPermission: "&cTu n'as pas la permission de faire cela!"
+errorPermissionHelp: "&cTu n'as pas de permissions dans cette catégorie."
+errorArenaNotExist: "&cNom d'arène non valide."
+errorCommandNotFound: "&eCette commande n'existe pas &b(&3/dac help &bpour de l'aide)&e."
+errorArenaOrCommandNotFound: "&eCommande ou arène pas trouvée &b(&3/dac help &bpour de l'aide)&e."
+errorInGame: "&cTu ne peux faire cela pendant une partie."
+errorNotInGame: "&cTu n'es pas dans une partie pour le moment."
+errorAlreadyInGame: "&cYTu es déjà dans une partie. Fais &d/dac quit &cpour la quitter."
+errorGameStarted: "&cCette partie est déjà commencée."
+errorTeleport: "&cTu ne peux pas te téléporter ailleurs lors d'une partie de DeACoudre."
+
+
+#   Help Messages
+###################################################################
+
+helpDescriptionAll: "&7Toutes les commandes"
+helpDescriptionGeneral: "&7Commandes générale pour joueurs"
+helpDescriptionGame: "&7Commandes pour simplement jouer le jeu"
+helpDescriptionArena: "&7Commandes pour créer les arènes"
+helpDescriptionAdmin: "&7Commandes d'entretien pour admins"
+
+cmd-desc-language: "&7Change ta propre langue pour le plugin DeACoudre."
+cmd-desc-stats: "&7Ouvre tes statistiques de DeACoudre."
+cmd-desc-list: "&7Ouvre une liste de toutes les arènes."
+cmd-desc-info: "&7Dévoile toute l'information sur une certaine arène."
+cmd-desc-join: "&7Joins l'arène spécifiée ou ouvre une interface pour choisir."
+cmd-desc-quit: "&7Quitte ta partie actuelle."
+cmd-desc-color: "&7Choisis ton bloc pour la partie."
+cmd-desc-start: "&7Débute le compte à rebours du départ."
+cmd-desc-new: "&7Crée une nouvelle arène de DeACoudre."
+cmd-desc-delete: "&7Suprime l'arène spécifiée."
+cmd-desc-setpool: "&7Défini les délimitation de la piscine avec une région World Edit."
+cmd-desc-setlobby: "&7Défini la position de la salle d'attente pour l'arène sélectionnée."
+cmd-desc-setplateform: "&7Définit la position de la plateforme pour l'arène sélectionnée."
+cmd-desc-setminplayer: "&7Définit la quantité de joueur mimimale pour une arène."
+cmd-desc-setmaxplayer: "&7Définit la quantité de joueur maximale pour une arène."
+cmd-desc-setcolor: "&7Choisi les blocs disponibles pour une arène."
+cmd-desc-reload: "&7Recharge la configuration, les fichiers de données et les fichiers de langues."
+cmd-desc-forcestart: "&7Force le début d'une partie afin d'en tester le fonctionnement."
+cmd-desc-filetomysql: "&7Utiliser cette commande une seule fois la première fois que vous vous connectez à la base de donnée avec le DeACoudre afin d'y copier les données des fichiers."
+
+
+#   Language Messages
+###################################################################
+
+languageList: "&3Langues Disponibles:"
+languageNotFound: "&cLangue non trouvée. &8/%cmd% language &cpour une liste des langues disponibles."
+languageChangeSuccess: "&aLangue changée au %language% avec succès."
+
+
+#   All Game Messages
+###################################################################
+
+joinGuiTitle: "&2Liste d'arène &0: &3DeACoudre"
+joinGuiTooltip: "&7Clique sur l'arène que tu\n&7souhaites joindre\n&7Clique droit pour voir\n&7ses informations"
+joinStateUnset: "&cCette arène n'est pas prète à être utilisée. Demande à un admin de finir de la configurer."
+joinStateFull: "&cCette arène est pleine."
+joinStateStarted: "&cLa partie est déjà commencée."
+joinAsSpectator: "&bSalle d'attente jointe en tant que spectateur."
+joinGamePlayer: "&aTu as rejoint la salle d'attente de l'arène &2%arenaName% &a(&2%amountInGame%&a)"
+joinGameOthers: "&f%player% &3vient de joindre la salle d'attente de l'arène &a(&2%amountInGame%&a)."
+joinNewPlaceOthers: "&f%player% &3a rejoint la partie afin de remplacer &f%leaver%&3."
+joinNewPlacePlayer: "&3Tu es ajouté à la partie afin de remplacer &f%leaver%&3!"
+joinInfoMissingName: "&cTu dois choisir une arène."
+joinInfoTooltip: "&8[&7Truc&8] &7Tu peux aussi faire &8/%cmd% list &7et cliquer droit l'arène pour voir ses informations."
+
+quitGamePlayer: "&aTu as quitté la partie de DeACoudre."
+quitGameOthers: "&f%player% &3a quitté la partie de DeACoudre."
+
+colorGuiTitle: "&6Couleur &0: &3DeACoudre"
+colorGuiCurrent: "Bloc actuel:"
+colorChoosen: "&dTu as choisi &f%material% &d: &f%color%&d."
+colorRandom: "&dTu laisse le destin décider du sort de ton bloc."
+colorAlreadyPicked: "&cCette couleur a été prise alors que tu choisissais. Désolé, essaie encore."
+
+startRandomColor: "&5Le bloc &f%material% &5: &f%color%&5 t'a été assigné"
+startRandomOrder: "&9Position de joueurs aléatoire:"
+startPosition: "&9%posNo% - &f%player%"
+startAlreadyStarted: "&cLe compte à rebours est déjà commencé."
+startStopped: "&cIl n'y a plus asser de joueurs pour commencer la partie. Le compte à rebours est arrêté."
+startErrorQuantity: "&cIl doit y avoir entre &4%minPlayers% &cet &4%maxPlayers% &cjoueurs pour commencer la partie."
+startCooldown: "&cTu ne peux pas débuter la partie si vite après que la dernière ait été annulée. Attend 30 secondes."
+startAutoFail: "&cLe compte à rebours n'a pas automatiquement débuté car le dernier a été annulée il y a moins de 30 secondes."
+startBroadcast: "&6Une nouvelle partie de DeACoudre va commencer dans %time% secondes dans l'arène &3%arena%&6. Les joueurs interessés peuvent faire &4/dac join %arena% &6pour joindre la partie."
+
+gameNewRound: "&8Tour %round% a commencé"
+gameTurnPlayer: "&d&lC'est à ton tour de jouer!"
+gameTurnOthers: "&dC'est à &f%player% &dde jouer!"
+gameSuccessPlayer: "&dTu as sauté avec succès"
+gameSuccessOthers: "&f%player% &da sauté avec succès"
+gamePointsUpPlayer: "&6Félicitation! &dTu as fais un DaC! (&5%points%&d)"
+gamePointsUpOthers: "&f%player% &da fait un DaC! (&5%points%&d)"
+gamePointsDownPlayer: "&eTu as perdu une vie (&6%points%&e)"
+gamePointsDownOthers: "&f%player% &ea perdu une vie (&6%points%&e)"
+gamePointsConfirmationPlayer: "&dOh non, tu n'as plus de vies restantes. Attente de confirmation..."
+gamePointsConfirmationOthers: "&f%player% &da manqué son saut et n'a plus de vies. Attente de confirmation..."
+gamePointsReviveHint: "&8(&7Tu peux la ravoir si tout le monde manque son saut dont un qui pert sa dernière vie ce tour&8)"
+gamePointsReviveLastLastPlayer: "&dTu as perdu ta dernière vie, mais tu recois une autre chance puisque tout le monde a manqué son saut ce tour."
+gamePointsReviveLastLastOthers: "&f%player% &da perdu sa dernière vie, mais il recoit une autre chance puisque tout le monde a manqué son saut ce tour."
+gamePointsReviveLastMultiplePlayer: "&dTu as manqué don saut.. comme tout les autres ce tour dont un qui a perdu sa dernière vie. Tu recois une autre chance."
+gamePointsReviveLastMultipleOthers: "&f%player% &da manqué son saut mais recoit une autre chance puisque tout les autres ont manqué leurs sauts dont un qui a perdu sa dernière vie.."
+gamePointsRevivePlayer: "&dTu recois aussi une autre chance. (&5%points%&d)"
+gamePointsReviveOthers: "&f%player% &da reçu une autre chance. (&5%points%&d)"
+gamePointsEliminatePlayer: "&cOh non, tu n'as plus de vie. Tu es éliminé."
+gamePointsEliminateOthers: "&f%player% &ca été éliminé."
+gamePointsFlushPlayer: "&cLe succès de &f%player% &csignifie ta perte. Tu es éliminé."
+gamePointsFlushOthers: "&cEn raison du succès de &f%player%&c, &f%looser% &cest éliminé."
+gameTimeOutPlayer: "&cCa t'a pris trop longtemps pour jouer. Tu es maintenant éliminé."
+gameTimeOutOthers: "&f%player% &ca pris trop de temps pour jouer. Il est maintenant éliminé."
+
+endingBroadcastSingle: "&6Félicitation a &f%player% &6qui viens de gagner une partie de DeACoudre dans l'arène &3%arenaName%&6."
+endingStall: "&eLa partie est rendu stagnante car aucun saut n'a été réussis depuis &6%time% &esauts.\n&6Calcul du gagnant... &7(Celui avec le plus de vies)"
+endingBroadcastMultiple: "&6Félicitation à &f%players% &6qui viennent de complèter l'arène &3%arenaName%&6."
+endingRewardMoney: "&dTu recois &5%currency%%amount% &dpour ta victoire."
+endingRewardItemsSpaceMultiple: "&cTu n'as pas de place dans ton inventaire pour toute les récompences."
+endingRewardItemsSpaceOne: "&cTu n'as pas de place dans ton inventaire pour ta récompense."
+endingRewardItemsReceive: "&aTu gagnes %amount% &f%item% &apour ta victoire."
+endingTeleport: "&dLa partie est finie. Teleportation dans 5 secondes..."
+endingSimulation: "&6La simulation est terminée!"
+
+
+#   Challenge Messages
+###################################################################
+
+challengeDisplayPlayed: "Joue %amount% partie(s)"
+challengeDisplayWin: "Gagne %amount% partie(s)"
+challengeDisplayLost: "Pert %amount% partie(s)"
+challengeDisplayDaC: "Réussis %amount% DaC(s)"
+challengeDisplayCompleteArena: "Complète une arène"
+challengeDisplay8PlayersGame: "Joue une partie de 8 joueurs"
+challengeDisplayReachRound100: "Atteins le tour 100"
+challengeDisplayAnswerToLife: "La réponse à la vie l'univers et tout"
+challengeDisplayFight: "Combat!"
+challengeDisplayMinecraftSnail: "L'escargot Minecraftien"
+challengeRewardMoney: "&dTu reois &5%currency%%amount% &dpour la réussite de ton défi."
+challengeBroadcast: "&f%player% &6vient de réussir le défi: &4%challenge%"
+
+
+#   Sign Messages
+###################################################################
+
+signJoin: "&aJoindre"
+signPlay: "&bJouer"
+signQuit: "&cQuitter"
+signColor: "&6Couleur"
+signStart: "&9Commencer"
+signStats: "&5Stats"
+
+signNotValid1: "&cParamètres"
+signNotValid2: "&cnon valide"
+signNotValid3: "&cEssaie encore"
+
+signNoPermission0: "&cPermissions"
+signNoPermission1: "&cmanquantes pour"
+signNoPermission2: "&cfaire un panneau"
+signNoPermission3: "&cDaC, &4Desolé..."
+
+
+#   Arena Edit Messages
+###################################################################
+
+editErrorNoArena: "&cTu dois choisir le nom de l'arène pour cette commande."
+editErrorNoParameter: "&eTu dois choisir ce que tu veux faire avec cette arène."
+editNewNoName: "&cTu dois fournir un nom pour cette nouvelle arène."
+editNewExists: "&cUne arène nommée &4%arenaName% &cexiste déjà."
+editNewLong: "&cLe nom d'une arène ne peut pas être plus d'un mot."
+editNewSuccess: "&aArène &2%arenaName% &acrée avec succès."
+editDeleteSuccess: "&aArène &2%arenaName% &asupprimée avec succès"
+editLobbySuccess: "&aSalle d'attente définie avec succès pour l'arène &2%arenaName%&a."
+editPlateformSuccess: "&aPlateforme définie avec succès pour l'arène &2%arenaName%&a."
+editPoolNoSelection: "&cTu dois d'abord faire une sélection de World Edit."
+editPoolSuccess: "&aPiscine définie avec succès pour l'arène &2%arenaName%&a."
+editLimitMinSuccess: "&aQuantitée minimale de joueurs définie à &2%amount% &aavec succès pour l'arène &2%arenaName%"
+editLimitMaxSuccess: "&aQuantitée maximale de joueurs définie à&2%amount% &aavec succès pour l'arène &2%arenaName%"
+editLimitGameActive: "&cTu ne peux changer la quantité de joueur alors qu'il y a une partie en cours."
+editLimitNaN: "&cLa quantité doit être un nombre naturel."
+editLimitNoParameter: "&cTu dois fournir un nombre."
+editLimitMinBelowMin: "&cLa quantitée minimale ne peut être moins de 2"
+editLimitMaxAboveMax: "&cLa quantitée maximale ne peut être plus de 12."
+editLimitErrorMinMax: "&cLa quantitée maximale ne peut être moins que le minimum (et vice-versa)"
+editColorGuiTitle: "&eChoix couleur &0: &3DeACoudre"
+editColorGuiTooltip: "&eLes livres enchantées sont\n&eles blocs sélectionnés.\n&eClique un bloc pour\n&el'activer et le désactiver."
+editColorColorLessPlayer: "&cIl ne peut pas y avoir moins de couleurs disponibles que de la quantité de joueur maximale."
+editColorNoPool: "&cTu ne peux pas éditer les couleurs avant que la piscine ait été définie."
+editColorChoosen: "&cTu ne peux pas retirer ce bloc présentement. Il a déjà été choisi par un joueur."
+editColorActive: "&cTu ne peux pas étider les couleurs alors que la partie est active."
+
+
+#   Admin Commands Messages
+###################################################################
+
+reloadSucess: "&aPlugin rechargé avec succès."
+forcestartError: "&cIl ne doit y avoir qu'un joueur dans une partie pour forcer son démarrage."
+convertAlreadyDone: "&cLa conversion à la base de données a déjà été faite."
+convertStart: "&aDébut de la conversion. Ceci peut prendre un très long moment.."
+convertNoMysql: "&cTu dois être connecté à une base de donnée pour faire cette commande."
+convertComplete: "&aLa conversion des fichiers à la base de donnée est completée!"
+
+
+#   KeyWords
+###################################################################
+
+keyWordGeneralAnd: " &6et &f"
+keyWordGeneralComma: "&6, &f"
+keyWordGeneralMinimum: "Minimum"
+keyWordGeneralMaximum: "Maximum"
+keyWordGeneralHours: "heures"
+keyWordGeneralMinutes: "minutes"
+keyWordGeneralSeconds: "secondes"
+
+keyWordColorWool: "Laine"
+keyWordColorClay: "Argile"
+keyWordColorWhite: "&fBlanc"
+keyWordColorOrange: "&6Orange"
+keyWordColorMagenta: "&dMagenta"
+keyWordColorLightBlue: "&9Bleu Pale"
+keyWordColorYellow: "&eJaune"
+keyWordColorLime: "&aLime"
+keyWordColorPink: "&dRose"
+keyWordColorGrey: "&8Gris"
+keyWordColorLightGrey: "&7Gris Pale"
+keyWordColorCyan: "&bCyan"
+keyWordColorPurple: "&5Mauve"
+keyWordColorBlue: "&1Bleu"
+keyWordColorBrown: "&fBrun"
+keyWordColorGreen: "&2Vert"
+keyWordColorRed: "&4Rouge"
+keyWordColorBlack: "&fNoir"
+keyWordColorRandom: "&6A&dl&2é&9a&ct&3o&6i&dr&2e"
+
+keyWordGameState: "état de la partie"
+keyWordGameStateStarted: "&cDéjà Commencé"
+keyWordGameStateFull: "&cArène pleine"
+keyWordGameStateReady: "&aPrête"
+keyWordGameStateUnset: "&7Arène pas prête"
+keyWordGameStateStartup: "&9démarrage"
+keyWordGameStateActive: "&cActive"
+
+keyWordChallenges: "&dDéfis"
+keyWordStats: "&5Stats"
+keyWordStatsTop10: "Top 10"
+keyWordStatsReward: "Récompense"
+keyWordStatsGamesPlayed: "Parties jouées"
+keyWordStatsGamesWon: "Parties gagnées"
+keyWordStatsGamesLost: "Parties perdues"
+keyWordStatsDacsDone: "DaCs réalisés"
+keyWordStatsTimePlayed: "Temps joué"
+keyWordStatsMoneyGot: "Argent obtenu"
+keyWordStatsProgression: "Progression"
+keyWordStatsCompleted: "Terminé"
+keyWordStatsNotCompleted: "Pas terminé"
+
+keyWordHelp: "Aide"
+keyWordHelpCategory: "Catégorie"
+keyWordHelpPage: "Page"
+keyWordHelpAdvanced: "Information Avancée"
+keyWordHelpInformation: "Information"
+keyWordHelpCurrent: "Actuel"
+keyWordHelpAmountPlayer: "quantité de joueurs"
+keyWordHelpWorld: "Monde"
+keyWordHelpLobby: "Salle d'attente"
+keyWordHelpPlateform: "Plateforme"
+keyWordHelpPool: "Piscine"
+
+keyWordScoreboardPlayers: "&6Joueurs"
+keyWordScoreboardPoints: "&6Points"
+keyWordScoreboardRound: "Tour"
+
+keyWordJumpFast: "Saute!"
+
+keyWordGuiPreviousPage: "&dPage précédente"
+keyWordGuiNextPage: "&dPage suivante"
+keyWordGuiInstrictions: "&6Instructions"

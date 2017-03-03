@@ -1,0 +1,81 @@
+commands:
+  general:
+    language:
+      usage: "/%command% language <language>"
+      description: "cmd-desc-language"
+      permission: "dac.player.language"
+    stats:
+      usage: "/%command% stats"
+      description: "cmd-desc-stats"
+      permission: "dac.player.stats"
+  game:
+    list:
+      usage: "/%command% list"
+      description: "cmd-desc-list"
+      permission: "dac.player.list"
+    info:
+      usage: "/%command% info <arena>"
+      description: "cmd-desc-info"
+      permission: "dac.player.info"
+    join:
+      usage: "/%command% join [arena]"
+      description: "cmd-desc-join"
+      permission: "dac.player.play.join"
+    quit:
+      usage: "/%command% quit"
+      description: "cmd-desc-quit"
+      permission: "dac.player.play.quit"
+    color:
+      usage: "/%command% color"
+      description: "cmd-desc-color"
+      permission: "dac.player.play.color"
+    start:
+      usage: "/%command% start"
+      description: "cmd-desc-start"
+      permission: "dac.player.play.start"
+  arena:
+    new:
+      usage: "/%command% new <arenaName>"
+      description: "cmd-desc-new"
+      permission: "dac.admin.edit.new"
+    delete:
+      usage: "/%command% <arenaName> delete"
+      description: "cmd-desc-delete"
+      permission: "dac.admin.edit.delete"
+    setpool:
+      usage: "/%command% <arenaName> setpool"
+      description: "cmd-desc-setpool"
+      permission: "dac.admin.edit.pool"
+    setlobby:
+      usage: "/%command% <arenaName> setlobby"
+      description: "cmd-desc-setlobby"
+      permission: "dac.admin.edit.lobby"
+    setplateform:
+      usage: "/%command% <arenaName> setplateform"
+      description: "cmd-desc-setplateform"
+      permission: "dac.admin.edit.plateform"
+    setminplayer:
+      usage: "/%command% <arenaName> setminplayer <amount>"
+      description: "cmd-desc-setminplayer"
+      permission: "dac.admin.edit.amountplayer.minplayer"
+    setmaxplayer:
+      usage: "/%command% <arenaName> setmaxplayer <amount>"
+      description: "cmd-desc-setmaxplayer"
+      permission: "dac.admin.edit.amountplayer.maxplayer"
+    setcolor:
+      usage: "/%command% <arenaName> setcolor"
+      description: "cmd-desc-setcolor"
+      permission: "dac.admin.edit.color"
+  admin:
+    forcestart:
+      usage: "/%command% forcestart"
+      description: "cmd-desc-forcestart"
+      permission: "dac.admin.forcestart"
+    reload:
+      usage: "/%command% reload"
+      description: "cmd-desc-reload"
+      permission: "dac.admin.reload"
+    filetomysql:
+      usage: "/%command% filetomysql"
+      description: "cmd-desc-filetomysql"
+      permission: "dac.admin.filetomysql"

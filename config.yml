@@ -1,0 +1,141 @@
+# DeACoudre plugin
+# Made by PoutineQc
+# https://www.spigotmc.org/resources/de-a-coudre.14635/
+
+
+###################################################################
+#                                                                 #
+#                     General Configuration                       #
+#                                                                 #
+###################################################################
+
+# Currently available languages: "fr-FR", "en-US"
+# You may make another YAML file with another language
+# Simply put it in the LanguageFiles folder and write it's name here (without the ".yml")
+# This will option will be the " DaC server language".. The signs will be in this language.
+# Warning: If you change this, a simple /dac reload won't do, you'll have to restart the server.
+language: en-US
+
+# Set to true if you have a MySQL database and fill the information below
+mysql: false
+host: 127.0.0.1
+port: 3306
+user: ''
+password: ''
+database: 'minecraft'
+tablePrefix: 'deacoudre_'
+
+# If you want the Plugin's "logo" ([dac] if not changed) to be displayed in front of every messages
+introInFrontOfEveryMessage: true
+
+
+###################################################################
+#                                                                 #
+#                     Gameplay Configuration                      #
+#                                                                 #
+###################################################################
+
+# Players teleport back to the location they were just before joing
+# Most useful when having a hub or gaming area of some sort.
+teleportAfterEnding: true
+
+# If true, the countdown for the game starts automaticly
+#   as soon as the minimum requirement of player is met.
+autostart: true
+
+# If true, spectators and waiting players will be invisible and able to fly.
+# Useful in huge arenas and with a lot of players.
+invisibleFlyingSpectators: true
+
+# The countdown until a players starts the game and the first round starts. (in seconds)
+# The players may still join the game during this countdown
+countdownTime: 60
+
+# The time before a player is considered idle and will be kicked (in seconds)
+timeBeforePlayerTimeOut: 30
+
+# If true : the reset will be done before every game start
+# If false : the reset will be done after every game end
+resetPoolBeforeGame: true
+
+# Completely kicks a player out of the game when he gets idle
+# true to kick the player out of the game
+# false to only make him lose a life and switch to the next player
+timeOutKick: true
+
+# After this much fails, the game will automaticly end
+maxFailBeforeEnding: 10
+
+# Set to false to remove the less important messages during games
+#   that may spam the chat
+verbose: true
+
+# If you want to disable specific broadcasts
+enabledBroadcasts:
+  broadcastStart: true
+  broadcastAchievements: true
+  broadcastCongradulations: true
+
+# if true, players inside the game won't receive the chat
+# from players outside of it and vice-versa.
+# Too avoid spamming the chat for in-game players on bigger servers.
+chatRooms: false
+
+
+###################################################################
+#                                                                 #
+#                 Advanced Rewards Configuration                  #
+#                                                                 #
+###################################################################
+
+# Requires Vault and an economy plugin
+economyReward: false
+
+# Choose the reward amounts depending on the values of your server's economy
+minAmountReward: 25.0
+maxAmountReward: 150.0
+bonusCompletingArena: 50.0
+
+# if true, when completing a challenge gives a money reward
+# will be false in all cases if you disable the economy rewards
+challengeReward: true
+
+# To edit the GamePlayed challenges, Win challenges, Lost Challenge and DaCsDone challenges
+# Go in the achievements.yml file in the plugin/DeACoudre folder
+
+# Challenge Rewards
+challengeRewardFinishArenaFirstTime: 100.0
+challengeReward8PlayersGame: 50.0
+challengeRewardReachRound100: 75.0
+
+# It will be a suprise, even to you ;) (unless you go check in the source code which would spoil the fun don't you think?)
+hiddenChallengeReward: 100.0
+
+# If you want players to receive item rewards instead of money (or both)
+# none : no item rewards
+# all : all the elements from the list below
+# random : one random element from the list below
+itemReward: none
+
+# If this list is empty, no items will be given
+# EX: - id:amount:data:item's_display_name
+# "item's_display_name" will be the item's display name
+# to keep the item's original name, keep this option empty
+# EX: - id:amount:data
+# Note: Maximum of 64 of each items.
+itemRewards:
+# Some Examples:
+# One diamond named Diamondo
+  - 264:1:0:&bDiamondo
+# One rabbit stew named Poutine
+  - 413:1:0:&6Poutine
+# 64 Red tulip
+  - 38:64:4
+  
+# Commands to be executed as the console when a game ends
+# %winner% : will be executed once for each winners if more than one
+# %arena% :  the name of the arena
+commands:
+#  - eco give %winner% 20
+#  - broadcast The arena %arena% is now ready for a new game
+  
