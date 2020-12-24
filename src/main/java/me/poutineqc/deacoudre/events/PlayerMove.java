@@ -3,6 +3,7 @@ package me.poutineqc.deacoudre.events;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import me.poutineqc.deacoudre.tools.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -11,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.material.Colorable;
 import org.bukkit.util.Vector;
 
 import me.poutineqc.deacoudre.Configuration;
@@ -136,16 +138,16 @@ public class PlayerMove implements Listener {
 
 			}
 
-			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				@SuppressWarnings("deprecation")
-				public void run() {
-					do {
-						getTo.getBlock().setType(Material.STAINED_GLASS);
-						getTo.getBlock().setData((byte) user.getItemStack().getDurability());
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+				do {
+					if(user.getItemStack().getData() instanceof Colorable) {
+						getTo.getBlock().setType(Utils.colorToStainedGlassBlock(((Colorable) user.getItemStack().getData()).getColor()));
+					} else {
+						getTo.getBlock().setType(Material.BLACK_STAINED_GLASS);
+					}
 
-						getTo.add(0, -1, 0);
-					} while (getTo.getBlock().getType() == Material.WATER);
-				}
+					getTo.add(0, -1, 0);
+				} while (getTo.getBlock().getType() == Material.WATER);
 			}, 5L);
 		} else {
 
@@ -162,16 +164,12 @@ public class PlayerMove implements Listener {
 				}
 			}
 
-			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				@SuppressWarnings("deprecation")
-				public void run() {
-					do {
-						getTo.getBlock().setType(user.getItemStack().getType());
-						getTo.getBlock().setData((byte) user.getItemStack().getDurability());
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+				do {
+					getTo.getBlock().setType(user.getItemStack().getType());
 
-						getTo.add(0, -1, 0);
-					} while (getTo.getBlock().getType() == Material.WATER);
-				}
+					getTo.add(0, -1, 0);
+				} while (getTo.getBlock().getType() == Material.WATER);
 			}, 5L);
 
 		}

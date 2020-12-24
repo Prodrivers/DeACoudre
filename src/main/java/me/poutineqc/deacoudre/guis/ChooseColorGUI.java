@@ -2,6 +2,7 @@ package me.poutineqc.deacoudre.guis;
 
 import java.util.List;
 
+import me.poutineqc.deacoudre.Configuration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -24,9 +25,11 @@ import me.poutineqc.deacoudre.tools.ItemStackManager;
 public class ChooseColorGUI implements Listener {
 
 	private PlayerData playerData;
+	private Configuration config;
 
 	public ChooseColorGUI(DeACoudre plugin) {
 		this.playerData = plugin.getPlayerData();
+		this.config = plugin.getConfiguration();
 	}
 
 	@EventHandler
@@ -37,7 +40,7 @@ public class ChooseColorGUI implements Listener {
 		Player player = (Player) event.getWhoClicked();
 		Language local = playerData.getLanguageOfPlayer(player);
 
-		if (!ChatColor.stripColor(event.getInventory().getName()).equalsIgnoreCase(ChatColor
+		if (!ChatColor.stripColor(event.getView().getTitle()).equalsIgnoreCase(ChatColor
 				.stripColor(ChatColor.translateAlternateColorCodes('&', local.editColorGuiTitle))))
 			return;
 
@@ -47,8 +50,6 @@ public class ChooseColorGUI implements Listener {
 		event.setCancelled(true);
 
 		ItemStack item = event.getCurrentItem();
-		if (item.getType() != Material.STAINED_CLAY && item.getType() != Material.WOOL)
-			return;
 
 		Arena arena = Arena
 				.getArenaFromName(ChatColor.stripColor(event.getInventory().getItem(0).getItemMeta().getLore().get(0)));
@@ -81,9 +82,10 @@ public class ChooseColorGUI implements Listener {
 			return;
 		}
 
-		int valueOfItem = item.getDurability();
-		if (item.getType() == Material.STAINED_CLAY)
-			valueOfItem += 16;
+
+		int valueOfItem = config.usableBlocks.indexOf(item.getType());
+		if(valueOfItem == -1)
+			return;
 
 		if (enchanted)
 			colorManager.setColorIndice(arena.getColorManager().getColorIndice() - (int) Math.pow(2, valueOfItem));
@@ -114,8 +116,7 @@ public class ChooseColorGUI implements Listener {
 		 * Glass Spacer
 		 ***************************************************/
 
-		icon = new ItemStackManager(Material.STAINED_GLASS_PANE);
-		icon.setData((short) 10);
+		icon = new ItemStackManager(Material.WHITE_STAINED_GLASS_PANE);
 		icon.setTitle(" ");
 
 		for (int i = 0; i < inv.getSize(); i++)
@@ -140,12 +141,11 @@ public class ChooseColorGUI implements Listener {
 		/***************************************************
 		 * Blocks
 		 ***************************************************/
-
-		List<ItemStackManager> colorManager = arena.getColorManager().getAllBlocks();
-		for (int i = 0; i < 32; i++) {
-			ItemStackManager item = colorManager.get(i);
+		int i = 0;
+		for (ItemStackManager item : arena.getColorManager().getAllBlocks()) {
 			item.setPosition((int) ((Math.floor(i / 8.0) * 9) + 19 + (i % 8)));
 			item.addToInventory(inv);
+			i++;
 		}
 
 		/***************************************************

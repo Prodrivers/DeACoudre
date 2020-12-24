@@ -1,7 +1,7 @@
 name: DeACoudre
 version: 2.2.2
 description: The famous DeACoudre plugin remastered.
-load: postworld
+load: "POSTWORLD"
 author: PoutineQc
 website: http://poutineqc.ca/plugins/DaC/
 main : me.poutineqc.deacoudre.DeACoudre
@@ -9,6 +9,7 @@ database: false
 depend: [WorldEdit]
 softdepend: [Vault]
 prefix: DaC
+api-version: "1.16"
 
 commands:
   DaC:

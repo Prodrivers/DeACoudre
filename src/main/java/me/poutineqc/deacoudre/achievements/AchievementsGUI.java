@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 import me.poutineqc.deacoudre.Configuration;
@@ -39,12 +40,13 @@ public class AchievementsGUI implements Listener {
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
 		Inventory inv = event.getInventory();
+		InventoryView view = event.getView();
 		Player player = (Player) event.getWhoClicked();
 		Language local = playerData.getLanguageOfPlayer(player);
 
-		if (ChatColor.stripColor(inv.getTitle())
+		if (ChatColor.stripColor(view.getTitle())
 				.equalsIgnoreCase(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', local.keyWordStats)))
-				|| ChatColor.stripColor(inv.getTitle()).equalsIgnoreCase(
+				|| ChatColor.stripColor(view.getTitle()).equalsIgnoreCase(
 						ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', local.keyWordChallenges)))) {
 			if (event.getAction().equals(InventoryAction.NOTHING) || event.getAction().equals(InventoryAction.UNKNOWN))
 				return;
@@ -163,7 +165,7 @@ public class AchievementsGUI implements Listener {
 		/***************************************************
 		 * Top Amount of Game
 		 ***************************************************/
-		icon = new ItemStackManager(Material.EMPTY_MAP, 18);
+		icon = new ItemStackManager(Material.MAP, 18);
 		icon.setTitle(ChatColor.GOLD
 				+ ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', local.keyWordStatsTop10)) + " : "
 				+ ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', local.keyWordStatsGamesPlayed)));
@@ -191,7 +193,7 @@ public class AchievementsGUI implements Listener {
 		/***************************************************
 		 * Top Amount of Win
 		 ***************************************************/
-		icon = new ItemStackManager(Material.EMPTY_MAP, 27);
+		icon = new ItemStackManager(Material.MAP, 27);
 		icon.setTitle(ChatColor.GOLD
 				+ ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', local.keyWordStatsTop10)) + " : "
 				+ ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', local.keyWordStatsGamesWon)));
@@ -219,7 +221,7 @@ public class AchievementsGUI implements Listener {
 		/***************************************************
 		 * Top Amount of Losses
 		 ***************************************************/
-		icon = new ItemStackManager(Material.EMPTY_MAP, 36);
+		icon = new ItemStackManager(Material.MAP, 36);
 		icon.setTitle(ChatColor.GOLD
 				+ ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', local.keyWordStatsTop10)) + " : "
 				+ ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', local.keyWordStatsGamesLost)));
@@ -247,7 +249,7 @@ public class AchievementsGUI implements Listener {
 		/***************************************************
 		 * Top Amount of DaC
 		 ***************************************************/
-		icon = new ItemStackManager(Material.EMPTY_MAP, 45);
+		icon = new ItemStackManager(Material.MAP, 45);
 		icon.setTitle(ChatColor.GOLD
 				+ ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', local.keyWordStatsTop10)) + " : "
 				+ ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', local.keyWordStatsDacsDone)));
@@ -276,9 +278,8 @@ public class AchievementsGUI implements Listener {
 		 * Glass Separator
 		 ***************************************************/
 
-		icon = new ItemStackManager(Material.STAINED_GLASS_PANE);
+		icon = new ItemStackManager(Material.BLUE_STAINED_GLASS_PANE);
 		icon.setTitle(" ");
-		icon.setData((short) 1);
 
 		for (int i = 0; i < inv.getSize(); i++) {
 			switch (i) {
@@ -315,8 +316,6 @@ public class AchievementsGUI implements Listener {
 			int position = (i * 9) + 20;
 
 			for (AchievementsObject ao : achievements.get(i)) {
-				icon = new ItemStackManager(Material.WOOL, position++);
-
 				int amount = 0;
 				if (mysql.hasConnection()) {
 					ResultSet query = mysql.query("SELECT " + challengePath[i].substring(1) + " FROM "
@@ -333,7 +332,7 @@ public class AchievementsGUI implements Listener {
 				}
 
 				if (amount >= ao.get_level()) {
-					icon.setData((short) 5);
+					icon = new ItemStackManager(Material.PURPLE_WOOL, position++);
 					icon.setTitle((ChatColor.GREEN + ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&',
 							challengeNames[i].replace("%amount%", String.valueOf(ao.get_level()))))));
 					icon.addToLore(ChatColor.YELLOW + "---------------------------");
@@ -341,7 +340,7 @@ public class AchievementsGUI implements Listener {
 							ChatColor.AQUA + ChatColor.translateAlternateColorCodes('&', local.keyWordStatsProgression)
 									+ ": " + ChatColor.GREEN + local.keyWordStatsCompleted);
 				} else {
-					icon.setData((short) 8);
+					icon = new ItemStackManager(Material.GRAY_WOOL, position++);
 					icon.setTitle((ChatColor.RED + ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&',
 							challengeNames[i].replace("%amount%", String.valueOf(ao.get_level()))))));
 					icon.addToLore(ChatColor.YELLOW + "---------------------------");
@@ -445,9 +444,8 @@ public class AchievementsGUI implements Listener {
 		 * Glass Separator
 		 ***************************************************/
 
-		icon = new ItemStackManager(Material.STAINED_GLASS_PANE);
+		icon = new ItemStackManager(Material.BLUE_STAINED_GLASS_PANE);
 		icon.setTitle(" ");
-		icon.setData((short) 1);
 
 		for (int i = 0; i < inv.getSize(); i++) {
 			switch (i) {
@@ -483,7 +481,6 @@ public class AchievementsGUI implements Listener {
 		int position = 19;
 
 		for (int i = 0; i < 6; i++) {
-			icon = new ItemStackManager(Material.INK_SACK, position++);
 
 			boolean completed = false;
 			if (mysql.hasConnection()) {
@@ -500,7 +497,7 @@ public class AchievementsGUI implements Listener {
 			}
 
 			if (completed) {
-				icon.setData((short) 10);
+				icon = new ItemStackManager(Material.GREEN_DYE, position++);
 				icon.setTitle(ChatColor.GREEN
 						+ ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', challengeNames[i])));
 
@@ -509,7 +506,7 @@ public class AchievementsGUI implements Listener {
 						+ ": " + ChatColor.GREEN
 						+ ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', local.keyWordStatsCompleted)));
 			} else {
-				icon.setData((short) 8);
+				icon = new ItemStackManager(Material.GRAY_DYE, position++);
 				icon.setTitle(ChatColor.RED
 						+ ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', challengeNames[i])));
 

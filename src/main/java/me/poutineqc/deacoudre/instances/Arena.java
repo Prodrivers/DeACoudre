@@ -8,6 +8,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
 
+import com.sk89q.worldedit.IncompleteRegionException;
+import com.sk89q.worldedit.LocalSession;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.regions.Region;
+import net.minecraft.server.v1_16_R3.BlockStainedGlass;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,6 +24,7 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Colorable;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -27,7 +33,6 @@ import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Vector;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
-import com.sk89q.worldedit.bukkit.selections.Selection;
 
 import me.poutineqc.deacoudre.ArenaData;
 import me.poutineqc.deacoudre.Configuration;
@@ -298,47 +303,18 @@ public class Arena {
 	}
 
 	private void setNameTagVisibilityNever() {
-
-		if (DeACoudre.aboveOneNine) {
-			try {
-				Object option = Class.forName("org.bukkit.scoreboard.Team$Option").getEnumConstants()[0];
-				Object optionStatus = Class.forName("org.bukkit.scoreboard.Team$OptionStatus").getEnumConstants()[1];
-
-				Object craftTeam = Class
-						.forName("org.bukkit.craftbukkit." + DeACoudre.NMS_VERSION + ".scoreboard.CraftTeam")
-						.cast(spectator);
-				Method method = craftTeam.getClass()
-						.getMethod("setOption", Class.forName("org.bukkit.scoreboard.Team$Option"),
-								Class.forName("org.bukkit.scoreboard.Team$OptionStatus"));
-				method.setAccessible(true);
-				method.invoke(craftTeam, option, optionStatus);
-				method.setAccessible(false);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else {
-			try {
-				Object option = null;
-				for (Object optionElement : Class.forName("org.bukkit.scoreboard.NameTagVisibility")
-						.getEnumConstants()) {
-					if (optionElement.toString().equalsIgnoreCase("NEVER")) {
-						option = optionElement;
-						break;
-					}
-				}
-
-				Object craftTeam = Class
-						.forName("org.bukkit.craftbukkit." + DeACoudre.NMS_VERSION + ".scoreboard.CraftTeam")
-						.cast(spectator);
-
-				Method method = craftTeam.getClass().getMethod("setNameTagVisibility",
-						Class.forName("org.bukkit.scoreboard.NameTagVisibility"));
-				method.setAccessible(true);
-				method.invoke(craftTeam, option);
-				method.setAccessible(false);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		try {
+			Object craftTeam = Class
+					.forName("org.bukkit.craftbukkit." + DeACoudre.NMS_VERSION + ".scoreboard.CraftTeam")
+					.cast(spectator);
+			Method method = craftTeam.getClass()
+					.getMethod("setOption", Class.forName("org.bukkit.scoreboard.Team$Option"),
+							Class.forName("org.bukkit.scoreboard.Team$OptionStatus"));
+			method.setAccessible(true);
+			method.invoke(craftTeam, Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
+			method.setAccessible(false);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -422,28 +398,48 @@ public class Arena {
 	}
 
 	public boolean setPool(Player player) {
-		Selection s = getWorldEdit().getSelection(player);
-		if (s == null)
+		if(getWorldEdit() == null) {
 			return false;
+		}
+
+		LocalSession session = getWorldEdit().getSession(player);
+		if (session == null) {
+			return false;
+		}
+
+		com.sk89q.worldedit.world.World world = session.getSelectionWorld();
+		World bukkitWorld = BukkitAdapter.adapt(world);
+		if (world == null || bukkitWorld == null) {
+			return false;
+		}
+
+		Region s;
+		try {
+			s = session.getSelection(world);
+		} catch(IncompleteRegionException e) {
+			return false;
+		}
+		if (s == null) {
+			return false;
+		}
 
 		gameState = GameState.UNREADY;
-		world = s.getWorld();
 
-		if (!world.getName().equalsIgnoreCase(player.getWorld().getName()))
+		if (!bukkitWorld.getName().equalsIgnoreCase(player.getWorld().getName()))
 			DacSign.removePlaySigns(this);
 
-		minPoint = s.getMinimumPoint();
-		maxPoint = s.getMaximumPoint();
+		minPoint = new Location(bukkitWorld, s.getMinimumPoint().getBlockX(), s.getMinimumPoint().getBlockY(), s.getMinimumPoint().getBlockZ());
+		maxPoint = new Location(bukkitWorld, s.getMaximumPoint().getBlockX(), s.getMaximumPoint().getBlockY(), s.getMaximumPoint().getBlockZ());
 		setTotalTile();
 
 		if (mysql.hasConnection()) {
-			mysql.update("UPDATE " + config.tablePrefix + "ARENAS SET world='" + world.getName() + "',minPointX='"
+			mysql.update("UPDATE " + config.tablePrefix + "ARENAS SET world='" + bukkitWorld.getName() + "',minPointX='"
 					+ minPoint.getBlockX() + "',minPointY='" + minPoint.getBlockY() + "',minPointZ='"
 					+ minPoint.getBlockZ() + "',maxPointX='" + maxPoint.getBlockX() + "',maxPointY='"
 					+ maxPoint.getBlockY() + "',maxPointZ='" + maxPoint.getBlockZ() + "' WHERE name='" + name + "';");
 		} else {
 			ConfigurationSection cs = arenaData.getData().getConfigurationSection("arenas." + name);
-			cs.set("world", world.getName());
+			cs.set("world", bukkitWorld.getName());
 			cs.set("waterPool.minimum.x", minPoint.getBlockX());
 			cs.set("waterPool.minimum.y", minPoint.getBlockY());
 			cs.set("waterPool.minimum.z", minPoint.getBlockZ());
@@ -1366,12 +1362,11 @@ public class Arena {
 				nextBlock: for (int z = minPoint.getBlockZ(); z <= maxPoint.getBlockZ(); z++) {
 					Location location = new Location(world, x, y, z);
 					Block block = location.getBlock();
-					if (block.getType() != Material.STAINED_CLAY && block.getType() != Material.WOOL
-							&& block.getType() != Material.STAINED_GLASS)
+					if (block.getState().getData() instanceof Colorable)
 						continue;
 
 					for (ItemStackManager item : colorManager.getOnlyChoosenBlocks())
-						if (item.getMaterial() == block.getType() || block.getType() == Material.STAINED_GLASS)
+						if (item.getMaterial() == block.getType())
 							if (item.getItem().getDurability() == block.getData()) {
 								block.setType(Material.WATER);
 								continue nextBlock;
@@ -1386,11 +1381,10 @@ public class Arena {
 				nextBlock: for (int z = minPoint.getBlockZ(); z <= maxPoint.getBlockZ(); z++) {
 					Location location = new Location(world, x, y, z);
 					Block block = location.getBlock();
-					if (block.getType() != Material.STAINED_CLAY && block.getType() != Material.WOOL
-							&& block.getType() != Material.STAINED_GLASS)
+					if (block.getState().getData() instanceof Colorable)
 						continue;
 
-					if (item.getType() == block.getType() || block.getType() == Material.STAINED_GLASS)
+					if (item.getType() == block.getType())
 						if (item.getDurability() == block.getData()) {
 							block.setType(Material.WATER);
 							continue nextBlock;
@@ -1579,9 +1573,7 @@ public class Arena {
 				case 1:
 					if (time % 20.0 == 0) {
 						for (User user : arena.getUsers()) {
-							Sound sound = DeACoudre.aboveOneNine ? Sound.valueOf("UI_BUTTON_CLICK") : Sound.valueOf("CLICK");
-
-							user.getPlayer().playSound(user.getPlayer().getLocation(), sound, 1, 1);
+							user.getPlayer().playSound(user.getPlayer().getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
 
 							Language local = playerData.getLanguageOfPlayer(user);
 
@@ -1668,9 +1660,7 @@ public class Arena {
 				case 2:
 				case 1:
 					if (time % 20 == 0) {
-						Sound sound = DeACoudre.aboveOneNine ? Sound.valueOf("ENTITY_EXPERIENCE_ORB_PICKUP")
-								: Sound.valueOf("ORB_PICKUP");
-						player.playSound(player.getLocation(), sound, (float) 1, 1);
+						player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, (float) 1, 1);
 					}
 				}
 				timeOut(user, arena, time - 1, round);

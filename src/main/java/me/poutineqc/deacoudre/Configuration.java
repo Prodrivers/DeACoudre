@@ -2,7 +2,10 @@ package me.poutineqc.deacoudre;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -32,6 +35,8 @@ public class Configuration {
 	public int maxFailBeforeEnding;
 	public boolean resetPoolBeforeGame;
 	public boolean invisibleFlyingSpectators;
+
+	public List<Material> usableBlocks;
 	
 	public boolean broadcastStart;
 	public boolean broadcastAchievements;
@@ -96,7 +101,19 @@ public class Configuration {
 		user = config.getString("user", "root");
 		password = config.getString("password");
 		tablePrefix = config.getString("tablePrefix", "deacoudre_");
-		
+
+		usableBlocks = config.getStringList("usableBlocks").stream()
+				.map(materialName -> {
+					try {
+						return Material.valueOf(materialName);
+					} catch(IllegalArgumentException e) {
+						plugin.getLogger().info("Usable block named " + materialName + " does not exists. Ignoring.");
+						return null;
+					}
+				})
+				.filter(Objects::nonNull)
+				.collect(Collectors.toList());
+
 		broadcastStart = config.getBoolean("enabledBroadcasts.broadcastStart", true);
 		broadcastAchievements = config.getBoolean("enabledBroadcasts.broadcastAchievements", true);
 		broadcastCongradulations = config.getBoolean("enabledBroadcasts.broadcastCongradulations", true);
@@ -124,34 +141,22 @@ public class Configuration {
 			loadItemRewards(plugin);
 	}
 
-	@SuppressWarnings("deprecation")
-	private Material getMaterial(String type) {
-		Material material;
-		try {
-			int id = Integer.parseInt(type);
-			material = Material.getMaterial(id);
-		} catch (NumberFormatException e) {
-			material = Material.getMaterial(type);
-		}
-		return material;
-	}
-
 	private void loadItemRewards(Plugin plugin) {
 		rewardItems.clear();
 
 		for (String items : config.getStringList("itemRewards")) {
 			String[] item = items.split(":");
 
-			Material material = getMaterial(item[0]);
-			int amount = 1;
-			int data = 0;
-			String name = "-1";
-
-			if (material == null) {
+			Material material;
+			try {
+				material = Material.valueOf(item[0]);
+			} catch(IllegalArgumentException e) {
 				plugin.getLogger().info("Error while trying to load the Item: " + items);
 				plugin.getLogger().info("Item not found. Ignoring...");
 				continue;
 			}
+			int amount = 1;
+			String name = "-1";
 
 			try {
 				if (item.length > 1)
@@ -164,9 +169,7 @@ public class Configuration {
 				}
 
 				if (item.length > 2)
-					data = Integer.parseInt(item[2]);
-				if (item.length > 3)
-					name = item[3];
+					name = item[2];
 
 			} catch (NumberFormatException e) {
 				plugin.getLogger().info("Error while trying to load the Item: " + items);
@@ -174,10 +177,11 @@ public class Configuration {
 				continue;
 			}
 
-			ItemStack tempReward = new ItemStack(material, amount, (short) data);
+			ItemStack tempReward = new ItemStack(material, amount);
 
-			if (name != "-1") {
+			if (!name.equals("-1")) {
 				ItemMeta tempMeta = tempReward.getItemMeta();
+				assert tempMeta != null;
 				tempMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
 				tempReward.setItemMeta(tempMeta);
 			}

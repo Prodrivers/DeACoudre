@@ -3,6 +3,7 @@ package me.poutineqc.deacoudre.tools;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -14,6 +15,8 @@ import me.poutineqc.deacoudre.Language;
 import me.poutineqc.deacoudre.MySQL;
 import me.poutineqc.deacoudre.instances.Arena;
 import me.poutineqc.deacoudre.instances.User;
+import org.bukkit.material.Colorable;
+import org.bukkit.material.MaterialData;
 
 public class ColorManager {
 
@@ -48,18 +51,13 @@ public class ColorManager {
 	}
 
 	public void updateLists() {
-		allBlocks = new ArrayList<ItemStackManager>();
-		onlyChoosenBlocks = new ArrayList<ItemStackManager>();
+		allBlocks = new ArrayList<>();
+		onlyChoosenBlocks = new ArrayList<>();
 		long tempColorIndice = colorIndice;
 
-		for (int i = 31; i >= 0; i--) {
-			ItemStackManager icon;
-			if (i >= 16)
-				icon = new ItemStackManager(Material.STAINED_CLAY);
-			else
-				icon = new ItemStackManager(Material.WOOL);
-
-			icon.setData((short) (i % 16));
+		int i = 0;
+		for (Material material : config.usableBlocks) {
+			ItemStackManager icon = new ItemStackManager(material);
 
 			int value = (int) Math.pow(2, i);
 			if (value <= tempColorIndice) {
@@ -69,6 +67,8 @@ public class ColorManager {
 			}
 
 			allBlocks.add(0, icon);
+
+			i++;
 		}
 
 		if (onlyChoosenBlocks.size() == 0)
@@ -104,73 +104,68 @@ public class ColorManager {
 		return colorIndice;
 	}
 
-	public List<ItemStackManager> getSpecificAvailableItems(Material material) {
-		List<ItemStackManager> specificAvailableBlocks = new ArrayList<ItemStackManager>();
-		for (ItemStackManager item : getAvailableBlocks())
-			if (item.getMaterial() == material)
-				specificAvailableBlocks.add(item);
-
-		return specificAvailableBlocks;
-	}
-
 	public boolean isBlockUsed(ItemStack item) {
 		for (User user : arena.getUsers())
 			if (user.getItemStack() != null)
-				if (user.getItemStack().getType() == item.getType()
-						&& user.getItemStack().getDurability() == item.getDurability())
+				if (user.getItemStack().getType() == item.getType())
 					return true;
 
 		return false;
 	}
 
 	public String getBlockMaterialName(ItemStack item, Language local) {
-		switch (item.getType()) {
-		case STAINED_CLAY:
+		if (item.getType().toString().contains(Material.TERRACOTTA.toString())) {
 			return local.keyWordColorClay;
-		case WOOL:
-			return local.keyWordColorWool;
-		default:
-			return local.keyWordColorRandom;
 		}
+		if (item.getType().toString().contains(Material.LEGACY_WOOL.toString())) {
+			return local.keyWordColorWool;
+		}
+		return local.keyWordColorRandom;
 	}
 
 	public String getBlockColorName(ItemStack item, Language local) {
-		switch (item.getDurability()) {
-		case 0:
-			return local.keyWordColorWhite;
-		case 1:
-			return local.keyWordColorOrange;
-		case 2:
-			return local.keyWordColorMagenta;
-		case 3:
-			return local.keyWordColorLightBlue;
-		case 4:
-			return local.keyWordColorYellow;
-		case 5:
-			return local.keyWordColorLime;
-		case 6:
-			return local.keyWordColorPink;
-		case 7:
-			return local.keyWordColorGrey;
-		case 8:
-			return local.keyWordColorLightGrey;
-		case 9:
-			return local.keyWordColorCyan;
-		case 10:
-			return local.keyWordColorPurple;
-		case 11:
-			return local.keyWordColorBlue;
-		case 12:
-			return local.keyWordColorBrown;
-		case 13:
-			return local.keyWordColorGreen;
-		case 14:
-			return local.keyWordColorRed;
-		case 15:
-			return local.keyWordColorBlack;
-		default:
-			return local.keyWordColorRandom;
+		MaterialData data = item.getData();
+		if(data instanceof Colorable) {
+			DyeColor color = ((Colorable) data).getColor();
+			if(color != null) {
+				switch(color) {
+					case WHITE:
+						return local.keyWordColorWhite;
+					case ORANGE:
+						return local.keyWordColorOrange;
+					case MAGENTA:
+						return local.keyWordColorMagenta;
+					case LIGHT_BLUE:
+						return local.keyWordColorLightBlue;
+					case YELLOW:
+						return local.keyWordColorYellow;
+					case LIME:
+						return local.keyWordColorLime;
+					case PINK:
+						return local.keyWordColorPink;
+					case GRAY:
+						return local.keyWordColorGrey;
+					case LIGHT_GRAY:
+						return local.keyWordColorLightGrey;
+					case CYAN:
+						return local.keyWordColorCyan;
+					case PURPLE:
+						return local.keyWordColorPurple;
+					case BLUE:
+						return local.keyWordColorBlue;
+					case BROWN:
+						return local.keyWordColorBrown;
+					case GREEN:
+						return local.keyWordColorGreen;
+					case RED:
+						return local.keyWordColorRed;
+					case BLACK:
+						return local.keyWordColorBlack;
+				}
+			}
 		}
+
+		return local.keyWordColorRandom;
 	}
 
 }

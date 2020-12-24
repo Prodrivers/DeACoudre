@@ -33,20 +33,13 @@ public class ItemStackManager {
 		return item.getType();
 	}
 
-	public short getData() {
-		return item.getDurability();
-	}
-
 	public void setPosition(int position) {
 		this.position = position;
 	}
 
-	public void setData(short data) {
-		item.setDurability(data);
-	}
-
 	public void setTitle(String displayName) {
 		meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
+		meta.setLocalizedName(ChatColor.translateAlternateColorCodes('&', displayName));
 	}
 
 	public void addToLore(String loreLine) {

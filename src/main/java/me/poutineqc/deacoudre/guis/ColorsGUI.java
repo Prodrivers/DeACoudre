@@ -33,15 +33,15 @@ public class ColorsGUI implements Listener {
 
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
-		Inventory inv = event.getInventory();
 		Player player = (Player) event.getWhoClicked();
-		Language local = playerData.getLanguageOfPlayer(player);
-
-		if (!ChatColor.stripColor(inv.getTitle()).equalsIgnoreCase(
-				ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', local.colorGuiTitle))))
-			return;
 
 		if (event.getAction().equals(InventoryAction.NOTHING) || event.getAction().equals(InventoryAction.UNKNOWN))
+			return;
+
+		Language local = playerData.getLanguageOfPlayer(player);
+
+		if (!ChatColor.stripColor(event.getView().getTitle()).equalsIgnoreCase(
+				ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', local.colorGuiTitle))))
 			return;
 
 		event.setCancelled(true);
@@ -64,9 +64,6 @@ public class ColorsGUI implements Listener {
 			player.closeInventory();
 		}
 
-		if (item.getType() != Material.WOOL && item.getType() != Material.STAINED_CLAY)
-			return;
-
 		if (arena.getColorManager().isBlockUsed(item)) {
 			local.sendMsg(player, local.colorAlreadyPicked);
 			achievements.testAchievement(Achievement.colorRivalery, player);
@@ -87,20 +84,8 @@ public class ColorsGUI implements Listener {
 		ItemStack userCurrentItem = arena.getUser(player).getItemStack();
 		Inventory inv;
 		ItemStackManager icon;
-		int size = 18;
-		List<ItemStackManager> availableWoolItems = arena.getColorManager().getSpecificAvailableItems(Material.WOOL);
-		List<ItemStackManager> availableClayItems = arena.getColorManager()
-				.getSpecificAvailableItems(Material.STAINED_CLAY);
-
-		if (availableWoolItems.size() > 9)
-			size += 18;
-		else if (availableWoolItems.size() > 0)
-			size += 9;
-
-		if (availableClayItems.size() > 9)
-			size += 18;
-		else if (availableClayItems.size() > 0)
-			size += 9;
+		List<ItemStackManager> availableBlocks = arena.getColorManager().getAvailableBlocks();
+		int size = (availableBlocks.size() % 9 == 0 ? availableBlocks.size() : availableBlocks.size() / 9 * 9 + 9);
 
 		inv = Bukkit.createInventory(null, size, ChatColor.translateAlternateColorCodes('&', local.colorGuiTitle));
 
@@ -109,15 +94,13 @@ public class ColorsGUI implements Listener {
 		 ***************************************************/
 
 		if (userCurrentItem == null) {
-			icon = new ItemStackManager(Material.SKULL_ITEM);
-			icon.setData((short) 3);
+			icon = new ItemStackManager(Material.PLAYER_HEAD);
 			icon.setPlayerHeadName("azbandit2000");
 			icon.setTitle(ChatColor.translateAlternateColorCodes('&', local.colorGuiCurrent));
 			icon.addToLore(ChatColor.translateAlternateColorCodes('&', local.keyWordColorRandom));
 
 		} else {
 			icon = new ItemStackManager(userCurrentItem.getType());
-			icon.setData(userCurrentItem.getDurability());
 			icon.addToLore(ChatColor.translateAlternateColorCodes('&',
 					arena.getColorManager().getBlockColorName(userCurrentItem, local) + " : "
 							+ arena.getColorManager().getBlockMaterialName(userCurrentItem, local)));
@@ -131,9 +114,8 @@ public class ColorsGUI implements Listener {
 		 * Glass Separator
 		 ***************************************************/
 
-		icon = new ItemStackManager(Material.STAINED_GLASS_PANE);
+		icon = new ItemStackManager(Material.WHITE_STAINED_GLASS_PANE);
 		icon.setTitle(" ");
-		icon.setData((short) 1);
 
 		for (int i = 0; i < inv.getSize(); i++) {
 			switch (i) {
@@ -160,12 +142,11 @@ public class ColorsGUI implements Listener {
 		 ***************************************************/
 
 		int slot = 19;
-		for (ItemStackManager woolItem : availableWoolItems) {
+		for (ItemStackManager item : availableBlocks) {
 			if (slot % 9 == 0)
 				slot++;
 
-			icon = new ItemStackManager(woolItem.getMaterial());
-			icon.setData(woolItem.getData());
+			icon = new ItemStackManager(item.getMaterial());
 			icon.setPosition(slot++);
 			icon.addToInventory(inv);
 		}
@@ -173,18 +154,7 @@ public class ColorsGUI implements Listener {
 		while ((slot - 1) % 9 != 0)
 			slot++;
 
-		for (ItemStackManager clayItem : availableClayItems) {
-			if (slot % 9 == 0)
-				slot++;
-
-			icon = new ItemStackManager(clayItem.getMaterial());
-			icon.setData(clayItem.getData());
-			icon.setPosition(slot++);
-			icon.addToInventory(inv);
-		}
-
-		icon = new ItemStackManager(Material.SKULL_ITEM, 18);
-		icon.setData((short) 3);
+		icon = new ItemStackManager(Material.PLAYER_HEAD, 18);
 		icon.setPlayerHeadName("azbandit2000");
 		icon.setTitle(ChatColor.translateAlternateColorCodes('&', local.keyWordColorRandom));
 
