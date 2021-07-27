@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class MySQL {
 
@@ -67,6 +68,16 @@ public class MySQL {
 		} catch (SQLException e) {
 			plugin.getLogger().info("[MySQL] The connection couldn't be closed! reason: " + e.getMessage());
 		}
+	}
+
+	public Optional<PreparedStatement> getPreparedStatement(String qry) {
+		try {
+			return Optional.of(connection.prepareStatement(qry));
+		} catch (SQLException e) {
+			connect();
+			System.err.println(e);
+		}
+		return Optional.empty();
 	}
 
 	public void update(String qry) {

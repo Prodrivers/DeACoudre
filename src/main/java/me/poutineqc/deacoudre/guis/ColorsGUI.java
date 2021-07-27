@@ -1,6 +1,7 @@
 package me.poutineqc.deacoudre.guis;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -64,16 +65,21 @@ public class ColorsGUI implements Listener {
 			player.closeInventory();
 		}
 
-		if (arena.getColorManager().isBlockUsed(item)) {
+		Optional<ItemStackManager> correspondingArenaItem = arena.getColorManager().getBlock(item);
+		if(!correspondingArenaItem.isPresent()) {
+			return;
+		}
+
+		if (!correspondingArenaItem.get().isAvailable()) {
 			local.sendMsg(player, local.colorAlreadyPicked);
 			achievements.testAchievement(Achievement.colorRivalery, player);
 		} else {
-			user.setColor(item);
+			user.setColor(correspondingArenaItem.get());
 			local.sendMsg(player,
 					local.colorChoosen
 							.replace("%material%",
-									arena.getColorManager().getBlockMaterialName(user.getItemStack(), local))
-							.replace("%color%", arena.getColorManager().getBlockColorName(user.getItemStack(), local)));
+									arena.getColorManager().getBlockMaterialName(user.getColor().getItem(), local))
+							.replace("%color%", arena.getColorManager().getBlockColorName(user.getColor().getItem(), local)));
 		}
 
 		player.closeInventory();
@@ -81,7 +87,7 @@ public class ColorsGUI implements Listener {
 	}
 
 	public static void openColorsGui(Player player, Language local, Arena arena) {
-		ItemStack userCurrentItem = arena.getUser(player).getItemStack();
+		ItemStackManager userCurrentItem = arena.getUser(player).getColor();
 		Inventory inv;
 		ItemStackManager icon;
 		List<ItemStackManager> availableBlocks = arena.getColorManager().getAvailableBlocks();
@@ -100,10 +106,10 @@ public class ColorsGUI implements Listener {
 			icon.addToLore(ChatColor.translateAlternateColorCodes('&', local.keyWordColorRandom));
 
 		} else {
-			icon = new ItemStackManager(userCurrentItem.getType());
+			icon = userCurrentItem;
 			icon.addToLore(ChatColor.translateAlternateColorCodes('&',
-					arena.getColorManager().getBlockColorName(userCurrentItem, local) + " : "
-							+ arena.getColorManager().getBlockMaterialName(userCurrentItem, local)));
+					arena.getColorManager().getBlockColorName(userCurrentItem.getItem(), local) + " : "
+							+ arena.getColorManager().getBlockMaterialName(userCurrentItem.getItem(), local)));
 			icon.setTitle(ChatColor.translateAlternateColorCodes('&', local.colorGuiCurrent));
 		}
 
@@ -146,7 +152,7 @@ public class ColorsGUI implements Listener {
 			if (slot % 9 == 0)
 				slot++;
 
-			icon = new ItemStackManager(item.getMaterial());
+			icon = item.clone();
 			icon.setPosition(slot++);
 			icon.addToInventory(inv);
 		}

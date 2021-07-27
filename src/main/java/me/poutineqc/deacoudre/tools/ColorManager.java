@@ -1,7 +1,12 @@
 package me.poutineqc.deacoudre.tools;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -19,56 +24,99 @@ import org.bukkit.material.Colorable;
 import org.bukkit.material.MaterialData;
 
 public class ColorManager {
-
-	private long colorIndice;
 	private List<ItemStackManager> allBlocks;
 	private List<ItemStackManager> onlyChoosenBlocks;
 	private MySQL mysql;
 	private Configuration config;
 	private Arena arena;
 	private ArenaData arenaData;
+	private Logger logger;
 
-	public ColorManager(Long colorIndice, DeACoudre plugin, Arena arena) {
-		this.colorIndice = colorIndice;
+	public ColorManager(DeACoudre plugin, Arena arena) {
+		this.logger = plugin.getLogger();
 		this.mysql = plugin.getMySQL();
 		this.arenaData = plugin.getArenaData();
 		this.config = plugin.getConfiguration();
 		this.arena = arena;
-		updateLists();
+		load();
 	}
 
-	public void setColorIndice(long colorIndice) {
-		this.colorIndice = colorIndice;
-		updateLists();
+	public boolean isChoosable(ItemStack item) {
+		return isChoosable(item.getType());
+	}
+
+	public boolean isChoosable(Material material) {
+		return onlyChoosenBlocks.stream().anyMatch(block -> block.getItem().getType() == material);
+	}
+
+	public void setChoosable(ItemStack item, boolean choosable) {
+		setChoosable(item.getType(), choosable);
+	}
+
+	public void setChoosable(Material material, boolean choosable) throws IllegalArgumentException {
+		Optional<ItemStackManager> block = getBlock(material);
+		if(!block.isPresent()) {
+			throw new IllegalArgumentException("Material not corresponding to any usable block.");
+		}
+
+		this.onlyChoosenBlocks.add(block.get());
 
 		if (mysql.hasConnection()) {
-			mysql.update("UPDATE " + config.tablePrefix + "ARENAS SET colorIndice=" + colorIndice + " WHERE name='"
-					+ arena.getName() + "';");
+			List<String> materials = this.onlyChoosenBlocks.stream().map(item -> item.getItem().getType().toString()).collect(Collectors.toList());
+			String serializedMaterials = String.join(";", materials);
+			Optional<PreparedStatement> ost = mysql.getPreparedStatement("UPDATE ? SET usableBlocks=? WHERE name=?;");
+			if(ost.isPresent()) {
+				try(PreparedStatement st = ost.get()) {
+					st.setString(1, config.tablePrefix + "ARENAS");
+					st.setString(2, serializedMaterials);
+					st.setString(3, arena.getName());
+					st.execute();
+				} catch(SQLException e) {
+					logger.log(Level.SEVERE, "Unable to update choosable block for arena " + arena.getName(), e);
+				}
+			}
 		} else {
-			arenaData.getData().set("arenas." + arena.getName() + ".colorIndice", colorIndice);
+			arenaData.getData().set("arenas." + arena.getName() + ".usableBlocks." + material, choosable);
 			arenaData.saveArenaData();
 		}
 	}
 
-	public void updateLists() {
+	public void load() {
 		allBlocks = new ArrayList<>();
 		onlyChoosenBlocks = new ArrayList<>();
-		long tempColorIndice = colorIndice;
+		List<String> choosenMaterialsStrings;
 
-		int i = 0;
+		if (mysql.hasConnection()) {
+			choosenMaterialsStrings = new ArrayList<>();
+			List<String> materials = this.onlyChoosenBlocks.stream().map(item -> item.getItem().getType().toString()).collect(Collectors.toList());
+			Optional<PreparedStatement> ost = mysql.getPreparedStatement("SELECT usableBlocks FROM ? WHERE name=?;");
+			if(ost.isPresent()) {
+				try(PreparedStatement st = ost.get()) {
+					st.setString(1, config.tablePrefix + "ARENAS");
+					st.setString(2, arena.getName());
+					ResultSet sql = st.executeQuery();
+					if(sql.next()) {
+						String serializedMaterials = sql.getString(1);
+						choosenMaterialsStrings = Arrays.asList(serializedMaterials.split(";"));
+					}
+				} catch(SQLException e) {
+					logger.log(Level.SEVERE, "Unable to update choosable block for arena " + arena.getName(), e);
+				}
+			}
+		} else {
+			choosenMaterialsStrings = arenaData.getData().getStringList("arenas." + arena.getName() + ".usableBlocks");
+		}
+		Set<Material> choosenMaterials = choosenMaterialsStrings.stream().map(Material::valueOf).collect(Collectors.toSet());
+
 		for (Material material : config.usableBlocks) {
 			ItemStackManager icon = new ItemStackManager(material);
 
-			int value = (int) Math.pow(2, i);
-			if (value <= tempColorIndice) {
+			if(choosenMaterials.contains(material)) {
 				icon.addEnchantement(Enchantment.DURABILITY, 1);
-				tempColorIndice -= value;
 				onlyChoosenBlocks.add(0, icon);
 			}
 
 			allBlocks.add(0, icon);
-
-			i++;
 		}
 
 		if (onlyChoosenBlocks.size() == 0)
@@ -81,15 +129,7 @@ public class ColorManager {
 	}
 
 	public List<ItemStackManager> getAvailableBlocks() {
-		List<ItemStackManager> availableBlocks = new ArrayList<ItemStackManager>();
-		for (ItemStackManager item : onlyChoosenBlocks) {
-			if (isBlockUsed(item.getItem()))
-				continue;
-
-			availableBlocks.add(item);
-		}
-
-		return availableBlocks;
+		return onlyChoosenBlocks.stream().filter(ItemStackManager::isAvailable).collect(Collectors.toList());
 	}
 
 	public List<ItemStackManager> getAllBlocks() {
@@ -100,17 +140,12 @@ public class ColorManager {
 		return onlyChoosenBlocks;
 	}
 
-	public long getColorIndice() {
-		return colorIndice;
+	public Optional<ItemStackManager> getBlock(ItemStack item) {
+		return getBlock(item.getType());
 	}
 
-	public boolean isBlockUsed(ItemStack item) {
-		for (User user : arena.getUsers())
-			if (user.getItemStack() != null)
-				if (user.getItemStack().getType() == item.getType())
-					return true;
-
-		return false;
+	public Optional<ItemStackManager> getBlock(Material material) {
+		return allBlocks.stream().filter(item -> item.getItem().getType() == material).findFirst();
 	}
 
 	public String getBlockMaterialName(ItemStack item, Language local) {
@@ -167,5 +202,4 @@ public class ColorManager {
 
 		return local.keyWordColorRandom;
 	}
-
 }

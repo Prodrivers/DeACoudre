@@ -140,8 +140,8 @@ public class PlayerMove implements Listener {
 
 			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
 				do {
-					if(user.getItemStack().getData() instanceof Colorable) {
-						getTo.getBlock().setType(Utils.colorToStainedGlassBlock(((Colorable) user.getItemStack().getData()).getColor()));
+					if(user.getColor().getItem().getData() instanceof Colorable) {
+						getTo.getBlock().setType(Utils.colorToStainedGlassBlock(((Colorable) user.getColor().getItem().getData()).getColor()));
 					} else {
 						getTo.getBlock().setType(Material.BLACK_STAINED_GLASS);
 					}
@@ -166,7 +166,7 @@ public class PlayerMove implements Listener {
 
 			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
 				do {
-					getTo.getBlock().setType(user.getItemStack().getType());
+					getTo.getBlock().setType(user.getColor().getItem().getType());
 
 					getTo.add(0, -1, 0);
 				} while (getTo.getBlock().getType() == Material.WATER);

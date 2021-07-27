@@ -2,6 +2,7 @@ package me.poutineqc.deacoudre.instances;
 
 import java.util.UUID;
 
+import me.poutineqc.deacoudre.tools.ItemStackManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -19,7 +20,7 @@ public class User {
 	private String displayName;
 	private String name;
 	private OriginalPlayerStats originalStats;
-	private ItemStack color;
+	private ItemStackManager color;
 	private int points = 0;
 	private int place;
 	private boolean roundSuccess = false;
@@ -86,15 +87,21 @@ public class User {
 		this.place = place;
 	}
 
-	public void setColor(ItemStack item) {
+	public void setColor(ItemStackManager item) {
+		if(this.color != null) {
+			this.color.setAvailable(true);
+		}
 		this.color = item;
+		if(this.color != null) {
+			this.color.setAvailable(false);
+		}
 	}
 
 	public void removeColor() {
-		color = null;
+		setColor(null);
 	}
 
-	public ItemStack getItemStack() {
+	public ItemStackManager getColor() {
 		return color;
 	}
 

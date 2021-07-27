@@ -1,6 +1,7 @@
 package me.poutineqc.deacoudre.guis;
 
 import java.util.List;
+import java.util.Optional;
 
 import me.poutineqc.deacoudre.Configuration;
 import org.bukkit.Bukkit;
@@ -55,8 +56,8 @@ public class ChooseColorGUI implements Listener {
 				.getArenaFromName(ChatColor.stripColor(event.getInventory().getItem(0).getItemMeta().getLore().get(0)));
 		ColorManager colorManager = arena.getColorManager();
 
-		boolean enchanted = item.getItemMeta().hasEnchants();
-		if (enchanted && colorManager.getOnlyChoosenBlocks().size() <= arena.getMaxPlayer()) {
+		boolean isChoosable = colorManager.isChoosable(item);
+		if (isChoosable && colorManager.getOnlyChoosenBlocks().size() <= arena.getMaxPlayer()) {
 			local.sendMsg(player, local.editColorColorLessPlayer);
 			openColorGUI(player, arena);
 			return;
@@ -75,8 +76,13 @@ public class ChooseColorGUI implements Listener {
 			local.sendMsg(player, local.editColorActive);
 			return;
 		}
-		
-		if (arena.getColorManager().isBlockUsed(item)) {
+
+		Optional<ItemStackManager> correspondingArenaItem = arena.getColorManager().getBlock(item);
+		if(!correspondingArenaItem.isPresent()) {
+			return;
+		}
+
+		if (!correspondingArenaItem.get().isAvailable()) {
 			player.closeInventory();
 			local.sendMsg(player, local.editColorChoosen);
 			return;
@@ -87,10 +93,7 @@ public class ChooseColorGUI implements Listener {
 		if(valueOfItem == -1)
 			return;
 
-		if (enchanted)
-			colorManager.setColorIndice(arena.getColorManager().getColorIndice() - (int) Math.pow(2, valueOfItem));
-		else
-			colorManager.setColorIndice(arena.getColorManager().getColorIndice() + (int) Math.pow(2, valueOfItem));
+		colorManager.setChoosable(item, !isChoosable);
 
 		arena.resetArena(item);
 		openColorGUI(player, arena);

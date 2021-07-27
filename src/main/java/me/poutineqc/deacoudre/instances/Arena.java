@@ -108,7 +108,6 @@ public class Arena {
 				ResultSet arenas = mysql.query("SELECT * FROM " + config.tablePrefix + "ARENAS;");
 				while (arenas.next()) {
 					String name = arenas.getString("name");
-					Long colorIndice = arenas.getLong("colorIndice");
 					World world = Bukkit.getWorld(arenas.getString("world"));
 
 					Location minPoint = new Location(world, arenas.getInt("minPointX"), arenas.getInt("minPointY"),
@@ -128,8 +127,7 @@ public class Arena {
 
 					int minAmountPlayer = arenas.getInt("minAmountPlayer");
 					int maxAmountPlayer = arenas.getInt("maxAmountPlayer");
-					new Arena(name, world, minPoint, maxPoint, lobby, plateform, minAmountPlayer, maxAmountPlayer,
-							colorIndice);
+					new Arena(name, world, minPoint, maxPoint, lobby, plateform, minAmountPlayer, maxAmountPlayer);
 				}
 			} catch (SQLException e) {
 				plugin.getLogger().info("[MySQL] Error while loading arenas.");
@@ -141,13 +139,16 @@ public class Arena {
 			for (String arenaName : arenaData.getData().getConfigurationSection("arenas").getKeys(false)) {
 
 				ConfigurationSection cs = arenaData.getData().getConfigurationSection("arenas." + arenaName);
+				assert cs != null;
 				ConfigurationSection ccs;
 
 				playerData.getData().set("arenas." + arenaName + ".material", null);
 				playerData.savePlayerData();
 
-				World world = Bukkit.getWorld(cs.getString("world"));
-				Long colorIndice = cs.getLong("colorIndice", 2122219134);
+				String worldName = cs.getString("world");
+				assert worldName != null;
+				World world = Bukkit.getWorld(worldName);
+				assert world != null;
 				int minAmountPlayer = cs.getInt("minPlayer", 2);
 				int maxAmountPlayer = cs.getInt("maxPlayer", 8);
 
@@ -169,8 +170,7 @@ public class Arena {
 				plateform.setPitch((float) ccs.getDouble("pitch", 0));
 				plateform.setYaw((float) ccs.getDouble("yaw", 0));
 
-				new Arena(arenaName, world, minPoint, maxPoint, lobby, plateform, minAmountPlayer, maxAmountPlayer,
-						colorIndice);
+				new Arena(arenaName, world, minPoint, maxPoint, lobby, plateform, minAmountPlayer, maxAmountPlayer);
 			}
 		}
 	}
@@ -179,7 +179,7 @@ public class Arena {
 		this.name = name;
 		world = player.getWorld();
 		arenas.add(this);
-		colorManager = new ColorManager((long) 2122219134, plugin, this);
+		colorManager = new ColorManager(plugin, this);
 		this.minAmountPlayer = 2;
 		this.maxAmountPlayer = 8;
 
@@ -203,11 +203,10 @@ public class Arena {
 				.setScore(maxAmountPlayer);
 
 		if (mysql.hasConnection()) {
-			mysql.update("INSERT INTO " + config.tablePrefix + "ARENAS (name, world, colorIndice) " + "VALUES ('" + name
-					+ "','" + world.getName() + "','" + (long) 2122219134 + "');");
+			mysql.update("INSERT INTO " + config.tablePrefix + "ARENAS (name, world) " + "VALUES ('" + name
+					+ "','" + world.getName() + "');");
 		} else {
 			arenaData.getData().set("arenas." + name + ".world", world.getName());
-			arenaData.getData().set("arenas." + name + ".colorIndice", (long) 2122219134);
 			arenaData.saveArenaData();
 		}
 	}
@@ -235,7 +234,7 @@ public class Arena {
 	}
 
 	public Arena(String name, World world, Location minPoint, Location maxPoint, Location lobby, Location plateform,
-			int minAmountPlayer, int maxAmountPlayer, long colorIndice) {
+			int minAmountPlayer, int maxAmountPlayer) {
 		this.name = name;
 		try {
 			world.getName();
@@ -255,7 +254,7 @@ public class Arena {
 
 		this.minAmountPlayer = minAmountPlayer;
 		this.maxAmountPlayer = maxAmountPlayer;
-		colorManager = new ColorManager(colorIndice, plugin, this);
+		colorManager = new ColorManager(plugin, this);
 
 		Language local = playerData.getLanguage(config.language);
 
@@ -278,7 +277,6 @@ public class Arena {
 				.setScore(maxAmountPlayer);
 
 		Logger logger = plugin.getLogger();
-		boolean maxChanged = false;
 
 		if (this.minAmountPlayer < 2) {
 			logger.info("The min amount of players for the arena " + name + " can't be below 2.");
@@ -292,7 +290,7 @@ public class Arena {
 			this.maxAmountPlayer = 12;
 		}
 
-		if (this.maxAmountPlayer > colorManager.getAvailableBlocks().size() && !maxChanged) {
+		if (this.maxAmountPlayer > colorManager.getAvailableBlocks().size()) {
 			logger.info("The max amount of players for the arena " + name
 					+ " can't be above the amount of available colors.");
 			logger.info("Using by default " + colorManager.getAvailableBlocks().size() + ".");
@@ -873,13 +871,13 @@ public class Arena {
 		for (User user : temporary) {
 			Player player = user.getPlayer();
 			Language local = playerData.getLanguageOfPlayer(player);
-			if (user.getItemStack() == null) {
-				user.setColor(colorManager.getRandomAvailableBlock().getItem());
+			if (user.getColor() == null) {
+				user.setColor(colorManager.getRandomAvailableBlock());
 
 				local.sendMsg(user.getPlayer(),
 						local.startRandomColor
-								.replace("%material%", colorManager.getBlockMaterialName(user.getItemStack(), local))
-								.replace("%color%", colorManager.getBlockColorName(user.getItemStack(), local)));
+								.replace("%material%", colorManager.getBlockMaterialName(user.getColor().getItem(), local))
+								.replace("%color%", colorManager.getBlockColorName(user.getColor().getItem(), local)));
 			}
 		}
 

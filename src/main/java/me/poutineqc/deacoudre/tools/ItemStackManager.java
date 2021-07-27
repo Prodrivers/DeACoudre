@@ -12,11 +12,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 public class ItemStackManager {
-
 	private int position;
 	private ItemStack item;
 	private ItemMeta meta;
 	List<String> lore = new ArrayList<String>();
+	private boolean available = true;
 
 	public ItemStackManager(Material material) {
 		item = new ItemStack(material);
@@ -27,6 +27,14 @@ public class ItemStackManager {
 		this.position = position;
 		item = new ItemStack(material);
 		meta = item.getItemMeta();
+	}
+
+	public ItemStackManager clone() {
+		ItemStackManager newItem = new ItemStackManager(this.item.getType(), this.position);
+		newItem.item.setItemMeta(this.meta.clone());
+		newItem.lore.addAll(this.lore);
+		newItem.available = this.available;
+		return newItem;
 	}
 
 	public Material getMaterial() {
@@ -79,5 +87,13 @@ public class ItemStackManager {
 	public void clearEnchantements() {
 		if (meta.hasEnchant(Enchantment.DURABILITY))
 			meta.removeEnchant(Enchantment.DURABILITY);
+	}
+
+	public boolean isAvailable() {
+		return available;
+	}
+
+	public void setAvailable(boolean available) {
+		this.available = available;
 	}
 }
