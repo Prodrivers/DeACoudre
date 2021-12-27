@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -63,7 +62,7 @@ public class DaC implements CommandExecutor {
 		Language local = playerData.getLanguageOfPlayer(player);
 
 		if (args.length == 0) {
-			player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&8&m" + StringUtils.repeat(" ", 90)));
+			player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&8&m" + " ".repeat(90)));
 			player.sendMessage(ChatColor.translateAlternateColorCodes('&',
 					local.pluginDevelopper.replace("%developper%", plugin.getDescription().getAuthors().toString())));
 			player.sendMessage(ChatColor.translateAlternateColorCodes('&',
@@ -634,8 +633,8 @@ public class DaC implements CommandExecutor {
 
 	private void sendHelp(Player player, String cmdValue, String[] args) {
 		Language local = playerData.getLanguageOfPlayer(player);
-		String header = "&8&m" + StringUtils.repeat(" ", 30) + "&r &3DeACoudre &b" + local.keyWordHelp + " &8&m"
-				+ StringUtils.repeat(" ", 30);
+		String header = "&8&m" + " ".repeat(30) + "&r &3DeACoudre &b" + local.keyWordHelp + " &8&m"
+				+ " ".repeat(30);
 
 		if (args.length == 1) {
 			player.sendMessage(ChatColor.translateAlternateColorCodes('&', header));

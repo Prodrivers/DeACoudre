@@ -13,7 +13,6 @@ import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.regions.Region;
 import net.minecraft.server.v1_16_R3.BlockStainedGlass;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -579,8 +578,8 @@ public class Arena {
 		}
 
 		player.sendMessage(
-				ChatColor.translateAlternateColorCodes('&', "&8&m" + StringUtils.repeat(" ", 13) + "&r &3DeACoudre &b"
-						+ local.keyWordHelpInformation + " &3: &b" + name + " &8&m" + StringUtils.repeat(" ", 13)));
+				ChatColor.translateAlternateColorCodes('&', "&8&m" + " ".repeat(13) + "&r &3DeACoudre &b"
+						+ local.keyWordHelpInformation + " &3: &b" + name + " &8&m" + " ".repeat(13)));
 		player.sendMessage(ChatColor.translateAlternateColorCodes('&',
 				"&3" + local.keyWordHelpCurrent + " " + local.keyWordGameState + ": &7" + stringGameState));
 		player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&3" + local.keyWordHelpCurrent + " "
@@ -595,8 +594,8 @@ public class Arena {
 			return;
 
 		player.sendMessage(
-				ChatColor.translateAlternateColorCodes('&', "&8&m" + StringUtils.repeat(" ", 5) + "&r &3DeACoudre &b"
-						+ local.keyWordHelpAdvanced + " &3: &b" + name + " &8&m" + StringUtils.repeat(" ", 5)));
+				ChatColor.translateAlternateColorCodes('&', "&8&m" + " ".repeat(5) + "&r &3DeACoudre &b"
+						+ local.keyWordHelpAdvanced + " &3: &b" + name + " &8&m" + " ".repeat(5)));
 		if (world == null) {
 			player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&3" + local.keyWordHelpWorld + ": &7null"));
 		} else {
