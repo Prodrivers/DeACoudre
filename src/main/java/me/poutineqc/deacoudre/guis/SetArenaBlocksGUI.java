@@ -1,6 +1,5 @@
 package me.poutineqc.deacoudre.guis;
 
-import java.util.List;
 import java.util.Optional;
 
 import me.poutineqc.deacoudre.Configuration;
@@ -24,7 +23,6 @@ import me.poutineqc.deacoudre.tools.ColorManager;
 import me.poutineqc.deacoudre.tools.ItemStackManager;
 
 public class SetArenaBlocksGUI implements Listener {
-
 	private PlayerData playerData;
 	private Configuration config;
 
@@ -78,7 +76,7 @@ public class SetArenaBlocksGUI implements Listener {
 		}
 
 		Optional<ItemStackManager> correspondingArenaItem = arena.getColorManager().getBlock(item);
-		if(!correspondingArenaItem.isPresent()) {
+		if(correspondingArenaItem.isEmpty()) {
 			return;
 		}
 
@@ -102,7 +100,7 @@ public class SetArenaBlocksGUI implements Listener {
 	public void openColorGUI(Player player, Arena arena) {
 		Language local = playerData.getLanguageOfPlayer(player);
 
-		Inventory inv = Bukkit.createInventory(null, 54,
+		Inventory inv = Bukkit.createInventory(null, 6*9,
 				ChatColor.translateAlternateColorCodes('&', local.editColorGuiTitle));
 		ItemStackManager icon;
 		/***************************************************
@@ -116,43 +114,21 @@ public class SetArenaBlocksGUI implements Listener {
 		icon.addToInventory(inv);
 
 		/***************************************************
-		 * Glass Spacer
-		 ***************************************************/
-
-		icon = new ItemStackManager(Material.WHITE_STAINED_GLASS_PANE);
-		icon.setTitle(" ");
-
-		for (int i = 0; i < inv.getSize(); i++)
-			switch (i) {
-				case 9:
-				case 10:
-				case 11:
-				case 12:
-				case 13:
-				case 14:
-				case 15:
-				case 16:
-				case 17:
-				case 18:
-				case 27:
-				case 36:
-				case 45:
-					icon.setPosition(i);
-					icon.addToInventory(inv);
-			}
-
-		/***************************************************
 		 * Blocks
 		 ***************************************************/
-		int i = 0;
+		int i = 9; // Offset by one line as it is already occupied
 		for (ItemStackManager item : arena.getColorManager().getAllAuthorizedGameBlocks()) {
-			item.setPosition((int) ((Math.floor(i / 8.0) * 9) + 19 + (i % 8)));
+			if(i >= 6*9) {
+				// Do not go over 6 lines
+				break;
+			}
+			item.setPosition(i);
 			item.addToInventory(inv);
 			i++;
 		}
 
 		/***************************************************
-		 * ArenaNAme
+		 * ArenaName
 		 ***************************************************/
 
 		icon = new ItemStackManager(Material.PAPER);
