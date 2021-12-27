@@ -372,21 +372,14 @@ public class Arena {
 		plateform = player.getLocation();
 		plateform.add(new Vector(0, 0.5, 0));
 
-		if (mysql.hasConnection()) {
-			mysql.update("UPDATE " + config.tablePrefix + "ARENAS SET world='" + world.getName() + "',plateformX='"
-					+ plateform.getX() + "',plateformY='" + plateform.getY() + "',plateformZ='" + plateform.getZ()
-					+ "',plateformPitch='" + plateform.getPitch() + "',plateformYaw='" + plateform.getYaw()
-					+ "' WHERE name='" + name + "';");
-		} else {
-			ConfigurationSection cs = arenaData.getData().getConfigurationSection("arenas." + name);
-			cs.set("world", world.getName());
-			cs.set("plateform.x", plateform.getX());
-			cs.set("plateform.y", plateform.getY());
-			cs.set("plateform.z", plateform.getZ());
-			cs.set("plateform.pitch", plateform.getPitch());
-			cs.set("plateform.yaw", plateform.getYaw());
-			arenaData.saveArenaData();
-		}
+		ConfigurationSection cs = arenaData.getData().getConfigurationSection("arenas." + name);
+		cs.set("world", world.getName());
+		cs.set("plateform.x", plateform.getX());
+		cs.set("plateform.y", plateform.getY());
+		cs.set("plateform.z", plateform.getZ());
+		cs.set("plateform.pitch", plateform.getPitch());
+		cs.set("plateform.yaw", plateform.getYaw());
+		arenaData.saveArenaData();
 
 		if (isReady())
 			gameState = GameState.READY;
@@ -427,22 +420,15 @@ public class Arena {
 		maxPoint = new Location(bukkitWorld, s.getMaximumPoint().getBlockX(), s.getMaximumPoint().getBlockY(), s.getMaximumPoint().getBlockZ());
 		setTotalTile();
 
-		if (mysql.hasConnection()) {
-			mysql.update("UPDATE " + config.tablePrefix + "ARENAS SET world='" + bukkitWorld.getName() + "',minPointX='"
-					+ minPoint.getBlockX() + "',minPointY='" + minPoint.getBlockY() + "',minPointZ='"
-					+ minPoint.getBlockZ() + "',maxPointX='" + maxPoint.getBlockX() + "',maxPointY='"
-					+ maxPoint.getBlockY() + "',maxPointZ='" + maxPoint.getBlockZ() + "' WHERE name='" + name + "';");
-		} else {
-			ConfigurationSection cs = arenaData.getData().getConfigurationSection("arenas." + name);
-			cs.set("world", bukkitWorld.getName());
-			cs.set("waterPool.minimum.x", minPoint.getBlockX());
-			cs.set("waterPool.minimum.y", minPoint.getBlockY());
-			cs.set("waterPool.minimum.z", minPoint.getBlockZ());
-			cs.set("waterPool.maximum.x", maxPoint.getBlockX());
-			cs.set("waterPool.maximum.y", maxPoint.getBlockY());
-			cs.set("waterPool.maximum.z", maxPoint.getBlockZ());
-			arenaData.saveArenaData();
-		}
+		ConfigurationSection cs = arenaData.getData().getConfigurationSection("arenas." + name);
+		cs.set("world", bukkitWorld.getName());
+		cs.set("waterPool.minimum.x", minPoint.getBlockX());
+		cs.set("waterPool.minimum.y", minPoint.getBlockY());
+		cs.set("waterPool.minimum.z", minPoint.getBlockZ());
+		cs.set("waterPool.maximum.x", maxPoint.getBlockX());
+		cs.set("waterPool.maximum.y", maxPoint.getBlockY());
+		cs.set("waterPool.maximum.z", maxPoint.getBlockZ());
+		arenaData.saveArenaData();
 
 		if (isReady())
 			gameState = GameState.READY;
@@ -488,13 +474,8 @@ public class Arena {
 				ChatColor.GOLD + local.keyWordGeneralMaximum + " = " + ChatColor.AQUA + String.valueOf(maxAmountPlayer))
 				.setScore(3);
 
-		if (mysql.hasConnection()) {
-			mysql.update("UPDATE " + config.tablePrefix + "ARENAS SET maxAmountPlayer=" + amount + " WHERE name='"
-					+ name + "';");
-		} else {
-			arenaData.getData().set("arenas." + name + ".maxPlayer", amount);
-			arenaData.saveArenaData();
-		}
+		arenaData.getData().set("arenas." + name + ".maxPlayer", amount);
+		arenaData.saveArenaData();
 
 		local.sendMsg(player,
 				local.editLimitMaxSuccess.replace("%amount%", String.valueOf(amount)).replace("%arenaName%", name));
@@ -532,13 +513,8 @@ public class Arena {
 				ChatColor.GOLD + local.keyWordGeneralMinimum + " = " + ChatColor.AQUA + String.valueOf(minAmountPlayer))
 				.setScore(2);
 
-		if (mysql.hasConnection()) {
-			mysql.update("UPDATE " + config.tablePrefix + "ARENAS SET minAmountPlayer=" + amount + " WHERE name='"
-					+ name + "';");
-		} else {
-			arenaData.getData().set("arenas." + name + ".minPlayer", amount);
-			arenaData.saveArenaData();
-		}
+		arenaData.getData().set("arenas." + name + ".minPlayer", amount);
+		arenaData.saveArenaData();
 
 		local.sendMsg(player,
 				local.editLimitMinSuccess.replace("%amount%", String.valueOf(amount)).replace("%arenaName%", name));
