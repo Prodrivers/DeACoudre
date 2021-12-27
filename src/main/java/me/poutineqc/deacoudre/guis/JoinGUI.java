@@ -155,8 +155,6 @@ public class JoinGUI implements Listener {
 
 		for (String s : Arenas) {
 			Arena arena = Arena.getArenaFromName(s);
-			icon.clearLore();
-			icon.setTitle(ChatColor.GOLD + s);
 
 			if (!arena.isAllSet()) {
 				icon = new ItemStackManager(Material.GRAY_DYE);
@@ -180,6 +178,8 @@ public class JoinGUI implements Listener {
 						+ ChatColor.DARK_GRAY + " : " + String.valueOf(arena.getNonEliminated().size()) + "/"
 						+ String.valueOf(arena.getMaxPlayer()));
 			}
+
+			icon.setTitle(ChatColor.GOLD + s);
 
 			icon.setPosition(slot++);
 			icon.addToInventory(inv);
