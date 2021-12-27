@@ -76,7 +76,7 @@ permissions:
       dac.admin.filetomysql: true
       dac.admin.edit.*: true
       dacreward.multiplier.2: true
-  dac.player.info:
+  dac.admin.info:
     description: Allows to see advanced information about arenas
     default: op
   dac.admin.makesigns:
