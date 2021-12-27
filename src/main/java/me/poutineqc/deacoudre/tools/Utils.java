@@ -6,12 +6,15 @@ import net.kyori.adventure.title.Title;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.intellij.lang.annotations.RegExp;
 
 import java.time.Duration;
 import java.util.HashMap;
 
 public class Utils {
-	private static HashMap<DyeColor, Material> colorToStainedGlassBlock = new HashMap<>();
+	private static final HashMap<DyeColor, Material> colorToStainedGlassBlock = new HashMap<>();
+	// https://minecraft-heads.com/custom-heads/miscellaneous/37791-refresh
+	private static final String RANDOM_TEXTURE_BASE64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTFkNzIwY2QzOWRmM2JlNzRiMGNhYzc1ZTM5MzdmMDA4NWEzNzgyNDc0M2NhZDYzMzBkYzlmNDY2NmE0NTEwZCJ9fX0=";
 
 	static {
 		colorToStainedGlassBlock.put(DyeColor.BLACK, Material.BLACK_STAINED_GLASS);
@@ -32,9 +35,6 @@ public class Utils {
 		colorToStainedGlassBlock.put(DyeColor.YELLOW, Material.YELLOW_STAINED_GLASS);
 	}
 
-	// https://minecraft-heads.com/custom-heads/miscellaneous/37791-refresh
-	private static String RANDOM_TEXTURE_BASE64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTFkNzIwY2QzOWRmM2JlNzRiMGNhYzc1ZTM5MzdmMDA4NWEzNzgyNDc0M2NhZDYzMzBkYzlmNDY2NmE0NTEwZCJ9fX0=";
-
 	public static ItemStackManager getRandomHead() {
 		ItemStackManager item = new ItemStackManager(Material.PLAYER_HEAD);
 		item.setPlayerHeadTexture(RANDOM_TEXTURE_BASE64);
@@ -51,7 +51,7 @@ public class Utils {
 		target.showTitle(playerTitle);
 	}
 
-	public static Component replaceInComponent(Component message, String pattern, Component replacement) {
+	public static Component replaceInComponent(Component message, @RegExp String pattern, Component replacement) {
 		return Component.empty()
 				.append(message)
 				.replaceText(

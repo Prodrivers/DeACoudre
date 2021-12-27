@@ -1,5 +1,11 @@
 package me.poutineqc.deacoudre.events;
 
+import me.poutineqc.deacoudre.DeACoudre;
+import me.poutineqc.deacoudre.Language;
+import me.poutineqc.deacoudre.PlayerData;
+import me.poutineqc.deacoudre.instances.Arena;
+import me.poutineqc.deacoudre.instances.GameState;
+import me.poutineqc.deacoudre.instances.User;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -7,16 +13,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
-import me.poutineqc.deacoudre.DeACoudre;
-import me.poutineqc.deacoudre.Language;
-import me.poutineqc.deacoudre.PlayerData;
-import me.poutineqc.deacoudre.instances.Arena;
-import me.poutineqc.deacoudre.instances.GameState;
-import me.poutineqc.deacoudre.instances.User;
-
 public class PlayerDamage implements Listener {
 
-	private PlayerData playerData;
+	private final PlayerData playerData;
 
 	public PlayerDamage(DeACoudre plugin) {
 		this.playerData = plugin.getPlayerData();
@@ -24,26 +23,30 @@ public class PlayerDamage implements Listener {
 
 	@EventHandler
 	public void onPlayerDamage(EntityDamageEvent event) {
-		if (!(event.getEntity() instanceof Player))
+		if(!(event.getEntity() instanceof Player player)) {
 			return;
+		}
 
-		Player player = (Player) event.getEntity();
 		Arena arena = Arena.getArenaFromPlayer(player);
-		if (arena == null)
+		if(arena == null) {
 			return;
+		}
 
-		if (arena.getGameState() != GameState.ACTIVE)
+		if(arena.getGameState() != GameState.ACTIVE) {
 			return;
+		}
 
 		event.setCancelled(true);
 
-		if (!event.getCause().equals(DamageCause.FALL))
+		if(!event.getCause().equals(DamageCause.FALL)) {
 			return;
+		}
 
 		User players = arena.getUser(player);
 
-		if (players == arena.getActivePlayer())
+		if(players == arena.getActivePlayer()) {
 			losingAlgorithm(player, arena, players);
+		}
 
 	}
 
@@ -58,27 +61,27 @@ public class PlayerDamage implements Listener {
 
 		arena.bumpStallingAmount();
 
-		if (arena.isForceStart()) {
-			if (user.getPoint() == -1) {
+		if(arena.isForceStart()) {
+			if(user.getPoint() == -1) {
 				user.eliminate();
-				
+
 				local.sendMsg(player, local.gamePointsEliminatePlayer);
 
-				for (User u : arena.getUsers()) {
-					if (user != u) {
+				for(User u : arena.getUsers()) {
+					if(user != u) {
 						Language localInstance = playerData.getLanguageOfPlayer(u.getPlayer());
 						localInstance.sendMsg(u.getPlayer(),
 								localInstance.gamePointsEliminateOthers.replace("%player%", player.getDisplayName()));
 					}
 				}
-				
+
 				arena.finishGame(false);
 			} else {
 				arena.nextPlayer();
 				local.sendMsg(player, local.gamePointsDownPlayer.replace("%points%", String.valueOf(user.getPoint())));
 
-				for (User u : arena.getUsers()) {
-					if (user != u) {
+				for(User u : arena.getUsers()) {
+					if(user != u) {
 						Language localInstance = playerData.getLanguageOfPlayer(u.getPlayer());
 						localInstance.sendMsg(u.getPlayer(),
 								localInstance.gamePointsDownOthers.replace("%player%", player.getDisplayName())
@@ -89,17 +92,17 @@ public class PlayerDamage implements Listener {
 			return;
 		}
 
-		if (arena.isSomeoneSurvived()) {
+		if(arena.isSomeoneSurvived()) {
 
-			if (user.getPoint() == -1) {
+			if(user.getPoint() == -1) {
 				// IF someone already succeeded
 				// AND damaged player lost his LAST life
 
 				user.eliminate();
 				local.sendMsg(player, local.gamePointsEliminatePlayer);
 
-				for (User u : arena.getUsers()) {
-					if (user != u) {
+				for(User u : arena.getUsers()) {
+					if(user != u) {
 						Language localInstance = playerData.getLanguageOfPlayer(u.getPlayer());
 						localInstance.sendMsg(u.getPlayer(),
 								localInstance.gamePointsEliminateOthers.replace("%player%", player.getDisplayName()));
@@ -111,8 +114,8 @@ public class PlayerDamage implements Listener {
 
 				local.sendMsg(player, local.gamePointsDownPlayer.replace("%points%", String.valueOf(user.getPoint())));
 
-				for (User u : arena.getUsers()) {
-					if (user != u) {
+				for(User u : arena.getUsers()) {
+					if(user != u) {
 						Language localInstance = playerData.getLanguageOfPlayer(u.getPlayer());
 						localInstance.sendMsg(u.getPlayer(),
 								localInstance.gamePointsDownOthers.replace("%player%", player.getDisplayName())
@@ -121,8 +124,8 @@ public class PlayerDamage implements Listener {
 				}
 			}
 		} else {
-			if (arena.isLastPlayer(user)) {
-				if (user.getPoint() == -1) {
+			if(arena.isLastPlayer(user)) {
+				if(user.getPoint() == -1) {
 					// IF everybody failed this round
 					// AND damaged player is last
 					// AND damaged player lost his LAST life
@@ -132,15 +135,15 @@ public class PlayerDamage implements Listener {
 
 					local.sendMsg(player, local.gamePointsReviveLastLastPlayer);
 
-					for (User p : arena.getUsers()) {
-						if (p != user) {
+					for(User p : arena.getUsers()) {
+						if(p != user) {
 							Language localInstance = playerData.getLanguageOfPlayer(p.getPlayer());
 							localInstance.sendMsg(p.getPlayer(), localInstance.gamePointsReviveLastLastOthers
 									.replace("%player%", player.getDisplayName()));
 						}
 					}
 
-				} else if (arena.isSomeoneLostFinal()) {
+				} else if(arena.isSomeoneLostFinal()) {
 					// IF everybody failed this round
 					// AND damaged player is last
 					// AND damaged player lost normal life
@@ -150,8 +153,8 @@ public class PlayerDamage implements Listener {
 
 					local.sendMsg(player, local.gamePointsReviveLastMultiplePlayer);
 
-					for (User p : arena.getUsers()) {
-						if (p != user) {
+					for(User p : arena.getUsers()) {
+						if(p != user) {
 							Language localInstance = playerData.getLanguageOfPlayer(p.getPlayer());
 							localInstance.sendMsg(p.getPlayer(), localInstance.gamePointsReviveLastMultipleOthers
 									.replace("%player%", player.getDisplayName()));
@@ -166,8 +169,8 @@ public class PlayerDamage implements Listener {
 					local.sendMsg(player,
 							local.gamePointsDownPlayer.replace("%points%", String.valueOf(user.getPoint())));
 
-					for (User p : arena.getUsers()) {
-						if (user != p) {
+					for(User p : arena.getUsers()) {
+						if(user != p) {
 							Language localInstance = playerData.getLanguageOfPlayer(p.getPlayer());
 							localInstance.sendMsg(p.getPlayer(),
 									localInstance.gamePointsDownOthers.replace("%player%", player.getDisplayName())
@@ -178,7 +181,7 @@ public class PlayerDamage implements Listener {
 				}
 			} else {
 
-				if (user.getPoint() == -1) {
+				if(user.getPoint() == -1) {
 					// IF everybody failed this round
 					// AND damaged player NOT last
 					// AND damaged player lost his LAST life
@@ -188,8 +191,8 @@ public class PlayerDamage implements Listener {
 
 					local.sendMsg(player, local.gamePointsConfirmationPlayer);
 
-					for (User p : arena.getUsers()) {
-						if (p != user) {
+					for(User p : arena.getUsers()) {
+						if(p != user) {
 							Language localInstance = playerData.getLanguageOfPlayer(p.getPlayer());
 							localInstance.sendMsg(p.getPlayer(), localInstance.gamePointsConfirmationOthers
 									.replace("%player%", player.getDisplayName()));
@@ -207,8 +210,8 @@ public class PlayerDamage implements Listener {
 							local.gamePointsDownPlayer.replace("%points%", String.valueOf(user.getPoint())));
 					local.sendMsg(player, local.gamePointsReviveHint);
 
-					for (User p : arena.getUsers()) {
-						if (user != p) {
+					for(User p : arena.getUsers()) {
+						if(user != p) {
 							Language localInstance = playerData.getLanguageOfPlayer(p.getPlayer());
 							localInstance.sendMsg(p.getPlayer(),
 									localInstance.gamePointsDownOthers.replace("%player%", player.getDisplayName())
@@ -219,10 +222,11 @@ public class PlayerDamage implements Listener {
 			}
 		}
 
-		if (arena.isLastPlayer(user) && arena.isSomeoneLostFinal())
+		if(arena.isLastPlayer(user) && arena.isSomeoneLostFinal()) {
 			arena.reviveConfirmationQueue();
+		}
 
-		if (arena.isOver()) {
+		if(arena.isOver()) {
 			arena.finishGame(false);
 		} else {
 			arena.nextPlayer();

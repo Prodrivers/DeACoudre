@@ -157,14 +157,14 @@ itemReward: none
 # EX: - id:amount:data
 # Note: Maximum of 64 of each items.
 itemRewards:
-# Some Examples:
-# One diamond named Diamondo
+  # Some Examples:
+  # One diamond named Diamondo
   - 264:1:0:&bDiamondo
-# One rabbit stew named Poutine
+  # One rabbit stew named Poutine
   - 413:1:0:&6Poutine
-# 64 Red tulip
+  # 64 Red tulip
   - 38:64:4
-  
+
 # Commands to be executed as the console when a game ends
 # %winner% : will be executed once for each winners if more than one
 # %arena% :  the name of the arena

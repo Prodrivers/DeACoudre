@@ -1,16 +1,14 @@
 package me.poutineqc.deacoudre.instances;
 
-import java.util.UUID;
-
-import me.poutineqc.deacoudre.tools.ItemStackManager;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scoreboard.Score;
-
 import me.poutineqc.deacoudre.Configuration;
 import me.poutineqc.deacoudre.DeACoudre;
+import me.poutineqc.deacoudre.tools.ItemStackManager;
 import me.poutineqc.deacoudre.tools.OriginalPlayerStats;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Score;
+
+import java.util.UUID;
 
 public class User {
 
@@ -38,11 +36,11 @@ public class User {
 		this.arena = arena;
 		this.name = ChatColor.stripColor(player.getName());
 		this.displayName = player.getDisplayName();
-		
+
 		this.eliminated = eliminated;
-		if (eliminated)
+		if(eliminated) {
 			this.points = -2;
-		else {
+		} else {
 			this.score = arena.getObjective().getScore(name);
 			score.setScore(points);
 		}
@@ -50,20 +48,14 @@ public class User {
 		player.setScoreboard(arena.getObjective().getScoreboard());
 
 		originalStats = new OriginalPlayerStats(config, player);
-		
-		if (tpAuto)
+
+		if(tpAuto) {
 			player.teleport(arena.getLobby());
-		
+		}
+
 		originalStats.fillOtherStats(player);
 		maxStats(false);
 
-	}
-
-	public void unEliminate(Arena arena) {
-		this.eliminated = false;
-		points = 0;
-		this.score = arena.getObjective().getScore(name);
-		score.setScore(points);
 	}
 
 	public User(int place) {
@@ -73,6 +65,13 @@ public class User {
 	public User(String name, int place) {
 		this.place = place;
 		this.name = name;
+	}
+
+	public void unEliminate(Arena arena) {
+		this.eliminated = false;
+		points = 0;
+		this.score = arena.getObjective().getScore(name);
+		score.setScore(points);
 	}
 
 	public String getName() {
@@ -87,6 +86,14 @@ public class User {
 		this.place = place;
 	}
 
+	public void removeColor() {
+		setColor(null);
+	}
+
+	public ItemStackManager getColor() {
+		return color;
+	}
+
 	public void setColor(ItemStackManager item) {
 		if(this.color != null) {
 			this.color.setAvailable(true);
@@ -95,14 +102,6 @@ public class User {
 		if(this.color != null) {
 			this.color.setAvailable(false);
 		}
-	}
-
-	public void removeColor() {
-		setColor(null);
-	}
-
-	public ItemStackManager getColor() {
-		return color;
 	}
 
 	public UUID getUUID() {
@@ -149,7 +148,7 @@ public class User {
 	}
 
 	public boolean isWaitingForConfirmation() {
-		if (waitingForConfirmation) {
+		if(waitingForConfirmation) {
 			waitingForConfirmation = false;
 			return true;
 		}

@@ -1,39 +1,32 @@
 package me.poutineqc.deacoudre;
 
-import java.io.IOException;
-import java.util.logging.Logger;
-
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import me.poutineqc.deacoudre.achievements.Achievement;
 import me.poutineqc.deacoudre.achievements.AchievementsGUI;
 import me.poutineqc.deacoudre.achievements.TopManager;
 import me.poutineqc.deacoudre.commands.DaC;
 import me.poutineqc.deacoudre.commands.DacCommand;
 import me.poutineqc.deacoudre.commands.DacSign;
-import me.poutineqc.deacoudre.events.AsyncPlayerChat;
-import me.poutineqc.deacoudre.events.BlockBreak;
-import me.poutineqc.deacoudre.events.ElytraToggle;
-import me.poutineqc.deacoudre.events.PlayerDamage;
-import me.poutineqc.deacoudre.events.PlayerDisconnect;
-import me.poutineqc.deacoudre.events.PlayerInteract;
-import me.poutineqc.deacoudre.events.PlayerMove;
-import me.poutineqc.deacoudre.events.PlayerTeleport;
-import me.poutineqc.deacoudre.events.SignChange;
-import me.poutineqc.deacoudre.guis.SetArenaBlocksGUI;
+import me.poutineqc.deacoudre.events.*;
 import me.poutineqc.deacoudre.guis.ColorsGUI;
 import me.poutineqc.deacoudre.guis.JoinGUI;
+import me.poutineqc.deacoudre.guis.SetArenaBlocksGUI;
 import me.poutineqc.deacoudre.instances.Arena;
 import me.poutineqc.deacoudre.instances.User;
-
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.IOException;
+import java.util.logging.Logger;
 
 public class DeACoudre extends JavaPlugin {
 
+	public static String NMS_VERSION;
+	public static boolean aboveOneNine;
+	private static Economy econ;
 	private Configuration config;
 	private MySQL mysql;
 	private Language mainLanguage;
@@ -41,7 +34,6 @@ public class DeACoudre extends JavaPlugin {
 	private ArenaData arenaData;
 	private Achievement achievement;
 	private SetArenaBlocksGUI chooseColorGUI;
-
 	private AchievementsGUI achievementsGUI;
 	private PlayerDamage playerDamage;
 	private JoinGUI joinGUI;
@@ -49,9 +41,13 @@ public class DeACoudre extends JavaPlugin {
 	private DacSign signData;
 	private Updater updater;
 
-	private static Economy econ;
-	public static String NMS_VERSION;
-	public static boolean aboveOneNine;
+	public static boolean isEconomyEnabled() {
+		return econ != null;
+	}
+
+	public static Economy getEconomy() {
+		return econ;
+	}
 
 	public void onEnable() {
 		final PluginDescriptionFile pdfFile = getDescription();
@@ -60,8 +56,9 @@ public class DeACoudre extends JavaPlugin {
 		NMS_VERSION = getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
 
 		config = new Configuration(this);
-		if (!initialiseEconomy())
+		if(!initialiseEconomy()) {
 			return;
+		}
 
 		new User(this);
 		new Permissions(this);
@@ -78,7 +75,7 @@ public class DeACoudre extends JavaPlugin {
 		arenaData = new ArenaData(this);
 		signData = new DacSign(this);
 		new Arena(this);
-		
+
 		updater = new Updater(this);
 		registerEvents();
 
@@ -88,25 +85,24 @@ public class DeACoudre extends JavaPlugin {
 			Metrics metrics;
 			metrics = new Metrics(this);
 			metrics.start();
-		} catch (IOException e) {
+		} catch(IOException e) {
 			e.printStackTrace();
 		}
 
 		logger.info(pdfFile.getName() + " has been enabled (v" + pdfFile.getVersion() + ")");
 
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-			public void run() {
-				Arena.loadArenas();
-				DacSign.loadAllSigns();
-			}
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+			Arena.loadArenas();
+			DacSign.loadAllSigns();
 		}, 0L);
 	}
 
 	private void connectMySQL() {
-		if (config.mysql) {
+		if(config.mysql) {
 			mysql = new MySQL(this);
-			if (mysql.hasConnection())
+			if(mysql.hasConnection()) {
 				createMySQLTables();
+			}
 		} else {
 			mysql = new MySQL();
 		}
@@ -188,35 +184,28 @@ public class DeACoudre extends JavaPlugin {
 	}
 
 	public boolean initialiseEconomy() {
-		if (config.economyReward)
-			if (!setupEconomy()) {
+		if(config.economyReward) {
+			if(!setupEconomy()) {
 				getLogger().warning("Vault not found.");
 				getLogger().warning("Add Vault to your plugins or disable monetary rewards in the config.");
 				getLogger().info("Disabling DeACoudre...");
 				getServer().getPluginManager().disablePlugin(this);
 				return false;
 			}
+		}
 		return true;
 	}
 
 	private boolean setupEconomy() {
-		if (getServer().getPluginManager().getPlugin("Vault") == null) {
+		if(getServer().getPluginManager().getPlugin("Vault") == null) {
 			return false;
 		}
 		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-		if (rsp == null) {
+		if(rsp == null) {
 			return false;
 		}
 		econ = rsp.getProvider();
 		return econ != null;
-	}
-
-	public static boolean isEconomyEnabled() {
-		return econ != null;
-	}
-
-	public static Economy getEconomy() {
-		return econ;
 	}
 
 	public Configuration getConfiguration() {

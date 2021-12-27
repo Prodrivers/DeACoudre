@@ -1,31 +1,29 @@
 package me.poutineqc.deacoudre.tools;
 
-import java.util.*;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-
+import me.poutineqc.deacoudre.*;
+import me.poutineqc.deacoudre.instances.Arena;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
-import me.poutineqc.deacoudre.ArenaData;
-import me.poutineqc.deacoudre.Configuration;
-import me.poutineqc.deacoudre.DeACoudre;
-import me.poutineqc.deacoudre.Language;
-import me.poutineqc.deacoudre.MySQL;
-import me.poutineqc.deacoudre.instances.Arena;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class ColorManager {
+	private final MySQL mysql;
+	private final Configuration config;
+	private final Arena arena;
+	private final ArenaData arenaData;
+	private final Logger logger;
 	private List<ItemStackManager> allAuthorizedGameBlocks;
 	private List<ItemStackManager> arenaBlocks;
 	private Set<Material> arenaMaterials;
-	private MySQL mysql;
-	private Configuration config;
-	private Arena arena;
-	private ArenaData arenaData;
-	private Logger logger;
 
 	public ColorManager(DeACoudre plugin, Arena arena) {
 		this.logger = plugin.getLogger();
@@ -107,7 +105,7 @@ public class ColorManager {
 						arenaMaterials.add(item.getMaterial());
 					});
 		} else {
-			for (Material material : config.usableBlocks) {
+			for(Material material : config.usableBlocks) {
 				ItemStackManager icon = new ItemStackManager(material);
 
 				if(arenaMaterials.contains(material)) {

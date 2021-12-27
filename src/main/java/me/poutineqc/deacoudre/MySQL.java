@@ -1,17 +1,13 @@
 package me.poutineqc.deacoudre;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Optional;
 
 public class MySQL {
 
 	private DeACoudre plugin;
 	private Configuration config;
-	
+
 	private String host;
 	private int port;
 	private String database;
@@ -27,7 +23,7 @@ public class MySQL {
 	public MySQL(DeACoudre plugin) {
 		this.plugin = plugin;
 		this.config = plugin.getConfiguration();
-		
+
 		this.host = config.host;
 		this.port = config.port;
 		this.database = config.database;
@@ -40,13 +36,13 @@ public class MySQL {
 	public void updateInfo(DeACoudre plugin) {
 		this.plugin = plugin;
 		this.config = plugin.getConfiguration();
-		
+
 		this.host = config.host;
 		this.port = config.port;
 		this.database = config.database;
 		this.user = config.user;
 		this.password = config.password;
-		
+
 		connect();
 	}
 
@@ -54,18 +50,18 @@ public class MySQL {
 		try {
 			connection = DriverManager.getConnection(
 					"jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true", user, password);
-		} catch (SQLException e) {
+		} catch(SQLException e) {
 			plugin.getLogger().info("[MySQL] The connection to MySQL couldn't be made! reason: " + e.getMessage());
 		}
 	}
 
 	public void close() {
 		try {
-			if (connection != null) {
+			if(connection != null) {
 				connection.close();
 				plugin.getLogger().info("[MySQL] The connection to MySQL is ended successfully!");
 			}
-		} catch (SQLException e) {
+		} catch(SQLException e) {
 			plugin.getLogger().info("[MySQL] The connection couldn't be closed! reason: " + e.getMessage());
 		}
 	}
@@ -73,7 +69,7 @@ public class MySQL {
 	public Optional<PreparedStatement> getPreparedStatement(String qry) {
 		try {
 			return Optional.of(connection.prepareStatement(qry));
-		} catch (SQLException e) {
+		} catch(SQLException e) {
 			connect();
 			System.err.println(e);
 		}
@@ -85,7 +81,7 @@ public class MySQL {
 			PreparedStatement st = connection.prepareStatement(qry);
 			st.execute();
 			st.close();
-		} catch (SQLException e) {
+		} catch(SQLException e) {
 			connect();
 			System.err.println(e);
 		}
@@ -100,7 +96,7 @@ public class MySQL {
 		try {
 			PreparedStatement st = connection.prepareStatement(qry);
 			rs = st.executeQuery();
-		} catch (SQLException e) {
+		} catch(SQLException e) {
 			connect();
 			System.err.println(e);
 		}

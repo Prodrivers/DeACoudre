@@ -12,19 +12,19 @@ amountOfGamesPlayed:
   - 50;300.0
   - 150;1000.0
   - 666;3000.0
-  
+
 amountOfGamesWon:
   - 1;50.0
   - 10;300.0
   - 100;1000.0
   - 250;3500.0
-  
+
 amountOfGamesLost:
   - 10;42.0
   - 42;150.0
   - 100;300.0
   - 200;800.0
-  
+
 amountOfDaCsDone:
   - 1;10.0
   - 50;50.0

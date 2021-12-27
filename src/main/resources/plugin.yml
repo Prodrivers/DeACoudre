@@ -4,18 +4,18 @@ description: The famous DeACoudre plugin remastered.
 load: "POSTWORLD"
 author: PoutineQc
 website: http://poutineqc.ca/plugins/DaC/
-main : me.poutineqc.deacoudre.DeACoudre
+main: me.poutineqc.deacoudre.DeACoudre
 database: false
-depend: [WorldEdit]
-softdepend: [Vault]
+depend: [ WorldEdit ]
+softdepend: [ Vault ]
 prefix: DaC
 api-version: "1.16"
 
 commands:
   DaC:
     description: DaC commands
-    aliases: [dac, deacoudre]
-    usage:  /<command>
+    aliases: [ dac, deacoudre ]
+    usage: /<command>
 
 permissions:
   dac.*:

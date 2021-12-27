@@ -1,7 +1,7 @@
 package me.poutineqc.deacoudre.tools;
 
-import java.util.Collection;
-
+import me.poutineqc.deacoudre.Configuration;
+import me.poutineqc.deacoudre.instances.Arena;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -10,13 +10,12 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import me.poutineqc.deacoudre.Configuration;
-import me.poutineqc.deacoudre.instances.Arena;
+import java.util.Collection;
 
 public class OriginalPlayerStats {
 
-	private Configuration config;
-
+	private final Configuration config;
+	private final Location location;
 	private int level;
 	private float experience;
 	private GameMode gameMode;
@@ -24,7 +23,6 @@ public class OriginalPlayerStats {
 	private int foodLevel;
 	private float saturation;
 	private Collection<PotionEffect> effects;
-	private Location location;
 	private boolean flying;
 	private boolean allowFlight;
 
@@ -34,11 +32,12 @@ public class OriginalPlayerStats {
 	}
 
 	public void returnStats(Player player) {
-		for (PotionEffect effect : player.getActivePotionEffects())
+		for(PotionEffect effect : player.getActivePotionEffects()) {
 			player.removePotionEffect(effect.getType());
+		}
 
 		player.setAllowFlight(allowFlight);
-		if (flying) {
+		if(flying) {
 			player.setAllowFlight(true);
 			player.setFlying(flying);
 		}
@@ -53,9 +52,9 @@ public class OriginalPlayerStats {
 		player.setSaturation(saturation);
 		player.addPotionEffects(effects);
 
-		if (config.teleportAfterEnding)
+		if(config.teleportAfterEnding) {
 			player.teleport(location);
-		else if (config.invisibleFlyingSpectators) {
+		} else if(config.invisibleFlyingSpectators) {
 			player.setFallDistance(-255);
 		}
 	}
@@ -71,28 +70,33 @@ public class OriginalPlayerStats {
 		player.setHealth(20);
 		player.setFoodLevel(20);
 		player.setSaturation(20);
-		for (PotionEffect effect : player.getActivePotionEffects())
+		for(PotionEffect effect : player.getActivePotionEffects()) {
 			player.removePotionEffect(effect.getType());
+		}
 
-		if (config.invisibleFlyingSpectators)
+		if(config.invisibleFlyingSpectators) {
 			spectatorStats(player, arena, spectator);
+		}
 	}
 
 	public void spectatorStats(Player player, Arena arena, boolean spectator) {
 		player.setAllowFlight(spectator);
 
-		if (spectator) {
+		if(spectator) {
 			player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 10000, 1, false, false));
 
-			if (!arena.getSpectator().hasEntry(player.getName()))
+			if(!arena.getSpectator().hasEntry(player.getName())) {
 				arena.getSpectator().addEntry(player.getName());
+			}
 
 		} else {
-			if (player.hasPotionEffect(PotionEffectType.INVISIBILITY))
+			if(player.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
 				player.removePotionEffect(PotionEffectType.INVISIBILITY);
+			}
 
-			if (arena.getSpectator().hasEntry(player.getName()))
+			if(arena.getSpectator().hasEntry(player.getName())) {
 				arena.getSpectator().removeEntry(player.getName());
+			}
 		}
 	}
 

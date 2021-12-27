@@ -1,8 +1,13 @@
 package me.poutineqc.deacoudre.guis;
 
-import java.util.Optional;
-
 import me.poutineqc.deacoudre.Configuration;
+import me.poutineqc.deacoudre.DeACoudre;
+import me.poutineqc.deacoudre.Language;
+import me.poutineqc.deacoudre.PlayerData;
+import me.poutineqc.deacoudre.instances.Arena;
+import me.poutineqc.deacoudre.instances.GameState;
+import me.poutineqc.deacoudre.tools.ColorManager;
+import me.poutineqc.deacoudre.tools.ItemStackManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,17 +19,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import me.poutineqc.deacoudre.DeACoudre;
-import me.poutineqc.deacoudre.Language;
-import me.poutineqc.deacoudre.PlayerData;
-import me.poutineqc.deacoudre.instances.Arena;
-import me.poutineqc.deacoudre.instances.GameState;
-import me.poutineqc.deacoudre.tools.ColorManager;
-import me.poutineqc.deacoudre.tools.ItemStackManager;
+import java.util.Optional;
 
 public class SetArenaBlocksGUI implements Listener {
-	private PlayerData playerData;
-	private Configuration config;
+	private final PlayerData playerData;
+	private final Configuration config;
 
 	public SetArenaBlocksGUI(DeACoudre plugin) {
 		this.playerData = plugin.getPlayerData();
@@ -33,18 +32,20 @@ public class SetArenaBlocksGUI implements Listener {
 
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
-		if (!(event.getWhoClicked() instanceof Player))
+		if(!(event.getWhoClicked() instanceof Player player)) {
 			return;
+		}
 
-		Player player = (Player) event.getWhoClicked();
 		Language local = playerData.getLanguageOfPlayer(player);
 
-		if (!ChatColor.stripColor(event.getView().getTitle()).equalsIgnoreCase(ChatColor
-				.stripColor(ChatColor.translateAlternateColorCodes('&', local.editColorGuiTitle))))
+		if(!ChatColor.stripColor(event.getView().getTitle()).equalsIgnoreCase(ChatColor
+				.stripColor(ChatColor.translateAlternateColorCodes('&', local.editColorGuiTitle)))) {
 			return;
+		}
 
-		if (event.getAction() == InventoryAction.NOTHING || event.getAction() == InventoryAction.UNKNOWN)
+		if(event.getAction() == InventoryAction.NOTHING || event.getAction() == InventoryAction.UNKNOWN) {
 			return;
+		}
 
 		event.setCancelled(true);
 
@@ -55,21 +56,21 @@ public class SetArenaBlocksGUI implements Listener {
 		ColorManager colorManager = arena.getColorManager();
 
 		boolean isChoosable = colorManager.isArenaBlockChoosableByPlayers(item);
-		if (isChoosable && colorManager.getArenaBlocks().size() <= arena.getMaxPlayer()) {
+		if(isChoosable && colorManager.getArenaBlocks().size() <= arena.getMaxPlayer()) {
 			local.sendMsg(player, local.editColorColorLessPlayer);
 			openColorGUI(player, arena);
 			return;
 		}
 
-		if (arena.getGameState() == GameState.UNREADY) {
-			if (arena.getMinPoolPoint() == null || arena.getMaxPoolPoint() == null) {
+		if(arena.getGameState() == GameState.UNREADY) {
+			if(arena.getMinPoolPoint() == null || arena.getMaxPoolPoint() == null) {
 				player.closeInventory();
 				local.sendMsg(player, local.editColorNoPool);
 				return;
 			}
 		}
 
-		if (arena.getGameState() != GameState.READY && arena.getGameState() != GameState.UNREADY) {
+		if(arena.getGameState() != GameState.READY && arena.getGameState() != GameState.UNREADY) {
 			player.closeInventory();
 			local.sendMsg(player, local.editColorActive);
 			return;
@@ -80,7 +81,7 @@ public class SetArenaBlocksGUI implements Listener {
 			return;
 		}
 
-		if (!correspondingArenaItem.get().isAvailable()) {
+		if(!correspondingArenaItem.get().isAvailable()) {
 			player.closeInventory();
 			local.sendMsg(player, local.editColorChoosen);
 			return;
@@ -88,8 +89,9 @@ public class SetArenaBlocksGUI implements Listener {
 
 
 		int valueOfItem = config.usableBlocks.indexOf(item.getType());
-		if(valueOfItem == -1)
+		if(valueOfItem == -1) {
 			return;
+		}
 
 		colorManager.setAsArenaBlock(item, !isChoosable);
 
@@ -100,7 +102,7 @@ public class SetArenaBlocksGUI implements Listener {
 	public void openColorGUI(Player player, Arena arena) {
 		Language local = playerData.getLanguageOfPlayer(player);
 
-		Inventory inv = Bukkit.createInventory(null, 6*9,
+		Inventory inv = Bukkit.createInventory(null, 6 * 9,
 				ChatColor.translateAlternateColorCodes('&', local.editColorGuiTitle));
 		ItemStackManager icon;
 		/***************************************************
@@ -109,16 +111,17 @@ public class SetArenaBlocksGUI implements Listener {
 
 		icon = new ItemStackManager(Material.BOOKSHELF, 4);
 		icon.setTitle(local.keyWordGuiInstrictions);
-		for (String loreLine : local.editColorGuiTooltip.split("\n"))
+		for(String loreLine : local.editColorGuiTooltip.split("\n")) {
 			icon.addToLore(loreLine);
+		}
 		icon.addToInventory(inv);
 
 		/***************************************************
 		 * Blocks
 		 ***************************************************/
 		int i = 9; // Offset by one line as it is already occupied
-		for (ItemStackManager item : arena.getColorManager().getAllAuthorizedGameBlocks()) {
-			if(i >= 6*9) {
+		for(ItemStackManager item : arena.getColorManager().getAllAuthorizedGameBlocks()) {
+			if(i >= 6 * 9) {
 				// Do not go over 6 lines
 				break;
 			}

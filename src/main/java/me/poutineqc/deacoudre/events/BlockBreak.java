@@ -1,23 +1,23 @@
 package me.poutineqc.deacoudre.events;
 
+import me.poutineqc.deacoudre.commands.DacSign;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import me.poutineqc.deacoudre.commands.DacSign;
-
 public class BlockBreak implements Listener {
-	
+
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {
-		if (!(event.getBlock().getState() instanceof Sign))
+		if(!(event.getBlock().getState() instanceof Sign sign)) {
 			return;
-		
-		Sign sign = (Sign) event.getBlock().getState();
+		}
+
 		DacSign dacSign = DacSign.getDacSign(sign.getLocation());
-		if (dacSign != null)
+		if(dacSign != null) {
 			DacSign.removeSign(dacSign);
+		}
 	}
 
 }

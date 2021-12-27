@@ -1,13 +1,6 @@
 package me.poutineqc.deacoudre;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.UUID;
-
+import me.poutineqc.deacoudre.instances.User;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -17,28 +10,32 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import me.poutineqc.deacoudre.instances.User;
+import java.io.File;
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.UUID;
 
 public class PlayerData implements Listener {
-
-	private File playerFile;
+	private final HashMap<String, String> originalPlayerName = new HashMap<>();
+	private final File playerFile;
+	private final MySQL mysql;
+	private final Configuration config;
 	private FileConfiguration playerData;
-	private MySQL mysql;
-	private Configuration config;
 	private boolean lastVersion;
 	private String latestVersion;
-
-	HashMap<String, String> originalPlayerName = new HashMap<String, String>();
 
 	public PlayerData(final DeACoudre plugin) {
 		this.config = plugin.getConfiguration();
 		this.mysql = plugin.getMySQL();
 
 		playerFile = new File(plugin.getDataFolder(), "playerData.yml");
-		if (!playerFile.exists()) {
+		if(!playerFile.exists()) {
 			try {
 				playerFile.createNewFile();
-			} catch (IOException e) {
+			} catch(IOException e) {
 				Bukkit.getServer().getLogger().severe(ChatColor.RED + "Could not create playerData.ylm.");
 			}
 		}
@@ -53,7 +50,7 @@ public class PlayerData implements Listener {
 	public void savePlayerData() {
 		try {
 			playerData.save(playerFile);
-		} catch (IOException e) {
+		} catch(IOException e) {
 			Bukkit.getServer().getLogger().severe(ChatColor.RED + "Could not save arenaData.yml!");
 		}
 	}
@@ -63,27 +60,30 @@ public class PlayerData implements Listener {
 
 		generateOriginalPlayerNames();
 
-		for (Player player : Bukkit.getOnlinePlayers())
+		for(Player player : Bukkit.getOnlinePlayers()) {
 			addOnFileIfNotExist(player);
+		}
 	}
 
 	private void generateOriginalPlayerNames() {
 		originalPlayerName.clear();
 
-		if (mysql.hasConnection()) {
+		if(mysql.hasConnection()) {
 			ResultSet query = mysql.query("SELECT UUID, name FROM " + config.tablePrefix + "PLAYERS");
 			try {
-				while (query.next()) {
+				while(query.next()) {
 					originalPlayerName.put(query.getString("UUID"), query.getString("name"));
 				}
-			} catch (SQLException e) {
+			} catch(SQLException e) {
 				e.printStackTrace();
 			}
 		} else {
-			if (playerData.contains("players"))
-				for (String uuid : playerData.getConfigurationSection("players").getKeys(false))
+			if(playerData.contains("players")) {
+				for(String uuid : playerData.getConfigurationSection("players").getKeys(false)) {
 					originalPlayerName.put(uuid,
 							playerData.getString("players." + uuid + ".name", UUID.randomUUID().toString()));
+				}
+			}
 		}
 	}
 
@@ -96,12 +96,12 @@ public class PlayerData implements Listener {
 	public void addOnFileIfNotExist(Player player) {
 		String uuid = player.getUniqueId().toString();
 
-		boolean alreadyInData = originalPlayerName.containsKey(uuid) ? true : false;
-		if (alreadyInData) {
-			if (player.getName().equalsIgnoreCase(originalPlayerName.get(uuid)))
+		if(originalPlayerName.containsKey(uuid)) {
+			if(player.getName().equalsIgnoreCase(originalPlayerName.get(uuid))) {
 				return;
+			}
 
-			if (mysql.hasConnection()) {
+			if(mysql.hasConnection()) {
 				mysql.update("UPDATE " + config.tablePrefix + "PLAYERS SET name='" + player.getName() + "' WHERE UUID='"
 						+ uuid + "';");
 			} else {
@@ -111,7 +111,7 @@ public class PlayerData implements Listener {
 		} else {
 			originalPlayerName.put(uuid, player.getName());
 
-			if (mysql.hasConnection()) {
+			if(mysql.hasConnection()) {
 				mysql.update("INSERT INTO " + config.tablePrefix + "PLAYERS (UUID, name) VALUES ('" + uuid + "','"
 						+ player.getName() + "');");
 			} else {
@@ -140,46 +140,50 @@ public class PlayerData implements Listener {
 
 	public Language getLanguageOfPlayer(Player player) {
 		String fileName = null;
-		if (mysql.hasConnection()) {
+		if(mysql.hasConnection()) {
 			try {
 				ResultSet query = mysql.query("SELECT language FROM " + config.tablePrefix + "PLAYERS WHERE UUID='"
 						+ player.getUniqueId() + "';");
 
-				if (query.next()) {
+				if(query.next()) {
 					fileName = query.getString("language");
 				}
 
-			} catch (SQLException e) {
+			} catch(SQLException e) {
 				e.printStackTrace();
 			}
 		} else {
-			fileName = playerData.getString("players." + player.getUniqueId().toString() + ".language", null);
+			fileName = playerData.getString("players." + player.getUniqueId() + ".language", null);
 		}
 
-		if (fileName == null)
+		if(fileName == null) {
 			return Language.getLanguages().get(config.language);
+		}
 
 		return getLanguage(fileName);
 	}
 
 	public Language getLanguage(String fileName) {
-		for (Entry<String, Language> local : Language.getLanguages().entrySet())
-			if (local.getKey().equalsIgnoreCase(fileName))
+		for(Entry<String, Language> local : Language.getLanguages().entrySet()) {
+			if(local.getKey().equalsIgnoreCase(fileName)) {
 				return local.getValue();
+			}
+		}
 
-		if (Language.getLanguages().containsKey(config.language))
+		if(Language.getLanguages().containsKey(config.language)) {
 			return Language.getLanguages().get(config.language);
+		}
 
 		return Language.getLanguages().get("en-US");
 
 	}
 
 	public void setLanguage(Player player, String key) {
-		if (mysql.hasConnection()) {
+		if(mysql.hasConnection()) {
 			mysql.update("UPDATE " + config.tablePrefix + "PLAYERS SET language='" + key + "' WHERE UUID='"
-					+ player.getUniqueId().toString() + "';");
+					+ player.getUniqueId() + "';");
 		} else {
-			playerData.set("players." + player.getUniqueId().toString() + ".language", key);
+			playerData.set("players." + player.getUniqueId() + ".language", key);
 			savePlayerData();
 		}
 	}

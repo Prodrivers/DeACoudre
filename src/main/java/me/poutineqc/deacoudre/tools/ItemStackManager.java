@@ -20,10 +20,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ItemStackManager {
-	private int position;
+	private final List<Component> lore = new ArrayList<>();
 	private final ItemStack item;
 	private final ItemMeta meta;
-	List<Component> lore = new ArrayList<>();
+	private int position;
 	private boolean available = true;
 
 	public ItemStackManager(Material material) {

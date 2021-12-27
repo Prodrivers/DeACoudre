@@ -1,8 +1,10 @@
 package me.poutineqc.deacoudre.events;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
+import me.poutineqc.deacoudre.*;
+import me.poutineqc.deacoudre.achievements.Achievement;
+import me.poutineqc.deacoudre.instances.Arena;
+import me.poutineqc.deacoudre.instances.GameState;
+import me.poutineqc.deacoudre.instances.User;
 import me.poutineqc.deacoudre.tools.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,23 +17,16 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.material.Colorable;
 import org.bukkit.util.Vector;
 
-import me.poutineqc.deacoudre.Configuration;
-import me.poutineqc.deacoudre.DeACoudre;
-import me.poutineqc.deacoudre.Language;
-import me.poutineqc.deacoudre.MySQL;
-import me.poutineqc.deacoudre.PlayerData;
-import me.poutineqc.deacoudre.achievements.Achievement;
-import me.poutineqc.deacoudre.instances.Arena;
-import me.poutineqc.deacoudre.instances.GameState;
-import me.poutineqc.deacoudre.instances.User;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class PlayerMove implements Listener {
 
-	private DeACoudre plugin;
-	private PlayerData playerData;
-	private Achievement achievements;
-	private MySQL mysql;
-	private Configuration config;
+	private final DeACoudre plugin;
+	private final PlayerData playerData;
+	private final Achievement achievements;
+	private final MySQL mysql;
+	private final Configuration config;
 
 	public PlayerMove(DeACoudre plugin) {
 		this.plugin = plugin;
@@ -43,28 +38,31 @@ public class PlayerMove implements Listener {
 
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event) {
-
 		final Player player = (Player) event.getPlayer();
 
 		final Arena arena = Arena.getArenaFromPlayer(player);
-		if (arena == null)
+		if(arena == null) {
 			return;
+		}
 
-		if (arena.getGameState() != GameState.ACTIVE)
+		if(arena.getGameState() != GameState.ACTIVE) {
 			return;
+		}
 
 		final User user = arena.getUser(player);
 
-		if (user != arena.getActivePlayer())
+		if(user != arena.getActivePlayer()) {
 			return;
+		}
 
 		final Location getTo = new Location(event.getTo().getWorld(), event.getTo().getBlockX(),
 				event.getTo().getBlockY(), event.getTo().getBlockZ());
 
-		if (!getTo.getBlock().isLiquid())
+		if(!getTo.getBlock().isLiquid()) {
 			return;
+		}
 
-		while (getTo.add(new Vector(0, 1, 0)).getBlock().isLiquid()) {
+		while(getTo.add(new Vector(0, 1, 0)).getBlock().isLiquid()) {
 		}
 		getTo.add(new Vector(0, -1, 0));
 
@@ -73,19 +71,18 @@ public class PlayerMove implements Listener {
 		Location east = new Location(getTo.getWorld(), getTo.getBlockX() + 1, getTo.getBlockY(), getTo.getBlockZ());
 		Location west = new Location(getTo.getWorld(), getTo.getBlockX() - 1, getTo.getBlockY(), getTo.getBlockZ());
 
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-			public void run() {
-				player.teleport(arena.getLobby());
-				
-				Arena arena = Arena.getArenaFromPlayer(player);
-				if (arena == null)
-					return;
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+			player.teleport(arena.getLobby());
 
-				user.maxStats(true);
-				if (arena.getGameState() == GameState.ACTIVE) {
-					arena.getScoreboard().resetScores(ChatColor.AQUA + user.getName());
-					arena.getObjective().getScore(user.getName()).setScore(user.getPoint());
-				}
+			Arena arena1 = Arena.getArenaFromPlayer(player);
+			if(arena1 == null) {
+				return;
+			}
+
+			user.maxStats(true);
+			if(arena1.getGameState() == GameState.ACTIVE) {
+				arena1.getScoreboard().resetScores(ChatColor.AQUA + user.getName());
+				arena1.getObjective().getScore(user.getName()).setScore(user.getPoint());
 			}
 		}, 5L);
 
@@ -94,19 +91,20 @@ public class PlayerMove implements Listener {
 		arena.resetStallingAmount();
 		arena.bumpCurrentTile();
 
-		if (!north.getBlock().isLiquid() && !south.getBlock().isLiquid() && !west.getBlock().isLiquid()
+		if(!north.getBlock().isLiquid() && !south.getBlock().isLiquid() && !west.getBlock().isLiquid()
 				&& !east.getBlock().isLiquid()) {
 
 			user.addPoint();
 
 			int DaCdone = 0;
-			if (mysql.hasConnection()) {
+			if(mysql.hasConnection()) {
 				ResultSet query = mysql.query(
 						"SELECT DaCdone FROM " + config.tablePrefix + "PLAYERS WHERE UUID='" + user.getUUID() + "';");
 				try {
-					if (query.next())
+					if(query.next()) {
 						DaCdone = query.getInt("DaCdone");
-				} catch (SQLException e) {
+					}
+				} catch(SQLException e) {
 					e.printStackTrace();
 				}
 
@@ -118,18 +116,19 @@ public class PlayerMove implements Listener {
 				playerData.savePlayerData();
 			}
 
-			if (!arena.isForceStart()) {
+			if(!arena.isForceStart()) {
 				achievements.testAchievement(Achievement.dacDone, player);
 
-				if (arena.getRoundNo() == 42)
+				if(arena.getRoundNo() == 42) {
 					achievements.testAchievement(Achievement.dacOnFortyTwo, player);
+				}
 			}
 
 			local.sendMsg(user.getPlayer(),
 					local.gamePointsUpPlayer.replace("%points%", String.valueOf(user.getPoint())));
 
-			for (User u : arena.getUsers()) {
-				if (u != user) {
+			for(User u : arena.getUsers()) {
+				if(u != user) {
 					Language localInstance = playerData.getLanguageOfPlayer(u.getPlayer());
 					localInstance.sendMsg(u.getPlayer(),
 							localInstance.gamePointsUpOthers.replace("%points%", String.valueOf(user.getPoint()))
@@ -147,15 +146,15 @@ public class PlayerMove implements Listener {
 					}
 
 					getTo.add(0, -1, 0);
-				} while (getTo.getBlock().getType() == Material.WATER);
+				} while(getTo.getBlock().getType() == Material.WATER);
 			}, 5L);
 		} else {
 
-			if (config.verbose) {
+			if(config.verbose) {
 				local.sendMsg(user.getPlayer(), local.gameSuccessPlayer);
 
-				for (User op : arena.getUsers()) {
-					if (op != user) {
+				for(User op : arena.getUsers()) {
+					if(op != user) {
 						Language localInstance = playerData.getLanguageOfPlayer(op.getPlayer());
 						localInstance.sendMsg(op.getPlayer(),
 								localInstance.gameSuccessOthers.replace("%player%", player.getDisplayName()));
@@ -169,7 +168,7 @@ public class PlayerMove implements Listener {
 					getTo.getBlock().setType(user.getColor().getItem().getType());
 
 					getTo.add(0, -1, 0);
-				} while (getTo.getBlock().getType() == Material.WATER);
+				} while(getTo.getBlock().getType() == Material.WATER);
 			}, 5L);
 
 		}
@@ -177,13 +176,12 @@ public class PlayerMove implements Listener {
 		user.setRoundSuccess(true);
 		arena.flushConfirmationQueue(user);
 
-		if (!arena.isOver() || arena.isForceStart()) {
+		if(!arena.isOver() || arena.isForceStart()) {
 			arena.nextPlayer();
 		} else {
 			user.getPlayer().setVelocity(new Vector());
 			user.getPlayer().setFallDistance(0);
 			arena.finishGame(false);
 		}
-
 	}
 }

@@ -1,10 +1,8 @@
 package me.poutineqc.deacoudre;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map.Entry;
-
+import me.poutineqc.deacoudre.commands.DacCommand;
+import me.poutineqc.deacoudre.instances.User;
+import me.poutineqc.deacoudre.tools.CaseInsensitiveMap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
@@ -12,27 +10,20 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-import me.poutineqc.deacoudre.commands.DacCommand;
-import me.poutineqc.deacoudre.instances.User;
-import me.poutineqc.deacoudre.tools.CaseInsensitiveMap;
+import java.io.File;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class Language {
 
+	private static final HashMap<String, Language> languages = new HashMap<>();
 	private static DeACoudre plugin;
 	private static Configuration config;
-	
 	private static File langFolder;
-	private File languageFile;
-	private FileConfiguration languageData;
-	
-	private static HashMap<String, Language> languages = new HashMap<String, Language>();
-	
 	public String keyWordGeneralAnd;
 	public String keyWordGeneralComma;
-
 	public String languageName;
-	
-	String errorNoPermission;
 	public String errorAlreadyInGame;
 	public String errorNotInGame;
 	public String errorGameStarted;
@@ -48,7 +39,6 @@ public class Language {
 	public String quitGameOthers;
 	public String gameTimeOutPlayer;
 	public String gameTimeOutOthers;
-
 	public String startErrorQuantity;
 	public String startBroadcast;
 	public Component startRandomColor;
@@ -60,7 +50,6 @@ public class Language {
 	public String endingStall;
 	public String endingBroadcastMultiple;
 	public String gameNewRound;
-
 	public String gamePointsUpPlayer;
 	public String gamePointsUpOthers;
 	public String gamePointsFlushPlayer;
@@ -80,11 +69,9 @@ public class Language {
 	public String gameSuccessPlayer;
 	public String gameSuccessOthers;
 	public String gamePointsReviveHint;
-
 	public String endingRewardMoney;
 	public String challengeRewardMoney;
 	public String challengeBroadcast;
-
 	public String challengeDisplayPlayed;
 	public String challengeDisplayWin;
 	public String challengeDisplayLost;
@@ -95,7 +82,6 @@ public class Language {
 	public String challengeDisplayAnswerToLife;
 	public String challengeDisplayFight;
 	public String challengeDisplayMinecraftSnail;
-
 	public String keyWordStats;
 	public String keyWordChallenges;
 	public String keyWordStatsReward;
@@ -113,44 +99,34 @@ public class Language {
 	public String keyWordStatsCompleted;
 	public String keyWordStatsNotCompleted;
 	public String keyWordStatsTop10;
-
 	public String keyWordGuiPreviousPage;
 	public String keyWordGuiNextPage;
 	public String startCooldown;
-
 	public String errorInGame;
-
 	public String joinGuiTitle;
 	public String keyWordGameStateUnset;
 	public String keyWordGameStateStarted;
 	public String keyWordGameStateFull;
 	public String keyWordGameStateReady;
-
 	public String colorGuiTitle;
 	public String colorGuiCurrent;
-
 	public String errorArenaNotExist;
-
 	public Component colorChoosen;
 	public String colorRandom;
 	public String colorAlreadyPicked;
-
 	public String signJoin;
 	public String signQuit;
 	public String signColor;
 	public String signStart;
 	public String signStats;
 	public String signPlay;
-
 	public String signNotValid1;
 	public String signNotValid2;
 	public String signNotValid3;
-
 	public String signNoPermission0;
 	public String signNoPermission1;
 	public String signNoPermission2;
 	public String signNoPermission3;
-
 	public String editNewNoName;
 	public String editNewSuccess;
 	public String editNewExists;
@@ -161,7 +137,6 @@ public class Language {
 	public String editPlateformSuccess;
 	public String editPoolNoSelection;
 	public String editPoolSuccess;
-	
 	public String editLimitMinSuccess;
 	public String editLimitMaxSuccess;
 	public String editLimitNaN;
@@ -169,22 +144,16 @@ public class Language {
 	public String editLimitErrorMinMax;
 	public String editLimitNoParameter;
 	public String keyWordColorRandom;
-
 	public String errorCommandNotFound;
 	public String errorArenaOrCommandNotFound;
 	public String reloadSucess;
-
 	public String keyWordMaterialPrefix;
-	
 	public String languageList;
-	
 	public String forcestartError;
 	public String endingRewardItemsSpaceMultiple;
 	public String endingRewardItemsSpaceOne;
 	public String endingRewardItemsReceive;
 	public String joinGuiTooltip;
-	
-	private CaseInsensitiveMap commandDescriptions;
 	public String editColorGuiTitle;
 	public String keyWordGuiInstrictions;
 	public String editColorGuiTooltip;
@@ -227,7 +196,6 @@ public class Language {
 	public String keyWordScoreboardPoints;
 	public String joinNewPlacePlayer;
 	public String joinNewPlaceOthers;
-
 	public String editLimitGameActive;
 	public String editColorNoPool;
 	public String editErrorNoArena;
@@ -238,44 +206,67 @@ public class Language {
 	public String convertStart;
 	public String convertNoMysql;
 	public String convertComplete;
-
 	public String prefixLong;
 	public String prefixShort;
 	public Component prefixShortComponent;
+	String errorNoPermission;
+	private File languageFile;
+	private FileConfiguration languageData;
+	private CaseInsensitiveMap commandDescriptions;
 
 	Language(DeACoudre plugin) {
 		Language.plugin = plugin;
 		config = plugin.getConfiguration();
 
 		langFolder = new File(plugin.getDataFolder(), "LanguageFiles");
-		if (!langFolder.exists())
+		if(!langFolder.exists()) {
 			langFolder.mkdir();
+		}
 	}
 
 	Language(String fileName, boolean forceFileOverwrite) {
 		languageFile = new File(langFolder.getPath(), fileName + ".yml");
-		if (forceFileOverwrite) {
+		if(forceFileOverwrite) {
 			languageFile.delete();
 			plugin.saveResource("LanguageFiles/" + fileName + ".yml", false);
 		}
 
-		if (!languageFile.exists()) {
+		if(!languageFile.exists()) {
 			InputStream local = plugin.getResource("LanguageFiles/" + fileName + ".yml");
-			if (local != null) {
+			if(local != null) {
 				plugin.saveResource("LanguageFiles/" + fileName + ".yml", false);
-			} else
+			} else {
 				plugin.getLogger().info("Could not find " + fileName + ".yml");
+			}
 		}
 
 		languages.put(fileName, this);
 		loadLang();
 	}
-	
+
+	public static Entry<String, Language> getLanguage(String languageName) {
+		for(Entry<String, Language> local : languages.entrySet()) {
+			if(local.getValue().languageName.equalsIgnoreCase(languageName)) {
+				return local;
+			}
+		}
+
+		return null;
+	}
+
+	public static HashMap<String, Language> getLanguages() {
+		return languages;
+	}
+
+	static void clearLanguages() {
+		languages.clear();
+	}
+
 	public void loadLang() {
 		languageData = YamlConfiguration.loadConfiguration(languageFile);
-		
+
 		languageName = languageData.getString("languageName", "english");
-		
+
 		prefixLong = languageData.getString("prefixLong", "&1[&3DeACoudre&1]");
 		prefixShort = languageData.getString("prefixShort", "&1[&3DaC&1] ");
 		prefixShortComponent = LegacyComponentSerializer.legacyAmpersand().deserialize(prefixShort);
@@ -283,7 +274,7 @@ public class Language {
 		pluginDevelopper = languageData.getString("pluginDevelopper", "&3Developped by: &7%developper%");
 		pluginVersion = languageData.getString("pluginVersion", "&3Version: &7%version%");
 		pluginHelp = languageData.getString("pluginHelp", "&3Type &b/%command% help &3 for the list of commands.");
-		
+
 		errorNoPermission = languageData.getString("errorNoPermission", "&cYou don't have the permission to do that!");
 		errorPermissionHelp = languageData.getString("errorPermissionHelp", "&cYou do not have any permissions in this category.");
 		errorArenaNotExist = languageData.getString("errorArenaNotExist", "&cNot a valid arena name.");
@@ -294,7 +285,7 @@ public class Language {
 		errorAlreadyInGame = languageData.getString("errorAlreadyInGame", "&cYou are already in a game. Do &d/dac quit &cto quit it.");
 		errorGameStarted = languageData.getString("errorGameStarted", "&cThe game is already started.");
 		errorTeleport = languageData.getString("errorTeleport", "&cYou can't teleport away while in a DeACoudre game.");
-		
+
 		helpDescriptionAll = languageData.getString("helpDescriptionAll", "&7All Commands");
 		helpDescriptionGeneral = languageData.getString("helpDescriptionGeneral", "&7General player commands");
 		helpDescriptionGame = languageData.getString("helpDescriptionGame", "&7Commands to simply play the game");
@@ -304,7 +295,7 @@ public class Language {
 		languageList = languageData.getString("languageList", "&3Available languages:");
 		languageNotFound = languageData.getString("languageNotFound", "&cLanguage not found. &8/%cmd% language &cfor a list of available languages");
 		languageChangeSuccess = languageData.getString("languageChangeSuccess", "&aLanguage successfully set to %language%");
-		
+
 		joinGuiTitle = languageData.getString("joinGuiTitle", "&2Arena List &0: &3DeACoudre");
 		joinGuiTooltip = languageData.getString("joinGuiTooltip", "&7Click on the arena\n&7you wish to join\n&7Right click to display\n&7it's infos");
 		joinStateUnset = languageData.getString("joinStateUnset", "&cThis arena is not ready to use. Ask an admin to finish setting it up.");
@@ -317,10 +308,10 @@ public class Language {
 		joinNewPlacePlayer = languageData.getString("joinNewPlacePlayer", "&3You are added to the game to replace &f%leaver%&3!");
 		joinInfoMissingName = languageData.getString("joinInfoMissingName", "&cYou need to choose an arena.");
 		joinInfoTooltip = languageData.getString("joinInfoTooltip", "&8[&7Tip&8] &7You may also do &8/%cmd% list &7and right click an arena to display it's information.");
-		
+
 		quitGamePlayer = languageData.getString("quitGamePlayer", "&aYou left the DaC game.");
 		quitGameOthers = languageData.getString("quitGameOthers", "&f%player% &3left the DaC game.");
-		
+
 		colorGuiTitle = languageData.getString("colorGuiTitle", "&6Choose Color &0: &3DeACoudre");
 		colorGuiCurrent = languageData.getString("colorGuiCurrent", "Current Color:");
 		colorChoosen = LegacyComponentSerializer.legacyAmpersand().deserialize(
@@ -340,7 +331,7 @@ public class Language {
 		startCooldown = languageData.getString("startCooldown", "&cYou can't start a game so fast after the last was aborted. Wait 30 seconds.");
 		startAutoFail = languageData.getString("startAutoFail", "&cThe counter did not autostart because the last one was aborted less than 30 seconds ago.");
 		startBroadcast = languageData.getString("startBroadcast", "&6A new game of DaC will start in %time% seconds in the arena &3%arena%&6. All interested players may do &4/dac join %arena% &6to join the game.");
-		
+
 		gameNewRound = languageData.getString("gameNewRound", "&8Round %round% has started");
 		gameTurnPlayer = languageData.getString("gameTurnPlayer", "&d&lIt's your turn to play!");
 		gameTurnOthers = languageData.getString("gameTurnOthers", "&dIt's &f%player%&d's turn to play!");
@@ -375,7 +366,7 @@ public class Language {
 		endingRewardItemsReceive = languageData.getString("endingRewardItemsReceive", "&aYou win %amount% &f%item% &afor your victory.");
 		endingTeleport = languageData.getString("endingTeleport", "&dGame is over. Teleporting back in 5 seconds...");
 		endingSimulation = languageData.getString("endingSimulation", "&6The simulation is over!");
-		
+
 		challengeDisplayPlayed = languageData.getString("challengeDisplayPlayed", "Play %amount% game(s)");
 		challengeDisplayWin = languageData.getString("challengeDisplayWin", "Win %amount% game(s)");
 		challengeDisplayLost = languageData.getString("challengeDisplayLost", "Loose %amount% game(s)");
@@ -402,7 +393,7 @@ public class Language {
 		signNoPermission1 = languageData.getString("signNoPermission1", "&cthe permissions");
 		signNoPermission2 = languageData.getString("signNoPermission2", "&cto create a DaC");
 		signNoPermission3 = languageData.getString("signNoPermission3", "&csign, &4Sorry...");
-		
+
 		editErrorNoArena = languageData.getString("editErrorNoArena", "&cYou must provide an arena name for this command.");
 		editErrorNoParameter = languageData.getString("editErrorNoParameter", "&eYou must choose what you want to do with this arena.");
 		editNewNoName = languageData.getString("editNewNoName", "&cYou must provide a name for the new arena.");
@@ -428,7 +419,7 @@ public class Language {
 		editColorNoPool = languageData.getString("editColorNoPool", "&cYou can't edit the colors before the pool has been defined.");
 		editColorChoosen = languageData.getString("editColorChoosen", "&cYou can't remove this block right now. It has already been choosen by a player.");
 		editColorActive = languageData.getString("editColorActive", "&cYou can't edit the colors while a game is active.");
-		
+
 		reloadSucess = languageData.getString("reloadSucess", "&aDaC has been successfully reloaded.");
 		forcestartError = languageData.getString("forcestartError", "&cMust have only one player in a game to forcestart it.");
 		convertAlreadyDone = languageData.getString("convertAlreadyDone", "&cThe conversion to mysql has already been done.");
@@ -437,11 +428,11 @@ public class Language {
 		convertComplete = languageData.getString("convertComplete", "&aThe file to mysql conversion is finished!");
 
 		commandDescriptions = new CaseInsensitiveMap();
-		for (DacCommand cmd : DacCommand.getCommands()) {
+		for(DacCommand cmd : DacCommand.getCommands()) {
 			commandDescriptions.put(cmd.getDescription(),
 					languageData.getString(cmd.getDescription(), "&cOops, an Error has occured!"));
 		}
-		
+
 		keyWordGeneralAnd = languageData.getString("keyWordGeneralAnd", " &6and &f");
 		keyWordGeneralComma = languageData.getString("keyWordGeneralComma", "&6, &f");
 		keyWordGeneralMinimum = languageData.getString("keyWordGeneralMinimum", "Minimum");
@@ -460,7 +451,7 @@ public class Language {
 		keyWordGameStateUnset = languageData.getString("keyWordGameStateUnset", "&7Arena Unset");
 		keyWordGameStateStartup = languageData.getString("keyWordGameStateStartup", "&9Startup");
 		keyWordGameStateActive = languageData.getString("keyWordGameStateActive", "&cActive");
-		
+
 		keyWordChallenges = languageData.getString("keyWordChallenges", "&dChallenges");
 		keyWordStats = languageData.getString("keyWordStats", "&5Stats");
 		keyWordStatsTop10 = languageData.getString("keyWordStatsTop10", "Top 10");
@@ -474,7 +465,7 @@ public class Language {
 		keyWordStatsProgression = languageData.getString("keyWordStatsProgression", "Progression");
 		keyWordStatsCompleted = languageData.getString("keyWordStatsCompleted", "Completed");
 		keyWordStatsNotCompleted = languageData.getString("keyWordStatsNotCompleted", "Not Completed");
-		
+
 		keyWordHelp = languageData.getString("keyWordHelp", "Help");
 		keyWordHelpCategory = languageData.getString("keyWordHelpCategory", "Category");
 		keyWordHelpPage = languageData.getString("keyWordHelpPage", "Page");
@@ -486,17 +477,17 @@ public class Language {
 		keyWordHelpLobby = languageData.getString("keyWordHelpLobby", "Lobby");
 		keyWordHelpPlateform = languageData.getString("keyWordHelpPlateform", "Plateform");
 		keyWordHelpPool = languageData.getString("keyWordHelpPool", "Pool");
-		
+
 		keyWordScoreboardPlayers = languageData.getString("keyWordScoreboardPlayers", "&6Players");
 		keyWordScoreboardPoints = languageData.getString("keyWordScoreboardPoints", "&6Points");
 		keyWordScoreboardRound = languageData.getString("keyWordScoreboardRound", "Round");
-		
+
 		keyWordJumpFast = languageData.getString("keyWordJumpFast", "Jump!");
-		
+
 		keyWordGuiPreviousPage = languageData.getString("keyWordGuiPreviousPage", "&dPrevious Page");
 		keyWordGuiNextPage = languageData.getString("keyWordGuiNextPage", "&dNext Page");
 		keyWordGuiInstrictions = languageData.getString("keyWordGuiInstrictions", "&6Instructions");
-	
+
 	}
 
 	public void sendMsg(User user, String msg) {
@@ -504,7 +495,7 @@ public class Language {
 	}
 
 	public void sendMsg(Player player, String msg) {
-		if (config.introInFrontOfEveryMessage) {
+		if(config.introInFrontOfEveryMessage) {
 			player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefixShort + msg.toString()));
 		} else {
 			player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg.toString()));
@@ -512,27 +503,11 @@ public class Language {
 	}
 
 	public void sendMsg(Player player, Component msg) {
-		if (config.introInFrontOfEveryMessage) {
+		if(config.introInFrontOfEveryMessage) {
 			player.sendMessage(Component.join(Component.empty(), prefixShortComponent, msg));
 		} else {
 			player.sendMessage(msg);
 		}
-	}
-
-	public static Entry<String, Language> getLanguage(String languageName) {
-		for (Entry<String, Language> local : languages.entrySet())
-			if (local.getValue().languageName.equalsIgnoreCase(languageName))
-				return local;
-		
-		return null;
-	}
-
-	public static HashMap<String, Language> getLanguages() {
-		return languages;
-	}
-
-	static void clearLanguages() {
-		languages.clear();
 	}
 
 	public CaseInsensitiveMap getCommandsDescription() {
