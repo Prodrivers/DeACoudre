@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -93,7 +94,7 @@ public class ColorsGUI implements Listener {
 		ItemStackManager userCurrentItem = arena.getUser(player).getColor();
 		Inventory inv;
 		ItemStackManager icon;
-		List<ItemStackManager> availableBlocks = arena.getColorManager().getAvailableArenaBlocks();
+		List<ItemStackManager> availableBlocks = arena.getColorManager().getArenaBlocks();
 		int size = (availableBlocks.size() % 9 == 0 ? availableBlocks.size() : availableBlocks.size() / 9 * 9 + 9) + 18;
 		if(size > 6 * 9) {
 			size = 6 * 9;
@@ -112,6 +113,7 @@ public class ColorsGUI implements Listener {
 			icon.addToLore(ChatColor.translateAlternateColorCodes('&', local.keyWordColorRandom));
 		} else {
 			icon = userCurrentItem;
+			icon.clearLore();
 			icon.addToLore(ChatColor.translateAlternateColorCodes('&',
 					arena.getColorManager().getBlockMaterialName(userCurrentItem.getItem(), local)));
 			icon.setTitle(ChatColor.translateAlternateColorCodes('&', local.colorGuiCurrent));
@@ -125,13 +127,16 @@ public class ColorsGUI implements Listener {
 		 ***************************************************/
 
 		int slot = 9;
-		for (ItemStackManager item : availableBlocks) {
+		for (ItemStackManager availableBlock : availableBlocks) {
 			if(slot >= 6 * 9) {
 				break;
 			}
-			icon = item.clone();
-			icon.setPosition(slot++);
-			icon.addToInventory(inv);
+			ItemStackManager item = availableBlock.clone();
+			if(!item.isAvailable()) {
+				item.addEnchantement(Enchantment.DURABILITY, 1);
+			}
+			item.setPosition(slot++);
+			item.addToInventory(inv);
 		}
 
 		// Offset to next line
