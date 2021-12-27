@@ -23,12 +23,12 @@ import me.poutineqc.deacoudre.instances.GameState;
 import me.poutineqc.deacoudre.tools.ColorManager;
 import me.poutineqc.deacoudre.tools.ItemStackManager;
 
-public class ChooseColorGUI implements Listener {
+public class SetArenaBlocksGUI implements Listener {
 
 	private PlayerData playerData;
 	private Configuration config;
 
-	public ChooseColorGUI(DeACoudre plugin) {
+	public SetArenaBlocksGUI(DeACoudre plugin) {
 		this.playerData = plugin.getPlayerData();
 		this.config = plugin.getConfiguration();
 	}
@@ -56,8 +56,8 @@ public class ChooseColorGUI implements Listener {
 				.getArenaFromName(ChatColor.stripColor(event.getInventory().getItem(0).getItemMeta().getLore().get(0)));
 		ColorManager colorManager = arena.getColorManager();
 
-		boolean isChoosable = colorManager.isChoosable(item);
-		if (isChoosable && colorManager.getOnlyChoosenBlocks().size() <= arena.getMaxPlayer()) {
+		boolean isChoosable = colorManager.isArenaBlockChoosableByPlayers(item);
+		if (isChoosable && colorManager.getArenaBlocks().size() <= arena.getMaxPlayer()) {
 			local.sendMsg(player, local.editColorColorLessPlayer);
 			openColorGUI(player, arena);
 			return;
@@ -93,7 +93,7 @@ public class ChooseColorGUI implements Listener {
 		if(valueOfItem == -1)
 			return;
 
-		colorManager.setChoosable(item, !isChoosable);
+		colorManager.setAsArenaBlock(item, !isChoosable);
 
 		arena.resetArena(item);
 		openColorGUI(player, arena);
@@ -124,28 +124,28 @@ public class ChooseColorGUI implements Listener {
 
 		for (int i = 0; i < inv.getSize(); i++)
 			switch (i) {
-			case 9:
-			case 10:
-			case 11:
-			case 12:
-			case 13:
-			case 14:
-			case 15:
-			case 16:
-			case 17:
-			case 18:
-			case 27:
-			case 36:
-			case 45:
-				icon.setPosition(i);
-				icon.addToInventory(inv);
+				case 9:
+				case 10:
+				case 11:
+				case 12:
+				case 13:
+				case 14:
+				case 15:
+				case 16:
+				case 17:
+				case 18:
+				case 27:
+				case 36:
+				case 45:
+					icon.setPosition(i);
+					icon.addToInventory(inv);
 			}
 
 		/***************************************************
 		 * Blocks
 		 ***************************************************/
 		int i = 0;
-		for (ItemStackManager item : arena.getColorManager().getAllBlocks()) {
+		for (ItemStackManager item : arena.getColorManager().getAllAuthorizedGameBlocks()) {
 			item.setPosition((int) ((Math.floor(i / 8.0) * 9) + 19 + (i % 8)));
 			item.addToInventory(inv);
 			i++;

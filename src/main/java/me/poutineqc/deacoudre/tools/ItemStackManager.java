@@ -1,8 +1,5 @@
 package me.poutineqc.deacoudre.tools;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -10,6 +7,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemStackManager {
 	private int position;
@@ -62,7 +62,11 @@ public class ItemStackManager {
 	}
 
 	public void addEnchantement(Enchantment enchantment, int level) {
-		meta.addEnchant(Enchantment.DURABILITY, -1, true);
+		meta.addEnchant(enchantment, level, true);
+	}
+
+	public void removeEnchantement(Enchantment enchantment) {
+		meta.removeEnchant(enchantment);
 	}
 
 	public ItemStack getItem() {

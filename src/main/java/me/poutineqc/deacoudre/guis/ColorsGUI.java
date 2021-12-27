@@ -78,20 +78,21 @@ public class ColorsGUI implements Listener {
 			local.sendMsg(player,
 					local.colorChoosen
 							.replace("%material%",
-									arena.getColorManager().getBlockMaterialName(user.getColor().getItem(), local))
-							.replace("%color%", arena.getColorManager().getBlockColorName(user.getColor().getItem(), local)));
+									arena.getColorManager().getBlockMaterialName(user.getColor().getItem(), local)));
 		}
 
 		player.closeInventory();
-
 	}
 
 	public static void openColorsGui(Player player, Language local, Arena arena) {
 		ItemStackManager userCurrentItem = arena.getUser(player).getColor();
 		Inventory inv;
 		ItemStackManager icon;
-		List<ItemStackManager> availableBlocks = arena.getColorManager().getAvailableBlocks();
-		int size = (availableBlocks.size() % 9 == 0 ? availableBlocks.size() : availableBlocks.size() / 9 * 9 + 9);
+		List<ItemStackManager> availableBlocks = arena.getColorManager().getAvailableArenaBlocks();
+		int size = (availableBlocks.size() % 9 == 0 ? availableBlocks.size() : availableBlocks.size() / 9 * 9 + 9) + 18;
+		if(size > 6 * 9) {
+			size = 6 * 9;
+		}
 
 		inv = Bukkit.createInventory(null, size, ChatColor.translateAlternateColorCodes('&', local.colorGuiTitle));
 
@@ -108,8 +109,7 @@ public class ColorsGUI implements Listener {
 		} else {
 			icon = userCurrentItem;
 			icon.addToLore(ChatColor.translateAlternateColorCodes('&',
-					arena.getColorManager().getBlockColorName(userCurrentItem.getItem(), local) + " : "
-							+ arena.getColorManager().getBlockMaterialName(userCurrentItem.getItem(), local)));
+					arena.getColorManager().getBlockMaterialName(userCurrentItem.getItem(), local)));
 			icon.setTitle(ChatColor.translateAlternateColorCodes('&', local.colorGuiCurrent));
 		}
 

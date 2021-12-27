@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import com.sk89q.worldedit.IncompleteRegionException;
@@ -289,11 +290,11 @@ public class Arena {
 			this.maxAmountPlayer = 12;
 		}
 
-		if (this.maxAmountPlayer > colorManager.getAvailableBlocks().size()) {
+		if (this.maxAmountPlayer > colorManager.getAvailableArenaBlocks().size()) {
 			logger.info("The max amount of players for the arena " + name
 					+ " can't be above the amount of available colors.");
-			logger.info("Using by default " + colorManager.getAvailableBlocks().size() + ".");
-			this.maxAmountPlayer = colorManager.getAvailableBlocks().size();
+			logger.info("Using by default " + colorManager.getAvailableArenaBlocks().size() + ".");
+			this.maxAmountPlayer = colorManager.getAvailableArenaBlocks().size();
 		}
 
 		arenas.add(this);
@@ -473,7 +474,7 @@ public class Arena {
 			return;
 		}
 
-		if (amount > colorManager.getOnlyChoosenBlocks().size()) {
+		if (amount > colorManager.getArenaBlocks().size()) {
 			local.sendMsg(player, local.editColorColorLessPlayer);
 			return;
 		}
@@ -871,12 +872,11 @@ public class Arena {
 			Player player = user.getPlayer();
 			Language local = playerData.getLanguageOfPlayer(player);
 			if (user.getColor() == null) {
-				user.setColor(colorManager.getRandomAvailableBlock());
+				user.setColor(colorManager.getRandomAvailableArenaBlock());
 
 				local.sendMsg(user.getPlayer(),
 						local.startRandomColor
-								.replace("%material%", colorManager.getBlockMaterialName(user.getColor().getItem(), local))
-								.replace("%color%", colorManager.getBlockColorName(user.getColor().getItem(), local)));
+								.replace("%material%", colorManager.getBlockMaterialName(user.getColor().getItem(), local)));
 			}
 		}
 

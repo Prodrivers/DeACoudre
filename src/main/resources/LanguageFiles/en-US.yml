@@ -92,11 +92,11 @@ quitGameOthers: "&f%player% &3left the DaC game."
 
 colorGuiTitle: "&6Choose Color &0: &3DeACoudre"
 colorGuiCurrent: "Current Color:"
-colorChoosen: "&dYou have choosen the &f%material% &d: &f%color%&d."
+colorChoosen: "&dYou have choosen the &f%material%&d."
 colorRandom: "&dYou let the fate decide of your color."
 colorAlreadyPicked: "&cThis color has been picked while you were choosing. Sorry, try again."
 
-startRandomColor: "&5You were randomly assigned the &f%material% &5: &f%color%&5."
+startRandomColor: "&5You were randomly assigned the &f%material%&5."
 startRandomOrder: "&9Random Position Order List:"
 startPosition: "&9%posNo% - &f%player%"
 startAlreadyStarted: "&cThe countdown has already been started."

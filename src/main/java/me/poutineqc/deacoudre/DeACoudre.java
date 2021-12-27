@@ -24,7 +24,7 @@ import me.poutineqc.deacoudre.events.PlayerInteract;
 import me.poutineqc.deacoudre.events.PlayerMove;
 import me.poutineqc.deacoudre.events.PlayerTeleport;
 import me.poutineqc.deacoudre.events.SignChange;
-import me.poutineqc.deacoudre.guis.ChooseColorGUI;
+import me.poutineqc.deacoudre.guis.SetArenaBlocksGUI;
 import me.poutineqc.deacoudre.guis.ColorsGUI;
 import me.poutineqc.deacoudre.guis.JoinGUI;
 import me.poutineqc.deacoudre.instances.Arena;
@@ -40,7 +40,7 @@ public class DeACoudre extends JavaPlugin {
 	private PlayerData playerData;
 	private ArenaData arenaData;
 	private Achievement achievement;
-	private ChooseColorGUI chooseColorGUI;
+	private SetArenaBlocksGUI chooseColorGUI;
 
 	private AchievementsGUI achievementsGUI;
 	private PlayerDamage playerDamage;
@@ -72,7 +72,7 @@ public class DeACoudre extends JavaPlugin {
 		achievement = new Achievement(this);
 		new TopManager(this);
 		achievementsGUI = new AchievementsGUI(this);
-		chooseColorGUI = new ChooseColorGUI(this);
+		chooseColorGUI = new SetArenaBlocksGUI(this);
 		joinGUI = new JoinGUI(this);
 		playerDamage = new PlayerDamage(this);
 		arenaData = new ArenaData(this);
@@ -239,7 +239,7 @@ public class DeACoudre extends JavaPlugin {
 		return mysql;
 	}
 
-	public ChooseColorGUI getChooseColorGUI() {
+	public SetArenaBlocksGUI getChooseColorGUI() {
 		return chooseColorGUI;
 	}
 

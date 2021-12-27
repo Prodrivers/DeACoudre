@@ -21,7 +21,7 @@ import me.poutineqc.deacoudre.MySQL;
 import me.poutineqc.deacoudre.Permissions;
 import me.poutineqc.deacoudre.PlayerData;
 import me.poutineqc.deacoudre.achievements.AchievementsGUI;
-import me.poutineqc.deacoudre.guis.ChooseColorGUI;
+import me.poutineqc.deacoudre.guis.SetArenaBlocksGUI;
 import me.poutineqc.deacoudre.guis.ColorsGUI;
 import me.poutineqc.deacoudre.guis.JoinGUI;
 import me.poutineqc.deacoudre.instances.Arena;
@@ -33,7 +33,7 @@ public class DaC implements CommandExecutor {
 	private static Configuration config;
 	private ArenaData arenaData;
 	private static PlayerData playerData;
-	private ChooseColorGUI chooseColorGUI;
+	private SetArenaBlocksGUI chooseColorGUI;
 	private JoinGUI joinGUI;
 	private AchievementsGUI achievementsGUI;
 	private MySQL mysql;

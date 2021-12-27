@@ -92,11 +92,11 @@ quitGameOthers: "&f%player% &3a quitté la partie de DeACoudre."
 
 colorGuiTitle: "&6Couleur &0: &3DeACoudre"
 colorGuiCurrent: "Bloc actuel:"
-colorChoosen: "&dTu as choisi &f%material% &d: &f%color%&d."
+colorChoosen: "&dTu as choisi &f%material%&d."
 colorRandom: "&dTu laisse le destin décider du sort de ton bloc."
 colorAlreadyPicked: "&cCette couleur a été prise alors que tu choisissais. Désolé, essaie encore."
 
-startRandomColor: "&5Le bloc &f%material% &5: &f%color%&5 t'a été assigné"
+startRandomColor: "&5Le bloc &f%material%&5 t'a été assigné."
 startRandomOrder: "&9Position de joueurs aléatoire:"
 startPosition: "&9%posNo% - &f%player%"
 startAlreadyStarted: "&cLe compte à rebours est déjà commencé."
