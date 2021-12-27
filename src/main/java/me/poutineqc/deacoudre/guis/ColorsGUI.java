@@ -53,6 +53,11 @@ public class ColorsGUI implements Listener {
 		User user = arena.getUser(player);
 
 		ItemStack item = event.getCurrentItem();
+
+		if(item == null || item.getItemMeta() == null) {
+			return;
+		}
+
 		String itemName = ChatColor.stripColor(item.getItemMeta().getDisplayName());
 		if (ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', local.colorGuiCurrent))
 				.equalsIgnoreCase(itemName))
@@ -105,7 +110,6 @@ public class ColorsGUI implements Listener {
 			icon.setPlayerHeadName("azbandit2000");
 			icon.setTitle(ChatColor.translateAlternateColorCodes('&', local.colorGuiCurrent));
 			icon.addToLore(ChatColor.translateAlternateColorCodes('&', local.keyWordColorRandom));
-
 		} else {
 			icon = userCurrentItem;
 			icon.addToLore(ChatColor.translateAlternateColorCodes('&',
@@ -117,50 +121,31 @@ public class ColorsGUI implements Listener {
 		inv = icon.addToInventory(inv);
 
 		/***************************************************
-		 * Glass Separator
-		 ***************************************************/
-
-		icon = new ItemStackManager(Material.WHITE_STAINED_GLASS_PANE);
-		icon.setTitle(" ");
-
-		for (int i = 0; i < inv.getSize(); i++) {
-			switch (i) {
-			case 9:
-			case 10:
-			case 11:
-			case 12:
-			case 13:
-			case 14:
-			case 15:
-			case 16:
-			case 17:
-			case 27:
-			case 36:
-			case 45:
-				icon.setPosition(i);
-				inv = icon.addToInventory(inv);
-				break;
-			}
-		}
-
-		/***************************************************
 		 * Available Colors
 		 ***************************************************/
 
-		int slot = 19;
+		int slot = 9;
 		for (ItemStackManager item : availableBlocks) {
-			if (slot % 9 == 0)
-				slot++;
-
+			if(slot >= 6 * 9) {
+				break;
+			}
 			icon = item.clone();
 			icon.setPosition(slot++);
 			icon.addToInventory(inv);
 		}
 
-		while ((slot - 1) % 9 != 0)
+		// Offset to next line
+		while ((slot - 1) % 9 != 0) {
 			slot++;
+		}
+		// Offset to line center
+		slot += 3;
+		// If there is no space in dialog, go back to first line
+		if(slot >= size) {
+			slot = 0;
+		}
 
-		icon = new ItemStackManager(Material.PLAYER_HEAD, 18);
+		icon = new ItemStackManager(Material.PLAYER_HEAD, slot);
 		icon.setPlayerHeadName("azbandit2000");
 		icon.setTitle(ChatColor.translateAlternateColorCodes('&', local.keyWordColorRandom));
 
