@@ -1,7 +1,10 @@
 package me.poutineqc.deacoudre.tools;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -89,9 +92,14 @@ public class ItemStackManager {
 		return item;
 	}
 
-	public void setPlayerHeadName(String player) {
+	public void setPlayerHeadTexture(String base64) {
 		if(meta instanceof SkullMeta) {
-			((SkullMeta) meta).setOwner(player);
+			// Borrow a player's profile
+			PlayerProfile borrowedProfile = Bukkit.getServer().getOnlinePlayers().iterator().next().getPlayerProfile();
+			// Override the texture with provided one
+			borrowedProfile.setProperty(new ProfileProperty("textures", base64));
+			// Set profile to skull
+			((SkullMeta) meta).setPlayerProfile(borrowedProfile);
 		}
 	}
 

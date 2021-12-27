@@ -107,8 +107,7 @@ public class ColorsGUI implements Listener {
 		 ***************************************************/
 
 		if (userCurrentItem == null) {
-			icon = new ItemStackManager(Material.PLAYER_HEAD);
-			icon.setPlayerHeadName("azbandit2000");
+			icon = Utils.getRandomHead();
 			icon.setTitle(ChatColor.translateAlternateColorCodes('&', local.colorGuiCurrent));
 			icon.addToLore(ChatColor.translateAlternateColorCodes('&', local.keyWordColorRandom));
 		} else {
@@ -119,6 +118,7 @@ public class ColorsGUI implements Listener {
 		}
 
 		icon.setPosition(4);
+		icon.addEnchantement(Enchantment.DURABILITY, 1);
 		inv = icon.addToInventory(inv);
 
 		/***************************************************
@@ -149,8 +149,8 @@ public class ColorsGUI implements Listener {
 			slot = 0;
 		}
 
-		icon = new ItemStackManager(Material.PLAYER_HEAD, slot);
-		icon.setPlayerHeadName("azbandit2000");
+		icon = Utils.getRandomHead();
+		icon.setPosition(slot);
 		icon.setTitle(ChatColor.translateAlternateColorCodes('&', local.keyWordColorRandom));
 
 		icon.addToInventory(inv);

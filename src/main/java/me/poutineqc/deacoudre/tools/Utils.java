@@ -32,6 +32,15 @@ public class Utils {
 		colorToStainedGlassBlock.put(DyeColor.YELLOW, Material.YELLOW_STAINED_GLASS);
 	}
 
+	// https://minecraft-heads.com/custom-heads/miscellaneous/37791-refresh
+	private static String RANDOM_TEXTURE_BASE64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTFkNzIwY2QzOWRmM2JlNzRiMGNhYzc1ZTM5MzdmMDA4NWEzNzgyNDc0M2NhZDYzMzBkYzlmNDY2NmE0NTEwZCJ9fX0=";
+
+	public static ItemStackManager getRandomHead() {
+		ItemStackManager item = new ItemStackManager(Material.PLAYER_HEAD);
+		item.setPlayerHeadTexture(RANDOM_TEXTURE_BASE64);
+		return item;
+	}
+
 	public static Material colorToStainedGlassBlock(DyeColor color) {
 		return colorToStainedGlassBlock.get(color);
 	}
