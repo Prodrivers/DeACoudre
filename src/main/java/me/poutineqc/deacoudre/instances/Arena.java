@@ -13,7 +13,6 @@ import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.regions.Region;
-import net.minecraft.server.v1_16_R3.BlockStainedGlass;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -24,7 +23,6 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.Colorable;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -45,7 +43,6 @@ import me.poutineqc.deacoudre.achievements.Achievement;
 import me.poutineqc.deacoudre.commands.DacSign;
 import me.poutineqc.deacoudre.events.PlayerDamage;
 import me.poutineqc.deacoudre.tools.ColorManager;
-import me.poutineqc.deacoudre.tools.ItemStackManager;
 import me.poutineqc.deacoudre.tools.JsonBuilder;
 import me.poutineqc.deacoudre.tools.JsonBuilder.JsonElement;
 import me.poutineqc.deacoudre.tools.Utils;
@@ -1352,42 +1349,40 @@ public class Arena {
 				}
 	}
 
-	@SuppressWarnings("deprecation")
 	public void fillWater() {
-		for (int x = minPoint.getBlockX(); x <= maxPoint.getBlockX(); x++)
-			for (int y = maxPoint.getBlockY(); y >= minPoint.getBlockY(); y--)
-				nextBlock: for (int z = minPoint.getBlockZ(); z <= maxPoint.getBlockZ(); z++) {
+		Set<Material> arenaMaterials = colorManager.getArenaMaterials();
+
+		for (int x = minPoint.getBlockX(); x <= maxPoint.getBlockX(); x++) {
+			for(int y = maxPoint.getBlockY(); y >= minPoint.getBlockY(); y--) {
+				nextBlock:
+				for(int z = minPoint.getBlockZ(); z <= maxPoint.getBlockZ(); z++) {
 					Location location = new Location(world, x, y, z);
 					Block block = location.getBlock();
-					if (block.getState().getData() instanceof Colorable)
-						continue;
 
-					for (ItemStackManager item : colorManager.getOnlyChoosenBlocks())
-						if (item.getMaterial() == block.getType())
-							if (item.getItem().getDurability() == block.getData()) {
-								block.setType(Material.WATER);
-								continue nextBlock;
-							}
+					if(arenaMaterials.contains(block.getType())) {
+						block.setType(Material.WATER);
+						continue nextBlock;
+					}
 				}
+			}
+		}
 	}
 
-	@SuppressWarnings("deprecation")
 	public void resetArena(ItemStack item) {
-		for (int x = minPoint.getBlockX(); x <= maxPoint.getBlockX(); x++)
-			for (int y = maxPoint.getBlockY(); y >= minPoint.getBlockY(); y--)
-				nextBlock: for (int z = minPoint.getBlockZ(); z <= maxPoint.getBlockZ(); z++) {
+		for (int x = minPoint.getBlockX(); x <= maxPoint.getBlockX(); x++) {
+			for(int y = maxPoint.getBlockY(); y >= minPoint.getBlockY(); y--) {
+				nextBlock:
+				for(int z = minPoint.getBlockZ(); z <= maxPoint.getBlockZ(); z++) {
 					Location location = new Location(world, x, y, z);
 					Block block = location.getBlock();
-					if (block.getState().getData() instanceof Colorable)
-						continue;
 
-					if (item.getType() == block.getType())
-						if (item.getDurability() == block.getData()) {
-							block.setType(Material.WATER);
-							continue nextBlock;
-						}
-
+					if(item.getType() == block.getType()) {
+						block.setType(Material.WATER);
+						continue nextBlock;
+					}
 				}
+			}
+		}
 	}
 
 	public User getUser(Player p) {
