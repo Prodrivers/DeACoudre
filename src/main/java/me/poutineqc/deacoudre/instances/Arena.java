@@ -13,6 +13,9 @@ import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.regions.Region;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -43,8 +46,6 @@ import me.poutineqc.deacoudre.achievements.Achievement;
 import me.poutineqc.deacoudre.commands.DacSign;
 import me.poutineqc.deacoudre.events.PlayerDamage;
 import me.poutineqc.deacoudre.tools.ColorManager;
-import me.poutineqc.deacoudre.tools.JsonBuilder;
-import me.poutineqc.deacoudre.tools.JsonBuilder.JsonElement;
 import me.poutineqc.deacoudre.tools.Utils;
 
 public class Arena {
@@ -961,9 +962,7 @@ public class Arena {
 
 				timeOut(activePlayer, arena, config.timeBeforePlayerTimeOut * 20, roundNo);
 
-				Utils.sendTitle(player, JsonBuilder.getJson(
-						new JsonElement(local.keyWordJumpFast, ChatColor.GOLD, true, false, false, false, false)),
-						JsonBuilder.getEmpty(), 5, 10, 5);
+				Utils.sendTitle(player, Component.text(local.keyWordJumpFast, NamedTextColor.GOLD, TextDecoration.BOLD), null, 5, 10, 5);
 			}
 		}, 6L);
 	}
@@ -1546,10 +1545,8 @@ public class Arena {
 							Language local = playerData.getLanguageOfPlayer(user);
 
 							Utils.sendTitle(user.getPlayer(),
-									JsonBuilder.getJson(new JsonElement(String.valueOf(time / 20), ChatColor.GOLD, true,
-											false, false, false, false)),
-									JsonBuilder.getJson(new JsonElement(local.keyWordGeneralSeconds,
-											ChatColor.DARK_GRAY, false, true, false, false, false)),
+									Component.text(String.valueOf(time / 20), NamedTextColor.GOLD, TextDecoration.BOLD),
+									Component.text(String.valueOf(local.keyWordGeneralSeconds), NamedTextColor.DARK_GRAY, TextDecoration.ITALIC),
 									5, 10, 5);
 						}
 					}
