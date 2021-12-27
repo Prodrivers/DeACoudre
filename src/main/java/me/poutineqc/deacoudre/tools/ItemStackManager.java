@@ -1,32 +1,37 @@
 package me.poutineqc.deacoudre.tools;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.material.Colorable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ItemStackManager {
 	private int position;
-	private ItemStack item;
-	private ItemMeta meta;
-	List<String> lore = new ArrayList<String>();
+	private final ItemStack item;
+	private final ItemMeta meta;
+	List<Component> lore = new ArrayList<>();
 	private boolean available = true;
 
 	public ItemStackManager(Material material) {
-		item = new ItemStack(material);
-		meta = item.getItemMeta();
+		this(material, 0);
 	}
 
 	public ItemStackManager(Material material, int position) {
 		this.position = position;
 		item = new ItemStack(material);
 		meta = item.getItemMeta();
+		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 	}
 
 	public ItemStackManager clone() {
@@ -46,51 +51,52 @@ public class ItemStackManager {
 	}
 
 	public void setTitle(String displayName) {
-		meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
+		meta.displayName(LegacyComponentSerializer.legacyAmpersand().deserialize(displayName));
 		meta.setLocalizedName(ChatColor.translateAlternateColorCodes('&', displayName));
 	}
 
+	public void setTitle(Component displayName) {
+		meta.displayName(displayName);
+		meta.setLocalizedName(LegacyComponentSerializer.legacySection().serialize(displayName));
+	}
+
 	public void addToLore(String loreLine) {
-		lore.add(ChatColor.translateAlternateColorCodes('&', loreLine));
+		addToLore(LegacyComponentSerializer.legacyAmpersand().deserialize(loreLine));
+	}
+
+	public void addToLore(Component loreLine) {
+		lore.add(loreLine);
 	}
 
 	public Inventory addToInventory(Inventory inv) {
-		meta.setLore(lore);
+		meta.lore(lore);
 		item.setItemMeta(meta);
 		inv.setItem(position, item);
 		return inv;
 	}
 
 	public void addEnchantement(Enchantment enchantment, int level) {
-		meta.addEnchant(enchantment, level, true);
+		meta.addEnchant(enchantment, level, false);
 	}
 
-	public void removeEnchantement(Enchantment enchantment) {
-		meta.removeEnchant(enchantment);
+	public void clearEnchantements() {
+		Arrays.stream(Enchantment.values()).forEach(meta::removeEnchant);
 	}
 
 	public ItemStack getItem() {
-		meta.setLore(lore);
+		meta.lore(lore);
 		item.setItemMeta(meta);
 		return item;
 	}
 
 	public void setPlayerHeadName(String player) {
-		if (meta instanceof SkullMeta)
+		if(meta instanceof SkullMeta) {
 			((SkullMeta) meta).setOwner(player);
-	}
-
-	public String getDisplayName() {
-		return meta.getDisplayName();
+		}
 	}
 
 	public void clearLore() {
 		lore.clear();
-	}
-
-	public void clearEnchantements() {
-		if (meta.hasEnchant(Enchantment.DURABILITY))
-			meta.removeEnchant(Enchantment.DURABILITY);
 	}
 
 	public boolean isAvailable() {

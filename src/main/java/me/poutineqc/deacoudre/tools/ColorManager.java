@@ -84,7 +84,7 @@ public class ColorManager {
 	}
 
 	private void unmarkArenaBlockAsSelected(ItemStackManager item) {
-		item.removeEnchantement(Enchantment.DURABILITY);
+		item.clearEnchantements();
 	}
 
 	public void load() {
