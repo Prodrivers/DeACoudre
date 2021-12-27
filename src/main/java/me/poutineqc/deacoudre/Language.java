@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -49,7 +51,7 @@ public class Language {
 
 	public String startErrorQuantity;
 	public String startBroadcast;
-	public String startRandomColor;
+	public Component startRandomColor;
 	public String startRandomOrder;
 	public String startPosition;
 	public String gameTurnPlayer;
@@ -129,7 +131,7 @@ public class Language {
 
 	public String errorArenaNotExist;
 
-	public String colorChoosen;
+	public Component colorChoosen;
 	public String colorRandom;
 	public String colorAlreadyPicked;
 
@@ -172,22 +174,7 @@ public class Language {
 	public String errorArenaOrCommandNotFound;
 	public String reloadSucess;
 
-	public String keyWordColorWhite;
-	public String keyWordColorOrange;
-	public String keyWordColorMagenta;
-	public String keyWordColorLightBlue;
-	public String keyWordColorYellow;
-	public String keyWordColorLime;
-	public String keyWordColorPink;
-	public String keyWordColorGrey;
-	public String keyWordColorLightGrey;
-	public String keyWordColorCyan;
-	public String keyWordColorPurple;
-	public String keyWordColorBlue;
-	public String keyWordColorBrown;
-	public String keyWordColorGreen;
-	public String keyWordColorRed;
-	public String keyWordColorBlack;
+	public String keyWordMaterialPrefix;
 	
 	public String languageList;
 	
@@ -233,8 +220,6 @@ public class Language {
 	public String keyWordHelpPool;
 	public String editColorColorLessPlayer;
 	public String endingTeleport;
-	public String keyWordColorClay;
-	public String keyWordColorWool;
 	public String endingSimulation;
 	public String errorTeleport;
 	public String editLimitMaxAboveMax;
@@ -242,8 +227,7 @@ public class Language {
 	public String keyWordScoreboardPoints;
 	public String joinNewPlacePlayer;
 	public String joinNewPlaceOthers;
-	public String prefixLong;
-	public String prefixShort;
+
 	public String editLimitGameActive;
 	public String editColorNoPool;
 	public String editErrorNoArena;
@@ -254,6 +238,10 @@ public class Language {
 	public String convertStart;
 	public String convertNoMysql;
 	public String convertComplete;
+
+	public String prefixLong;
+	public String prefixShort;
+	public Component prefixShortComponent;
 
 	Language(DeACoudre plugin) {
 		Language.plugin = plugin;
@@ -290,6 +278,7 @@ public class Language {
 		
 		prefixLong = languageData.getString("prefixLong", "&1[&3DeACoudre&1]");
 		prefixShort = languageData.getString("prefixShort", "&1[&3DaC&1] ");
+		prefixShortComponent = LegacyComponentSerializer.legacyAmpersand().deserialize(prefixShort);
 
 		pluginDevelopper = languageData.getString("pluginDevelopper", "&3Developped by: &7%developper%");
 		pluginVersion = languageData.getString("pluginVersion", "&3Version: &7%version%");
@@ -334,11 +323,15 @@ public class Language {
 		
 		colorGuiTitle = languageData.getString("colorGuiTitle", "&6Choose Color &0: &3DeACoudre");
 		colorGuiCurrent = languageData.getString("colorGuiCurrent", "Current Color:");
-		colorChoosen = languageData.getString("colorChoosen", "&dYou have choosen the &f%material% &d: &f%color%&d.");
+		colorChoosen = LegacyComponentSerializer.legacyAmpersand().deserialize(
+				languageData.getString("colorChoosen", "&dYou have choosen the &f%material% &d: &f%color%&d.")
+		);
 		colorRandom = languageData.getString("colorRandom", "&dYou let the fate decide of your color.");
 		colorAlreadyPicked = languageData.getString("colorAlreadyPicked", "&cThis color has been picked while you were choosing. Sorry, try again.");
 
-		startRandomColor = languageData.getString("startRandomColor", "&5You were randomly assigned the &f%material% &5: &f%color%&5.");
+		startRandomColor = LegacyComponentSerializer.legacyAmpersand().deserialize(
+				languageData.getString("startRandomColor", "&5You were randomly assigned the &f%material% &5: &f%color%&5.")
+		);
 		startRandomOrder = languageData.getString("startRandomOrder", "&9Random Position Order List:");
 		startPosition = languageData.getString("startPosition", "&9%posNo% - &f%player%");
 		startAlreadyStarted = languageData.getString("startAlreadyStarted", "&cThe countdown has already been started.");
@@ -456,25 +449,8 @@ public class Language {
 		keyWordGeneralHours = languageData.getString("keyWordGeneralHours", "hours");
 		keyWordGeneralMinutes = languageData.getString("keyWordGeneralMinutes", "minutes");
 		keyWordGeneralSeconds = languageData.getString("keyWordGeneralSeconds", "seconds");
-		
-		keyWordColorWool = languageData.getString("keyWordColorWool", "Wool");
-		keyWordColorClay = languageData.getString("keyWordColorClay", "Clay");
-		keyWordColorWhite = languageData.getString("keyWordColorWhite", "&fWhite");
-		keyWordColorOrange = languageData.getString("keyWordColorOrange", "&6Orange");
-		keyWordColorMagenta = languageData.getString("keyWordColorMagenta", "&dMagenta");
-		keyWordColorLightBlue = languageData.getString("keyWordColorLightBlue", "&9Light Blue");
-		keyWordColorYellow = languageData.getString("keyWordColorYellow", "&eYellow");
-		keyWordColorLime = languageData.getString("keyWordColorLime", "&aLime");
-		keyWordColorPink = languageData.getString("keyWordColorPink", "&dPink");
-		keyWordColorGrey = languageData.getString("keyWordColorGrey", "&8Grey");
-		keyWordColorLightGrey = languageData.getString("keyWordColorLightGrey", "&7Light Grey");
-		keyWordColorCyan = languageData.getString("keyWordColorCyan", "&bCyan");
-		keyWordColorPurple = languageData.getString("keyWordColorPurple", "&5Purple");
-		keyWordColorBlue = languageData.getString("keyWordColorBlue", "&1Blue");
-		keyWordColorBrown = languageData.getString("keyWordColorBrown", "&fBrown");
-		keyWordColorGreen = languageData.getString("keyWordColorGreen", "&2Green");
-		keyWordColorRed = languageData.getString("keyWordColorRed", "&4Red");
-		keyWordColorBlack = languageData.getString("keyWordColorBlack", "&fBlack");
+
+		keyWordMaterialPrefix = languageData.getString("keyWordMaterialPrefix", "&f");
 		keyWordColorRandom = languageData.getString("keyWordColorRandom", "&6R&da&2n&9d&co&3m");
 
 		keyWordGameState = languageData.getString("keyWordGameState", "game state");
@@ -534,7 +510,15 @@ public class Language {
 			player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg.toString()));
 		}
 	}
-	
+
+	public void sendMsg(Player player, Component msg) {
+		if (config.introInFrontOfEveryMessage) {
+			player.sendMessage(Component.join(Component.empty(), prefixShortComponent, msg));
+		} else {
+			player.sendMessage(msg);
+		}
+	}
+
 	public static Entry<String, Language> getLanguage(String languageName) {
 		for (Entry<String, Language> local : languages.entrySet())
 			if (local.getValue().languageName.equalsIgnoreCase(languageName))

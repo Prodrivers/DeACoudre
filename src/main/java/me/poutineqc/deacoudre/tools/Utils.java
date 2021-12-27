@@ -1,6 +1,7 @@
 package me.poutineqc.deacoudre.tools;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.title.Title;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -39,5 +40,16 @@ public class Utils {
 		final Title.Times times = Title.Times.of(Duration.ofMillis(fadeInMs), Duration.ofMillis(stayMs), Duration.ofMillis(fadeOutMs));
 		final Title playerTitle = Title.title(title, (subtitle != null ? subtitle : Component.empty()), times);
 		target.showTitle(playerTitle);
+	}
+
+	public static Component replaceInComponent(Component message, String pattern, Component replacement) {
+		return Component.empty()
+				.append(message)
+				.replaceText(
+						TextReplacementConfig.builder()
+								.match(pattern)
+								.replacement(replacement)
+								.build()
+				);
 	}
 }

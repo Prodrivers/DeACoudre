@@ -3,6 +3,7 @@ package me.poutineqc.deacoudre.guis;
 import java.util.List;
 import java.util.Optional;
 
+import me.poutineqc.deacoudre.tools.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -82,9 +83,8 @@ public class ColorsGUI implements Listener {
 		} else {
 			user.setColor(correspondingArenaItem.get());
 			local.sendMsg(player,
-					local.colorChoosen
-							.replace("%material%",
-									arena.getColorManager().getBlockMaterialName(user.getColor().getItem(), local)));
+					Utils.replaceInComponent(local.colorChoosen, "%material%", arena.getColorManager().getBlockMaterialName(user.getColor().getItem(), local))
+			);
 		}
 
 		player.closeInventory();
@@ -114,8 +114,7 @@ public class ColorsGUI implements Listener {
 		} else {
 			icon = userCurrentItem;
 			icon.clearLore();
-			icon.addToLore(ChatColor.translateAlternateColorCodes('&',
-					arena.getColorManager().getBlockMaterialName(userCurrentItem.getItem(), local)));
+			icon.addToLore(arena.getColorManager().getBlockMaterialName(userCurrentItem.getItem(), local));
 			icon.setTitle(ChatColor.translateAlternateColorCodes('&', local.colorGuiCurrent));
 		}
 

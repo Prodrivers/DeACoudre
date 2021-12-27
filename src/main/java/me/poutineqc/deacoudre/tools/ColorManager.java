@@ -4,6 +4,8 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -147,7 +149,10 @@ public class ColorManager {
 		return allAuthorizedGameBlocks.stream().filter(item -> item.getItem().getType() == material).findFirst();
 	}
 
-	public String getBlockMaterialName(ItemStack item, Language local) {
-		return item.getType().name(); // item.getItemMeta() != null ? item.getItemMeta().getLocalizedName() :
+	public Component getBlockMaterialName(ItemStack item, Language local) {
+		return Component.join(
+				LegacyComponentSerializer.legacyAmpersand().deserialize(local.keyWordMaterialPrefix),
+				Component.translatable(item.getTranslationKey())
+		);
 	}
 }

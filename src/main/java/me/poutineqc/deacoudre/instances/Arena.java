@@ -14,8 +14,10 @@ import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.regions.Region;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -848,9 +850,10 @@ public class Arena {
 			if (user.getColor() == null) {
 				user.setColor(colorManager.getRandomAvailableArenaBlock());
 
-				local.sendMsg(user.getPlayer(),
-						local.startRandomColor
-								.replace("%material%", colorManager.getBlockMaterialName(user.getColor().getItem(), local)));
+				local.sendMsg(
+						user.getPlayer(),
+						Utils.replaceInComponent(local.startRandomColor, "%material%", colorManager.getBlockMaterialName(user.getColor().getItem(), local))
+				);
 			}
 		}
 
