@@ -6,6 +6,7 @@ import me.poutineqc.deacoudre.PlayerData;
 import me.poutineqc.deacoudre.achievements.Achievement;
 import me.poutineqc.deacoudre.instances.Arena;
 import me.poutineqc.deacoudre.instances.User;
+import me.poutineqc.deacoudre.tools.ColorManager;
 import me.poutineqc.deacoudre.tools.ItemStackManager;
 import me.poutineqc.deacoudre.tools.Utils;
 import org.bukkit.Bukkit;
@@ -55,7 +56,7 @@ public class ColorsGUI implements Listener {
 		} else {
 			icon = userCurrentItem;
 			icon.clearLore();
-			icon.addToLore(arena.getColorManager().getBlockMaterialName(userCurrentItem.getItem(), local));
+			icon.addToLore(ColorManager.getTranslatedMaterialName(userCurrentItem.getItem(), local));
 			icon.setTitle(ChatColor.translateAlternateColorCodes('&', local.colorGuiCurrent));
 		}
 
@@ -154,7 +155,7 @@ public class ColorsGUI implements Listener {
 		} else {
 			user.setColor(correspondingArenaItem.get());
 			local.sendMsg(player,
-					Utils.replaceInComponent(local.colorChoosen, "%material%", arena.getColorManager().getBlockMaterialName(user.getColor().getItem(), local))
+					Utils.replaceInComponent(local.colorChoosen, "%material%", ColorManager.getTranslatedMaterialName(user.getColor().getItem(), local))
 			);
 		}
 

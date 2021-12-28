@@ -144,7 +144,7 @@ public class ColorManager {
 		return allAuthorizedGameBlocks.stream().filter(item -> item.getItem().getType() == material).findFirst();
 	}
 
-	public Component getBlockMaterialName(ItemStack item, Language local) {
+	public static Component getTranslatedMaterialName(ItemStack item, Language local) {
 		return Component.join(
 				LegacyComponentSerializer.legacyAmpersand().deserialize(local.keyWordMaterialPrefix),
 				Component.translatable(item.getTranslationKey())

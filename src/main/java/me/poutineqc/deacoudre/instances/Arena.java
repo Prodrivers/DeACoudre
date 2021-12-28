@@ -784,7 +784,7 @@ public class Arena {
 
 				local.sendMsg(
 						user.getPlayer(),
-						Utils.replaceInComponent(local.startRandomColor, "%material%", colorManager.getBlockMaterialName(user.getColor().getItem(), local))
+						Utils.replaceInComponent(local.startRandomColor, "%material%", ColorManager.getTranslatedMaterialName(user.getColor().getItem(), local))
 				);
 			}
 		}
