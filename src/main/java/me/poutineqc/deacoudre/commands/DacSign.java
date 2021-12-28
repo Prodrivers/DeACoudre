@@ -156,21 +156,12 @@ public class DacSign {
 			updateSigns(arena);
 		}
 
-		if(mysql.hasConnection()) {
-			mysql.update("INSERT INTO " + config.tablePrefix
-					+ "SIGNS (uuid, type ,locationWorld, locationX, locationY, locationZ) " + "VALUES ('" + uuid + "','"
-					+ type + "','" + location.getWorld().getName() + "','" + location.getBlockX() + "','"
-					+ location.getBlockY() + "','" + location.getBlockZ() + "');");
-
-		} else {
-			signData.set("signs." + uuid.toString() + ".type", type.toString());
-			signData.set("signs." + uuid.toString() + ".location.world", location.getWorld().getName());
-			signData.set("signs." + uuid.toString() + ".location.X", location.getBlockX());
-			signData.set("signs." + uuid.toString() + ".location.Y", location.getBlockY());
-			signData.set("signs." + uuid.toString() + ".location.Z", location.getBlockZ());
-			saveSignData();
-		}
-
+		signData.set("signs." + uuid.toString() + ".type", type.toString());
+		signData.set("signs." + uuid.toString() + ".location.world", location.getWorld().getName());
+		signData.set("signs." + uuid.toString() + ".location.X", location.getBlockX());
+		signData.set("signs." + uuid.toString() + ".location.Y", location.getBlockY());
+		signData.set("signs." + uuid.toString() + ".location.Z", location.getBlockZ());
+		saveSignData();
 	}
 
 	private static void loadSignData() {
@@ -180,34 +171,17 @@ public class DacSign {
 	public static void loadAllSigns() {
 		signs.clear();
 
-		if(mysql.hasConnection()) {
-			ResultSet query = mysql.query("SELECT * FROM " + config.tablePrefix + "SIGNS;");
-			try {
-				while(query.next()) {
-					UUID uuid = UUID.fromString(query.getString("uuid"));
-					SignType type = getSignType(query.getString("type"));
-					Location location = new Location(Bukkit.getWorld(query.getString("locationWorld")),
-							query.getInt("locationX"), query.getInt("locationY"), query.getInt("locationZ"));
+		if(!signData.contains("signs")) {
+			return;
+		}
 
-					new DacSign(uuid, location, type);
-				}
-			} catch(SQLException e) {
-				Log.severe("Error on signs retrieval.", e);
-			}
-		} else {
-			if(!signData.contains("signs")) {
-				return;
-			}
+		for(String uuid : signData.getConfigurationSection("signs").getKeys(false)) {
+			ConfigurationSection cs = signData.getConfigurationSection("signs." + uuid);
+			SignType type = getSignType(cs.getString("type", UUID.randomUUID().toString()));
+			Location location = new Location(Bukkit.getWorld(cs.getString("location.world")),
+					cs.getInt("location.X", 0), cs.getInt("location.Y", 0), cs.getInt("location.Z"));
 
-			for(String uuid : signData.getConfigurationSection("signs").getKeys(false)) {
-				ConfigurationSection cs = signData.getConfigurationSection("signs." + uuid);
-				SignType type = getSignType(cs.getString("type", UUID.randomUUID().toString()));
-				Location location = new Location(Bukkit.getWorld(cs.getString("location.world")),
-						cs.getInt("location.X", 0), cs.getInt("location.Y", 0), cs.getInt("location.Z"));
-
-				new DacSign(UUID.fromString(uuid), location, type);
-			}
-
+			new DacSign(UUID.fromString(uuid), location, type);
 		}
 
 		updateSigns();
@@ -361,12 +335,8 @@ public class DacSign {
 
 		signs.remove(this);
 
-		if(mysql.hasConnection()) {
-			mysql.update("DELETE FROM " + config.tablePrefix + "SIGNS WHERE uuid='" + uuid.toString() + "';");
-		} else {
-			signData.set("signs." + uuid.toString(), null);
-			saveSignData();
-		}
+		signData.set("signs." + uuid.toString(), null);
+		saveSignData();
 	}
 
 	private void updateGameState(Sign sign, Arena arena) {
