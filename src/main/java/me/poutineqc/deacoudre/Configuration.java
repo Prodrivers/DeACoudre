@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class Configuration {
@@ -19,6 +20,9 @@ public class Configuration {
 	public final List<ItemStack> rewardItems = new ArrayList<>();
 	private final File configFile;
 	public List<String> dispatchCommands = new ArrayList<>();
+
+	public Level logLevel;
+
 	public boolean introInFrontOfEveryMessage;
 	public String language;
 	public boolean verbose;
@@ -66,6 +70,11 @@ public class Configuration {
 
 	public void loadConfig(Plugin plugin) {
 		config = YamlConfiguration.loadConfiguration(configFile);
+
+		logLevel = Level.parse(config.getString("logLevel", Level.INFO.toString()));
+		if(logLevel == null) {
+			logLevel = Level.INFO;
+		}
 
 		introInFrontOfEveryMessage = config.getBoolean("introInFrontOfEveryMessage", true);
 

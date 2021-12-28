@@ -56,6 +56,10 @@ public class DeACoudre extends JavaPlugin {
 		NMS_VERSION = getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
 
 		config = new Configuration(this);
+
+		// Setup logging
+		Log.init(getLogger(), config.logLevel);
+
 		if(!initialiseEconomy()) {
 			return;
 		}
