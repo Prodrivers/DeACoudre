@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
@@ -113,5 +114,14 @@ public class ItemStackManager {
 
 	public void setAvailable(boolean available) {
 		this.available = available;
+	}
+
+	public DyeColor getColor() {
+		try {
+			String colorName = item.getType().toString().split("_", 2)[0];
+			return DyeColor.valueOf(colorName);
+		} catch(IllegalArgumentException e) {
+			return null;
+		}
 	}
 }
