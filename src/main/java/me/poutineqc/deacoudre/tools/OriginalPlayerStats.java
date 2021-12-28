@@ -1,11 +1,14 @@
 package me.poutineqc.deacoudre.tools;
 
 import me.poutineqc.deacoudre.Configuration;
+import me.poutineqc.deacoudre.Log;
+import me.poutineqc.deacoudre.PlayerData;
 import me.poutineqc.deacoudre.instances.Arena;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -13,8 +16,11 @@ import org.bukkit.util.Vector;
 import java.util.Collection;
 
 public class OriginalPlayerStats {
+	private final PlayerData playerData;
 
-	private final Configuration config;
+	private final boolean teleportAfterEnding;
+	private final boolean invisibleFlyingSpectators;
+
 	private final Location location;
 	private int level;
 	private float experience;
@@ -26,8 +32,10 @@ public class OriginalPlayerStats {
 	private boolean flying;
 	private boolean allowFlight;
 
-	public OriginalPlayerStats(Configuration config, Player player) {
-		this.config = config;
+	public OriginalPlayerStats(Configuration config, PlayerData playerData, Player player) {
+		this.teleportAfterEnding = config.teleportAfterEnding;
+		this.invisibleFlyingSpectators = config.invisibleFlyingSpectators;
+		this.playerData = playerData;
 		this.location = player.getLocation();
 	}
 
@@ -52,9 +60,27 @@ public class OriginalPlayerStats {
 		player.setSaturation(saturation);
 		player.addPotionEffects(effects);
 
-		if(config.teleportAfterEnding) {
+		ItemStack[] inventoryContents = playerData.getSavedInventoryContents(player);
+
+		if (inventoryContents != null) {
+			player.getInventory().clear();
+			player.getInventory().setContents(inventoryContents);
+
+			ItemStack[] armorContents = playerData.getSavedArmorContents(player);
+
+			if (armorContents != null) {
+				player.getInventory().setArmorContents(armorContents);
+			} else {
+				Log.warning("No armor to restore for player " + player.getName());
+			}
+		} else {
+			Log.warning("No inventory to restore for player " + player.getName());
+		}
+		playerData.resetSavedInventoryArmor(player);
+
+		if(teleportAfterEnding) {
 			player.teleport(location);
-		} else if(config.invisibleFlyingSpectators) {
+		} else if(invisibleFlyingSpectators) {
 			player.setFallDistance(-255);
 		}
 	}
@@ -74,7 +100,7 @@ public class OriginalPlayerStats {
 			player.removePotionEffect(effect.getType());
 		}
 
-		if(config.invisibleFlyingSpectators) {
+		if(invisibleFlyingSpectators) {
 			spectatorStats(player, arena, spectator);
 		}
 	}
@@ -111,5 +137,13 @@ public class OriginalPlayerStats {
 		this.saturation = player.getSaturation();
 		this.effects = player.getActivePotionEffects();
 
+		playerData.saveInventoryArmor(player);
+
+		player.getInventory().clear();
+		player.getInventory().setHelmet(null);
+		player.getInventory().setChestplate(null);
+		player.getInventory().setLeggings(null);
+		player.getInventory().setBoots(null);
+		player.updateInventory();
 	}
 }

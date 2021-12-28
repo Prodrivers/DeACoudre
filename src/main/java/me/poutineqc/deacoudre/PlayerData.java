@@ -9,12 +9,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
@@ -194,5 +197,55 @@ public class PlayerData implements Listener {
 
 	public String getLatestVersion() {
 		return latestVersion;
+	}
+
+	/**
+	 * Save the Player's Inventory and Armor contents.
+	 * @param player player
+	 */
+	public void saveInventoryArmor(Player player) {
+		playerData.set("players." + player.getUniqueId() + ".inventory", Arrays.asList(player.getInventory().getContents()));
+		playerData.set("players." + player.getUniqueId() + ".armor", Arrays.asList(player.getInventory().getArmorContents()));
+		savePlayerData();
+	}
+
+	/**
+	 * Retrieve the Player's saved Inventory contents.
+	 * @param player player
+	 * @return player's inventory contents
+	 */
+	public ItemStack[] getSavedInventoryContents(Player player) {
+		try {
+			@SuppressWarnings("unchecked") List<ItemStack> contents = (List<ItemStack>) playerData.getList("players." + player.getUniqueId() + ".inventory");
+			return contents != null ? contents.toArray(new ItemStack[0]) : null;
+		} catch(ClassCastException e) {
+			Log.severe("Could not read player's " + player.getName() + " inventory.", e);
+		}
+		return null;
+	}
+
+	/**
+	 * Retrieve the Player's saved Armor contents.
+	 * @param player player
+	 * @return player's armor contents
+	 */
+	public ItemStack[] getSavedArmorContents(Player player) {
+		try {
+			@SuppressWarnings("unchecked") List<ItemStack> contents = (List<ItemStack>) playerData.getList("players." + player.getUniqueId() + ".armor");
+			return contents != null ? contents.toArray(new ItemStack[0]) : null;
+		} catch(ClassCastException e) {
+			Log.severe("Could not read player's " + player.getName() + " inventory.", e);
+		}
+		return null;
+	}
+
+	/**
+	 * Reset a Player's saved Inventory and Armor contents.
+	 * @param player player
+	 */
+	public void resetSavedInventoryArmor(Player player) {
+		playerData.set("players." + player.getUniqueId() + ".inventory", null);
+		playerData.set("players." + player.getUniqueId() + ".armor", null);
+		savePlayerData();
 	}
 }

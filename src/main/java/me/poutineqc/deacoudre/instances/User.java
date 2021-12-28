@@ -2,6 +2,7 @@ package me.poutineqc.deacoudre.instances;
 
 import me.poutineqc.deacoudre.Configuration;
 import me.poutineqc.deacoudre.DeACoudre;
+import me.poutineqc.deacoudre.PlayerData;
 import me.poutineqc.deacoudre.tools.ItemStackManager;
 import me.poutineqc.deacoudre.tools.OriginalPlayerStats;
 import org.bukkit.ChatColor;
@@ -11,7 +12,6 @@ import org.bukkit.scoreboard.Score;
 import java.util.UUID;
 
 public class User {
-
 	private static Configuration config;
 
 	private Player player;
@@ -31,7 +31,7 @@ public class User {
 		User.config = plugin.getConfiguration();
 	}
 
-	public User(Player player, Arena arena, boolean tpAuto, boolean eliminated) {
+	public User(PlayerData playerData, Player player, Arena arena, boolean tpAuto, boolean eliminated) {
 		this.player = player;
 		this.arena = arena;
 		this.name = ChatColor.stripColor(player.getName());
@@ -47,7 +47,7 @@ public class User {
 
 		player.setScoreboard(arena.getObjective().getScoreboard());
 
-		originalStats = new OriginalPlayerStats(config, player);
+		originalStats = new OriginalPlayerStats(config, playerData, player);
 
 		if(tpAuto) {
 			player.teleport(arena.getLobby());

@@ -614,7 +614,7 @@ public class Arena {
 			}
 		}
 
-		User user = new User(player, this, tpAuto, eliminated);
+		User user = new User(playerData, player, this, tpAuto, eliminated);
 		users.add(user);
 
 		if(player.getLocation().distance(lobby) > 1 && tpAuto) {
