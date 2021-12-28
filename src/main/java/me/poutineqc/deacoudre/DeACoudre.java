@@ -39,7 +39,6 @@ public class DeACoudre extends JavaPlugin {
 	private JoinGUI joinGUI;
 	private DaC dac;
 	private DacSign signData;
-	private Updater updater;
 
 	public static boolean isEconomyEnabled() {
 		return econ != null;
@@ -80,7 +79,6 @@ public class DeACoudre extends JavaPlugin {
 		signData = new DacSign(this);
 		new Arena(this);
 
-		updater = new Updater(this);
 		registerEvents();
 
 		getCommand("dac").setExecutor(dac);
@@ -159,7 +157,6 @@ public class DeACoudre extends JavaPlugin {
 
 	public void onDisable() {
 		PluginDescriptionFile pdfFile = getDescription();
-		updater.stop();
 		Logger logger = getLogger();
 
 		logger.info(pdfFile.getName() + " has been disabled.");
@@ -182,7 +179,6 @@ public class DeACoudre extends JavaPlugin {
 		dac = new DaC(this);
 		pm.registerEvents(new BlockBreak(), this);
 		pm.registerEvents(new PlayerInteract(this, mainLanguage), this);
-		pm.registerEvents(updater, this);
 
 		pm.registerEvents(new ElytraToggle(), this);
 	}
