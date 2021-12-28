@@ -102,13 +102,8 @@ public class Arena {
 						ChatColor.GOLD + local.keyWordGeneralMaximum + " = " + ChatColor.AQUA + maxAmountPlayer)
 				.setScore(maxAmountPlayer);
 
-		if(mysql.hasConnection()) {
-			mysql.update("INSERT INTO " + config.tablePrefix + "ARENAS (name, world) " + "VALUES ('" + name
-					+ "','" + world.getName() + "');");
-		} else {
-			arenaData.getData().set("arenas." + name + ".world", world.getName());
-			arenaData.saveArenaData();
-		}
+		arenaData.getData().set("arenas." + name + ".world", world.getName());
+		arenaData.saveArenaData();
 	}
 
 	public Arena(String name, World world, Location minPoint, Location maxPoint, Location lobby, Location plateform,
@@ -179,76 +174,45 @@ public class Arena {
 	public static void loadArenas() {
 		arenas = new ArrayList<>();
 
-		if(mysql.hasConnection()) {
-			try {
-				ResultSet arenas = mysql.query("SELECT * FROM " + config.tablePrefix + "ARENAS;");
-				while(arenas.next()) {
-					String name = arenas.getString("name");
-					World world = Bukkit.getWorld(arenas.getString("world"));
+		if(!arenaData.getData().contains("arenas")) {
+			return;
+		}
 
-					Location minPoint = new Location(world, arenas.getInt("minPointX"), arenas.getInt("minPointY"),
-							arenas.getInt("minPointZ"));
-					Location maxPoint = new Location(world, arenas.getInt("maxPointX"), arenas.getInt("maxPointY"),
-							arenas.getInt("maxPointZ"));
+		for(String arenaName : arenaData.getData().getConfigurationSection("arenas").getKeys(false)) {
 
-					Location lobby = new Location(world, arenas.getDouble("lobbyX"), arenas.getDouble("lobbyY"),
-							arenas.getDouble("lobbyZ"));
-					lobby.setPitch(arenas.getFloat("lobbyPitch"));
-					lobby.setYaw(arenas.getFloat("lobbyYaw"));
+			ConfigurationSection cs = arenaData.getData().getConfigurationSection("arenas." + arenaName);
+			assert cs != null;
+			ConfigurationSection ccs;
 
-					Location plateform = new Location(world, arenas.getDouble("plateformX"),
-							arenas.getDouble("plateformY"), arenas.getDouble("plateformZ"));
-					plateform.setPitch(arenas.getFloat("plateformPitch"));
-					plateform.setYaw(arenas.getFloat("plateformYaw"));
+			playerData.getData().set("arenas." + arenaName + ".material", null);
+			playerData.savePlayerData();
 
-					int minAmountPlayer = arenas.getInt("minAmountPlayer");
-					int maxAmountPlayer = arenas.getInt("maxAmountPlayer");
-					new Arena(name, world, minPoint, maxPoint, lobby, plateform, minAmountPlayer, maxAmountPlayer);
-				}
-			} catch(SQLException e) {
-				Log.info("[MySQL] Error while loading arenas.");
-			}
-		} else {
-			if(!arenaData.getData().contains("arenas")) {
-				return;
-			}
+			String worldName = cs.getString("world");
+			assert worldName != null;
+			World world = Bukkit.getWorld(worldName);
+			assert world != null;
+			int minAmountPlayer = cs.getInt("minPlayer", 2);
+			int maxAmountPlayer = cs.getInt("maxPlayer", 8);
 
-			for(String arenaName : arenaData.getData().getConfigurationSection("arenas").getKeys(false)) {
+			ccs = cs.getConfigurationSection("waterPool.minimum");
+			Location minPoint = new Location(world, ccs.getInt("x", 0), ccs.getInt("y", 0), ccs.getInt("z", 0));
 
-				ConfigurationSection cs = arenaData.getData().getConfigurationSection("arenas." + arenaName);
-				assert cs != null;
-				ConfigurationSection ccs;
+			ccs = cs.getConfigurationSection("waterPool.maximum");
+			Location maxPoint = new Location(world, ccs.getInt("x", 0), ccs.getInt("y", 0), ccs.getInt("z", 0));
 
-				playerData.getData().set("arenas." + arenaName + ".material", null);
-				playerData.savePlayerData();
+			ccs = cs.getConfigurationSection("lobby");
+			Location lobby = new Location(world, ccs.getDouble("x", 0), ccs.getDouble("y", 0),
+					ccs.getDouble("z", 0));
+			lobby.setPitch((float) ccs.getDouble("pitch", 0));
+			lobby.setYaw((float) ccs.getDouble("yaw", 0));
 
-				String worldName = cs.getString("world");
-				assert worldName != null;
-				World world = Bukkit.getWorld(worldName);
-				assert world != null;
-				int minAmountPlayer = cs.getInt("minPlayer", 2);
-				int maxAmountPlayer = cs.getInt("maxPlayer", 8);
+			ccs = cs.getConfigurationSection("plateform");
+			Location plateform = new Location(world, ccs.getDouble("x", 0), ccs.getDouble("y", 0),
+					ccs.getDouble("z", 0));
+			plateform.setPitch((float) ccs.getDouble("pitch", 0));
+			plateform.setYaw((float) ccs.getDouble("yaw", 0));
 
-				ccs = cs.getConfigurationSection("waterPool.minimum");
-				Location minPoint = new Location(world, ccs.getInt("x", 0), ccs.getInt("y", 0), ccs.getInt("z", 0));
-
-				ccs = cs.getConfigurationSection("waterPool.maximum");
-				Location maxPoint = new Location(world, ccs.getInt("x", 0), ccs.getInt("y", 0), ccs.getInt("z", 0));
-
-				ccs = cs.getConfigurationSection("lobby");
-				Location lobby = new Location(world, ccs.getDouble("x", 0), ccs.getDouble("y", 0),
-						ccs.getDouble("z", 0));
-				lobby.setPitch((float) ccs.getDouble("pitch", 0));
-				lobby.setYaw((float) ccs.getDouble("yaw", 0));
-
-				ccs = cs.getConfigurationSection("plateform");
-				Location plateform = new Location(world, ccs.getDouble("x", 0), ccs.getDouble("y", 0),
-						ccs.getDouble("z", 0));
-				plateform.setPitch((float) ccs.getDouble("pitch", 0));
-				plateform.setYaw((float) ccs.getDouble("yaw", 0));
-
-				new Arena(arenaName, world, minPoint, maxPoint, lobby, plateform, minAmountPlayer, maxAmountPlayer);
-			}
+			new Arena(arenaName, world, minPoint, maxPoint, lobby, plateform, minAmountPlayer, maxAmountPlayer);
 		}
 	}
 
@@ -344,12 +308,8 @@ public class Arena {
 		DacSign.arenaDelete(this);
 		arenas.remove(this);
 
-		if(mysql.hasConnection()) {
-			mysql.update("DELETE FROM " + config.tablePrefix + "ARENAS WHERE name='" + name + "';");
-		} else {
-			arenaData.getData().set("arenas." + name, null);
-			arenaData.saveArenaData();
-		}
+		arenaData.getData().set("arenas." + name, null);
+		arenaData.saveArenaData();
 	}
 
 	public boolean setPool(Player player) {
@@ -1464,20 +1424,14 @@ public class Arena {
 		lobby = player.getLocation();
 		lobby.add(new Vector(0, 0.5, 0));
 
-		if(mysql.hasConnection()) {
-			mysql.update("UPDATE " + config.tablePrefix + "ARENAS SET world='" + world.getName() + "',lobbyX='"
-					+ lobby.getX() + "',lobbyY='" + lobby.getY() + "',lobbyZ='" + lobby.getZ() + "',lobbyPitch='"
-					+ lobby.getPitch() + "',lobbyYaw='" + lobby.getYaw() + "' WHERE name='" + name + "';");
-		} else {
-			ConfigurationSection cs = arenaData.getData().getConfigurationSection("arenas." + name);
-			cs.set("world", world.getName());
-			cs.set("lobby.x", lobby.getX());
-			cs.set("lobby.y", lobby.getY());
-			cs.set("lobby.z", lobby.getZ());
-			cs.set("lobby.pitch", lobby.getPitch());
-			cs.set("lobby.yaw", lobby.getYaw());
-			arenaData.saveArenaData();
-		}
+		ConfigurationSection cs = arenaData.getData().getConfigurationSection("arenas." + name);
+		cs.set("world", world.getName());
+		cs.set("lobby.x", lobby.getX());
+		cs.set("lobby.y", lobby.getY());
+		cs.set("lobby.z", lobby.getZ());
+		cs.set("lobby.pitch", lobby.getPitch());
+		cs.set("lobby.yaw", lobby.getYaw());
+		arenaData.saveArenaData();
 
 		if(isReady()) {
 			gameState = GameState.READY;
