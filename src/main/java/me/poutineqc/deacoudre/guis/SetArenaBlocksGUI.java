@@ -36,14 +36,14 @@ public class SetArenaBlocksGUI implements Listener {
 			return;
 		}
 
+		if(event.getAction() == InventoryAction.NOTHING || event.getAction() == InventoryAction.UNKNOWN) {
+			return;
+		}
+
 		Language local = playerData.getLanguageOfPlayer(player);
 
 		if(!ChatColor.stripColor(event.getView().getTitle()).equalsIgnoreCase(ChatColor
 				.stripColor(ChatColor.translateAlternateColorCodes('&', local.editColorGuiTitle)))) {
-			return;
-		}
-
-		if(event.getAction() == InventoryAction.NOTHING || event.getAction() == InventoryAction.UNKNOWN) {
 			return;
 		}
 

@@ -30,16 +30,16 @@ public class JoinGUI implements Listener {
 
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
-		Inventory inv = event.getInventory();
 		Player player = (Player) event.getWhoClicked();
+
+		if(event.getAction().equals(InventoryAction.NOTHING) || event.getAction().equals(InventoryAction.UNKNOWN)) {
+			return;
+		}
+
 		Language local = playerData.getLanguageOfPlayer(player);
 
 		if(!ChatColor.stripColor(event.getView().getTitle()).equalsIgnoreCase(
 				ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', local.joinGuiTitle)))) {
-			return;
-		}
-
-		if(event.getAction().equals(InventoryAction.NOTHING) || event.getAction().equals(InventoryAction.UNKNOWN)) {
 			return;
 		}
 

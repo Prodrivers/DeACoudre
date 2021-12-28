@@ -109,16 +109,16 @@ public class ColorsGUI implements Listener {
 			return;
 		}
 
+		Arena arena = Arena.getArenaFromPlayer(player);
+		if(arena == null) {
+			return;
+		}
+		event.setCancelled(true);
+
 		Language local = playerData.getLanguageOfPlayer(player);
 
 		if(!ChatColor.stripColor(event.getView().getTitle()).equalsIgnoreCase(
 				ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', local.colorGuiTitle)))) {
-			return;
-		}
-
-		event.setCancelled(true);
-		Arena arena = Arena.getArenaFromPlayer(player);
-		if(arena == null) {
 			return;
 		}
 
