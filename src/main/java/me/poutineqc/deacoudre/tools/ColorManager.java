@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class ColorManager {
@@ -20,13 +19,11 @@ public class ColorManager {
 	private final Configuration config;
 	private final Arena arena;
 	private final ArenaData arenaData;
-	private final Logger logger;
 	private List<ItemStackManager> allAuthorizedGameBlocks;
 	private List<ItemStackManager> arenaBlocks;
 	private Set<Material> arenaMaterials;
 
 	public ColorManager(DeACoudre plugin, Arena arena) {
-		this.logger = plugin.getLogger();
 		this.mysql = plugin.getMySQL();
 		this.arenaData = plugin.getArenaData();
 		this.config = plugin.getConfiguration();

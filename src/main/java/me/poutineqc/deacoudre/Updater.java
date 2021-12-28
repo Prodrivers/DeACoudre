@@ -11,7 +11,6 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Logger;
 
 public final class Updater implements Listener {
 
@@ -45,7 +44,7 @@ public final class Updater implements Listener {
 		try {
 			lastVersion = getInfoFromServer();
 		} catch(IOException e) {
-			plugin.getLogger().warning("Could not find the latest version available.");
+			Log.warning("Could not find the latest version available.");
 			stop();
 			return;
 		}
@@ -76,16 +75,15 @@ public final class Updater implements Listener {
 	}
 
 	private void notifyConsole(DeACoudre plugin) {
-		Logger logger = plugin.getLogger();
-		logger.info("----------------------------");
-		logger.info("DeACoudre Updater");
-		logger.info("");
-		logger.info("An update for DeACoudre has been found!");
-		logger.info("DeACoudre " + latestVersion);
-		logger.info("You are running " + plugin.getDescription().getVersion());
-		logger.info("");
-		logger.info("Download at " + spigotPage);
-		logger.info("----------------------------");
+		Log.info("----------------------------");
+		Log.info("DeACoudre Updater");
+		Log.info("");
+		Log.info("An update for DeACoudre has been found!");
+		Log.info("DeACoudre " + latestVersion);
+		Log.info("You are running " + plugin.getDescription().getVersion());
+		Log.info("");
+		Log.info("Download at " + spigotPage);
+		Log.info("----------------------------");
 	}
 
 	private void notifyPlayer(Player player) {

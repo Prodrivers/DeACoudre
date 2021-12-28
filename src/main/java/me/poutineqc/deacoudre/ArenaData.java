@@ -1,6 +1,5 @@
 package me.poutineqc.deacoudre;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -20,7 +19,7 @@ public class ArenaData {
 			try {
 				arenaFile.createNewFile();
 			} catch(IOException e) {
-				Bukkit.getServer().getLogger().severe(ChatColor.RED + "Could not create arenaData.ylm.");
+				Log.severe(ChatColor.RED + "Could not create arenaData.ylm.");
 			}
 		}
 		loadArenaData();
@@ -34,7 +33,7 @@ public class ArenaData {
 		try {
 			arenaData.save(arenaFile);
 		} catch(IOException e) {
-			Bukkit.getServer().getLogger().severe(ChatColor.RED + "Could not save arenaData.yml!");
+			Log.severe(ChatColor.RED + "Could not save arenaData.yml!");
 		}
 	}
 

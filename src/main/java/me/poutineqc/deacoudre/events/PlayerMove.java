@@ -105,7 +105,7 @@ public class PlayerMove implements Listener {
 						DaCdone = query.getInt("DaCdone");
 					}
 				} catch(SQLException e) {
-					e.printStackTrace();
+					Log.severe("Error on player's number of DaC retrieval.", e);
 				}
 
 				mysql.update("UPDATE " + config.tablePrefix + "PLAYERS SET DaCdone='" + ++DaCdone + "' WHERE UUID='"

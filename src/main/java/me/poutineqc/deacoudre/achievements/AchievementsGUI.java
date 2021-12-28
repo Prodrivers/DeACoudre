@@ -100,7 +100,7 @@ public class AchievementsGUI implements Listener {
 					moneyGains = query.getDouble("money");
 				}
 			} catch(SQLException e) {
-				e.printStackTrace();
+				Log.severe("Could not get player parameters from database.", e);
 			}
 		} else {
 			gamesPlayed = playerData.getData().getInt("players." + UUID + ".gamesPlayed", 0);
@@ -177,7 +177,7 @@ public class AchievementsGUI implements Listener {
 							+ query.getInt("gamesPlayed"));
 				}
 			} catch(SQLException e) {
-				e.printStackTrace();
+				Log.severe("Error on player's number of played game retrieval.", e);
 			}
 		} else {
 			for(int i = 0; i < 10 && i < TopManager.getGames().size(); i++) {
@@ -205,7 +205,7 @@ public class AchievementsGUI implements Listener {
 							+ query.getInt("gamesWon"));
 				}
 			} catch(SQLException e) {
-				e.printStackTrace();
+				Log.severe("Error on player's number of games won retrieval.", e);
 			}
 		} else {
 			for(int i = 0; i < 10 && i < TopManager.getWon().size(); i++) {
@@ -233,7 +233,7 @@ public class AchievementsGUI implements Listener {
 							+ query.getInt("gamesLost"));
 				}
 			} catch(SQLException e) {
-				e.printStackTrace();
+				Log.severe("Error on player's number of games lost retrieval.", e);
 			}
 		} else {
 			for(int i = 0; i < 10 && i < TopManager.getLost().size(); i++) {
@@ -261,7 +261,7 @@ public class AchievementsGUI implements Listener {
 							+ query.getInt("DaCdone"));
 				}
 			} catch(SQLException e) {
-				e.printStackTrace();
+				Log.severe("Error on player's number of DaC done retrieval.", e);
 			}
 		} else {
 			for(int i = 0; i < 10 && i < TopManager.getDaCdone().size(); i++) {
@@ -311,7 +311,7 @@ public class AchievementsGUI implements Listener {
 							amount = query.getInt(challengePath[i].substring(1));
 						}
 					} catch(SQLException e) {
-						e.printStackTrace();
+						Log.severe("Error on player challenge " + challengePath[i].substring(1) + "  status retrieval.", e);
 					}
 				} else {
 					amount = playerData.getData().getInt("players." + UUID + challengePath[i], 0);
@@ -378,7 +378,7 @@ public class AchievementsGUI implements Listener {
 					moneyGains = query.getDouble("money");
 				}
 			} catch(SQLException e) {
-				e.printStackTrace();
+				Log.severe("Error on player data retrieval.", e);
 			}
 		} else {
 			gamesPlayed = playerData.getData().getInt("players." + UUID + ".gamesPlayed", 0);
@@ -470,7 +470,7 @@ public class AchievementsGUI implements Listener {
 						completed = query.getBoolean(challengePath[i].substring(12));
 					}
 				} catch(SQLException e) {
-					e.printStackTrace();
+					Log.severe("Error on player challenge " + challengePath[i].substring(12) + " status retrieval.", e);
 				}
 			} else {
 				completed = playerData.getData().getBoolean("players." + UUID + challengePath[i]);

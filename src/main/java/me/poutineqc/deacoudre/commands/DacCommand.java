@@ -1,6 +1,7 @@
 package me.poutineqc.deacoudre.commands;
 
 import me.poutineqc.deacoudre.DeACoudre;
+import me.poutineqc.deacoudre.Log;
 import me.poutineqc.deacoudre.Permissions;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -43,7 +44,7 @@ public class DacCommand {
 		if(local != null) {
 			plugin.saveResource("commands.yml", false);
 		} else {
-			plugin.getLogger().severe("Could not find commands.yml inside the jar file.");
+			Log.severe("Could not find commands.yml inside the jar file.");
 		}
 
 		commandData = YamlConfiguration.loadConfiguration(commandFile);

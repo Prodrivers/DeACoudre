@@ -51,7 +51,7 @@ public class MySQL {
 			connection = DriverManager.getConnection(
 					"jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true", user, password);
 		} catch(SQLException e) {
-			plugin.getLogger().info("[MySQL] The connection to MySQL couldn't be made! reason: " + e.getMessage());
+			Log.info("[MySQL] The connection to MySQL couldn't be made! reason: " + e.getMessage());
 		}
 	}
 
@@ -59,10 +59,10 @@ public class MySQL {
 		try {
 			if(connection != null) {
 				connection.close();
-				plugin.getLogger().info("[MySQL] The connection to MySQL is ended successfully!");
+				Log.info("[MySQL] The connection to MySQL is ended successfully!");
 			}
 		} catch(SQLException e) {
-			plugin.getLogger().info("[MySQL] The connection couldn't be closed! reason: " + e.getMessage());
+			Log.info("[MySQL] The connection couldn't be closed! reason: " + e.getMessage());
 		}
 	}
 
@@ -71,7 +71,6 @@ public class MySQL {
 			return Optional.of(connection.prepareStatement(qry));
 		} catch(SQLException e) {
 			connect();
-			System.err.println(e);
 		}
 		return Optional.empty();
 	}
@@ -83,7 +82,7 @@ public class MySQL {
 			st.close();
 		} catch(SQLException e) {
 			connect();
-			System.err.println(e);
+			Log.severe("Error on SQL update.", e);
 		}
 	}
 
@@ -98,7 +97,7 @@ public class MySQL {
 			rs = st.executeQuery();
 		} catch(SQLException e) {
 			connect();
-			System.err.println(e);
+			Log.severe("Error on SQL query.", e);
 		}
 		return rs;
 	}

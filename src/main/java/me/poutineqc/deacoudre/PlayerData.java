@@ -39,7 +39,7 @@ public class PlayerData implements Listener {
 			try {
 				playerFile.createNewFile();
 			} catch(IOException e) {
-				Bukkit.getServer().getLogger().severe(ChatColor.RED + "Could not create playerData.ylm.");
+				Log.severe(ChatColor.RED + "Could not create playerData.ylm.");
 			}
 		}
 
@@ -54,7 +54,7 @@ public class PlayerData implements Listener {
 		try {
 			playerData.save(playerFile);
 		} catch(IOException e) {
-			Bukkit.getServer().getLogger().severe(ChatColor.RED + "Could not save arenaData.yml!");
+			Log.severe(ChatColor.RED + "Could not save arenaData.yml!");
 		}
 	}
 
@@ -78,7 +78,7 @@ public class PlayerData implements Listener {
 					originalPlayerName.put(query.getString("UUID"), query.getString("name"));
 				}
 			} catch(SQLException e) {
-				e.printStackTrace();
+				Log.severe("Could not get player names from database.", e);
 			}
 		} else {
 			if(playerData.contains("players")) {
@@ -153,7 +153,7 @@ public class PlayerData implements Listener {
 				}
 
 			} catch(SQLException e) {
-				e.printStackTrace();
+				Log.severe("Error on player locale retrieval.", e);
 			}
 		} else {
 			fileName = playerData.getString("players." + player.getUniqueId() + ".language", null);

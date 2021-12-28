@@ -30,7 +30,6 @@ import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class Arena {
@@ -155,24 +154,22 @@ public class Arena {
 						ChatColor.GOLD + local.keyWordGeneralMaximum + " = " + ChatColor.AQUA + maxAmountPlayer)
 				.setScore(maxAmountPlayer);
 
-		Logger logger = plugin.getLogger();
-
 		if(this.minAmountPlayer < 2) {
-			logger.info("The min amount of players for the arena " + name + " can't be below 2.");
-			logger.info("Using by default '2'.");
+			Log.info("The min amount of players for the arena " + name + " can't be below 2.");
+			Log.info("Using by default '2'.");
 			this.minAmountPlayer = 2;
 		}
 
 		if(this.maxAmountPlayer > 12) {
-			logger.info("The max amount of players for the arena " + name + " can't be above 12.");
-			logger.info("Using by default 12.");
+			Log.info("The max amount of players for the arena " + name + " can't be above 12.");
+			Log.info("Using by default 12.");
 			this.maxAmountPlayer = 12;
 		}
 
 		if(this.maxAmountPlayer > colorManager.getAvailableArenaBlocks().size()) {
-			logger.info("The max amount of players for the arena " + name
+			Log.info("The max amount of players for the arena " + name
 					+ " can't be above the amount of available colors.");
-			logger.info("Using by default " + colorManager.getAvailableArenaBlocks().size() + ".");
+			Log.info("Using by default " + colorManager.getAvailableArenaBlocks().size() + ".");
 			this.maxAmountPlayer = colorManager.getAvailableArenaBlocks().size();
 		}
 
@@ -209,7 +206,7 @@ public class Arena {
 					new Arena(name, world, minPoint, maxPoint, lobby, plateform, minAmountPlayer, maxAmountPlayer);
 				}
 			} catch(SQLException e) {
-				plugin.getLogger().info("[MySQL] Error while loading arenas.");
+				Log.info("[MySQL] Error while loading arenas.");
 			}
 		} else {
 			if(!arenaData.getData().contains("arenas")) {
@@ -339,7 +336,7 @@ public class Arena {
 			method.invoke(craftTeam, Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
 			method.setAccessible(false);
 		} catch(Exception e) {
-			e.printStackTrace();
+			Log.severe("Error on name tag visibility setting.", e);
 		}
 	}
 
@@ -762,7 +759,7 @@ public class Arena {
 					gameLost = query.getInt("gamesLost");
 				}
 			} catch(SQLException e) {
-				e.printStackTrace();
+				Log.severe("Error on player's number of lost games retrieval.", e);
 			}
 
 			mysql.update("UPDATE " + config.tablePrefix + "PLAYERS SET gamesLost='" + ++gameLost + "' WHERE UUID='"
@@ -792,7 +789,7 @@ public class Arena {
 					timePlayed = query.getInt("timePlayed");
 				}
 			} catch(SQLException e) {
-				e.printStackTrace();
+				Log.severe("Error on player's number of games played retrieval.", e);
 			}
 		} else {
 			games = playerData.getData().getInt("players." + user.getUUID() + ".gamesPlayed", 0);
@@ -1080,7 +1077,7 @@ public class Arena {
 							gamesWon = query.getInt("gamesWon");
 						}
 					} catch(SQLException e) {
-						e.printStackTrace();
+						Log.severe("Error on player's number of won games retrieval.", e);
 					}
 
 					mysql.update("UPDATE " + config.tablePrefix + "PLAYERS SET gamesWon='" + ++gamesWon
@@ -1133,7 +1130,7 @@ public class Arena {
 								moneyGains = query.getDouble("money");
 							}
 						} catch(SQLException e) {
-							e.printStackTrace();
+							Log.severe("Error on player's money retrieval.", e);
 						}
 
 						mysql.update("UPDATE " + config.tablePrefix + "PLAYERS SET money='" + (moneyGains + newReward)

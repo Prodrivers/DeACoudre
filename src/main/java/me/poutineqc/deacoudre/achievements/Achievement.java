@@ -47,7 +47,7 @@ public class Achievement {
 			if(local != null) {
 				plugin.saveResource("achievements.yml", false);
 			} else {
-				plugin.getLogger().info("Could not find achievements.yml - Using default (en-US)");
+				Log.info("Could not find achievements.yml - Using default (en-US)");
 			}
 		}
 
@@ -69,8 +69,7 @@ public class Achievement {
 				String[] individualData = readData.get(j).split(";");
 
 				if(individualData.length < 2) {
-					plugin.getLogger()
-							.info("Could not load the " + j + "'th data from the " + i + "'th achievement type.1");
+					Log.info("Could not load the " + j + "'th data from the " + i + "'th achievement type.1");
 					continue;
 				}
 
@@ -79,8 +78,7 @@ public class Achievement {
 					double reward = Double.parseDouble(individualData[1]);
 					achievements.get(i).add(new AchievementsObject(level, reward));
 				} catch(NumberFormatException e) {
-					plugin.getLogger()
-							.info("Could not load the " + j + "'th data from the " + i + "'th achievement type.2");
+					Log.info("Could not load the " + j + "'th data from the " + i + "'th achievement type.2");
 					continue;
 				}
 			}
@@ -128,7 +126,7 @@ public class Achievement {
 								level = query.getInt(toCheck.substring(1));
 							}
 						} catch(SQLException e) {
-							e.printStackTrace();
+							Log.severe("Error on player achievement " + toCheck.substring(1) + " retrieval.", e);
 						}
 					} else {
 						level = playerData.getData().getInt("players." + player.getUniqueId() + toCheck, 0);
@@ -156,7 +154,7 @@ public class Achievement {
 							completed = query.getBoolean(toCheck.substring(12));
 						}
 					} catch(SQLException e) {
-						e.printStackTrace();
+						Log.severe("Error on player achievement " + toCheck.substring(12) + " retrieval.", e);
 					}
 				} else {
 					completed = playerData.getData().getBoolean("players." + player.getUniqueId() + toCheck,
@@ -215,7 +213,7 @@ public class Achievement {
 						previousAmount = query.getDouble("money");
 					}
 				} catch(SQLException e) {
-					e.printStackTrace();
+					Log.severe("Error on player's money retrieval.", e);
 				}
 
 				mysql.update("UPDATE " + config.tablePrefix + "PLAYERS SET money='" + (previousAmount + rewardAmount)

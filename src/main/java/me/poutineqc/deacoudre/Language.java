@@ -236,7 +236,7 @@ public class Language {
 			if(local != null) {
 				plugin.saveResource("LanguageFiles/" + fileName + ".yml", false);
 			} else {
-				plugin.getLogger().info("Could not find " + fileName + ".yml");
+				Log.info("Could not find " + fileName + ".yml");
 			}
 		}
 

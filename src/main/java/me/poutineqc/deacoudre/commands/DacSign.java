@@ -41,7 +41,7 @@ public class DacSign {
 			try {
 				signFile.createNewFile();
 			} catch(IOException e) {
-				Bukkit.getServer().getLogger().severe(ChatColor.RED + "Could not create signData.ylm.");
+				Log.severe(ChatColor.RED + "Could not create signData.ylm.");
 			}
 		}
 
@@ -192,7 +192,7 @@ public class DacSign {
 					new DacSign(uuid, location, type);
 				}
 			} catch(SQLException e) {
-				e.printStackTrace();
+				Log.severe("Error on signs retrieval.", e);
 			}
 		} else {
 			if(!signData.contains("signs")) {
@@ -345,7 +345,7 @@ public class DacSign {
 		try {
 			signData.save(signFile);
 		} catch(IOException e) {
-			Bukkit.getServer().getLogger().severe(ChatColor.RED + "Could not save signData.yml!");
+			Log.severe(ChatColor.RED + "Could not save signData.yml!");
 		}
 	}
 

@@ -90,7 +90,7 @@ public class DeACoudre extends JavaPlugin {
 			metrics = new Metrics(this);
 			metrics.start();
 		} catch(IOException e) {
-			e.printStackTrace();
+			Log.severe("Error on Metrics initialization.", e);
 		}
 
 		logger.info(pdfFile.getName() + " has been enabled (v" + pdfFile.getVersion() + ")");

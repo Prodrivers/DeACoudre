@@ -276,7 +276,7 @@ public class DaC implements CommandExecutor {
 											+ moneyGains + "');");
 								}
 							} catch(SQLException e) {
-								e.printStackTrace();
+								Log.severe("Error on player data conversion.", e);
 							}
 						}
 					}
@@ -335,7 +335,7 @@ public class DaC implements CommandExecutor {
 
 								}
 							} catch(SQLException e) {
-								e.printStackTrace();
+								Log.severe("Error on arena retrieval.", e);
 							}
 						}
 					}
@@ -366,7 +366,7 @@ public class DaC implements CommandExecutor {
 
 								}
 							} catch(SQLException e) {
-								e.printStackTrace();
+								Log.severe("Error on signs retrieval.", e);
 							}
 						}
 					}

@@ -105,7 +105,7 @@ public class Configuration {
 					try {
 						return Material.valueOf(materialName);
 					} catch(IllegalArgumentException e) {
-						plugin.getLogger().info("Usable block named " + materialName + " does not exists. Ignoring.");
+						Log.info("Usable block named " + materialName + " does not exists. Ignoring.");
 						return null;
 					}
 				})
@@ -151,8 +151,8 @@ public class Configuration {
 			try {
 				material = Material.valueOf(item[0]);
 			} catch(IllegalArgumentException e) {
-				plugin.getLogger().info("Error while trying to load the Item: " + items);
-				plugin.getLogger().info("Item not found. Ignoring...");
+				Log.info("Error while trying to load the Item: " + items);
+				Log.info("Item not found. Ignoring...");
 				continue;
 			}
 			int amount = 1;
@@ -164,8 +164,8 @@ public class Configuration {
 				}
 
 				if(amount > 64) {
-					plugin.getLogger().info("Error while trying to load the Item: " + items);
-					plugin.getLogger().info("Too much items. Ignoring..");
+					Log.info("Error while trying to load the Item: " + items);
+					Log.info("Too much items. Ignoring..");
 					continue;
 				}
 
@@ -174,8 +174,8 @@ public class Configuration {
 				}
 
 			} catch(NumberFormatException e) {
-				plugin.getLogger().info("Error while trying to load the Item: " + items);
-				plugin.getLogger().info("Value not a number. Ignoring..");
+				Log.info("Error while trying to load the Item: " + items);
+				Log.info("Value not a number. Ignoring..");
 				continue;
 			}
 
