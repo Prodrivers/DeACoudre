@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class ColorsGUI implements Listener {
-
 	private final PlayerData playerData;
 	private final Achievement achievements;
 
@@ -99,7 +98,6 @@ public class ColorsGUI implements Listener {
 		icon.addToInventory(inv);
 
 		player.openInventory(inv);
-
 	}
 
 	@EventHandler
@@ -141,6 +139,7 @@ public class ColorsGUI implements Listener {
 				.equalsIgnoreCase(itemName)) {
 			user.removeColor();
 			local.sendMsg(player, local.colorRandom);
+			InventoryBar.giveLobbyTools(user, local);
 			player.closeInventory();
 		}
 
@@ -158,6 +157,8 @@ public class ColorsGUI implements Listener {
 					Utils.replaceInComponent(local.colorChoosen, "%material%", ColorManager.getTranslatedMaterialName(user.getColor().getItem(), local))
 			);
 		}
+
+		InventoryBar.giveLobbyTools(user, local);
 
 		player.closeInventory();
 	}

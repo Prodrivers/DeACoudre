@@ -8,6 +8,7 @@ import me.poutineqc.deacoudre.commands.DacCommand;
 import me.poutineqc.deacoudre.commands.DacSign;
 import me.poutineqc.deacoudre.events.*;
 import me.poutineqc.deacoudre.guis.ColorsGUI;
+import me.poutineqc.deacoudre.guis.InventoryBar;
 import me.poutineqc.deacoudre.guis.JoinGUI;
 import me.poutineqc.deacoudre.guis.SetArenaBlocksGUI;
 import me.poutineqc.deacoudre.instances.Arena;
@@ -176,6 +177,7 @@ public class DeACoudre extends JavaPlugin {
 		pm.registerEvents(achievementsGUI, this);
 		pm.registerEvents(new ColorsGUI(this), this);
 		pm.registerEvents(joinGUI, this);
+		pm.registerEvents(new InventoryBar(this), this);
 		dac = new DaC(this);
 		pm.registerEvents(new BlockBreak(), this);
 		pm.registerEvents(new PlayerInteract(this, mainLanguage), this);

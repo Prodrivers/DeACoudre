@@ -9,6 +9,7 @@ import me.poutineqc.deacoudre.*;
 import me.poutineqc.deacoudre.achievements.Achievement;
 import me.poutineqc.deacoudre.commands.DacSign;
 import me.poutineqc.deacoudre.events.PlayerDamage;
+import me.poutineqc.deacoudre.guis.InventoryBar;
 import me.poutineqc.deacoudre.tools.ColorManager;
 import me.poutineqc.deacoudre.tools.Utils;
 import net.kyori.adventure.text.Component;
@@ -581,6 +582,8 @@ public class Arena {
 			return;
 		}
 
+		InventoryBar.giveLobbyTools(user, local);
+
 		DacSign.updateSigns(this);
 
 		if(!eliminated) {
@@ -787,6 +790,8 @@ public class Arena {
 						Utils.replaceInComponent(local.startRandomColor, "%material%", ColorManager.getTranslatedMaterialName(user.getColor().getItem(), local))
 				);
 			}
+
+			InventoryBar.giveGameTools(user);
 		}
 
 		if(!forceStart) {

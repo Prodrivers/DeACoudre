@@ -110,6 +110,9 @@ public class Language {
 	public String keyWordGameStateReady;
 	public String colorGuiTitle;
 	public String colorGuiCurrent;
+	public Component colorGuiOpenItemTitle;
+	public Component colorGuiOpenItemColorSelectedTitle;
+	public Component colorGuiOpenItemColorSelectedLore;
 	public String errorArenaNotExist;
 	public Component colorChoosen;
 	public String colorRandom;
@@ -314,6 +317,15 @@ public class Language {
 
 		colorGuiTitle = languageData.getString("colorGuiTitle", "&6Choose Color &0: &3DeACoudre");
 		colorGuiCurrent = languageData.getString("colorGuiCurrent", "Current Color:");
+		colorGuiOpenItemTitle = LegacyComponentSerializer.legacyAmpersand().deserialize(
+				languageData.getString("colorGuiOpenItemTitle", "&6Select your color")
+		);
+		colorGuiOpenItemColorSelectedTitle = LegacyComponentSerializer.legacyAmpersand().deserialize(
+				languageData.getString("colorGuiOpenItemColorSelectedTitle", "&6Color selected: &f%material%")
+		);
+		colorGuiOpenItemColorSelectedLore = LegacyComponentSerializer.legacyAmpersand().deserialize(
+				languageData.getString("colorGuiOpenItemColorSelectedLore", "&6Select your color")
+		);
 		colorChoosen = LegacyComponentSerializer.legacyAmpersand().deserialize(
 				languageData.getString("colorChoosen", "&dYou have choosen the &f%material% &d: &f%color%&d.")
 		);
