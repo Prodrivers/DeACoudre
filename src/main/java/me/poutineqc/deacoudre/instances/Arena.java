@@ -46,7 +46,8 @@ public class Arena {
 	private static SectionManager sectionManager;
 	private static List<Arena> arenas = new ArrayList<>();
 	private final List<User> users = new ArrayList<>();
-	private String name;
+	private String shortName;
+	private String displayName;
 	private World world;
 	private Location lobby;
 	private Location plateform;
@@ -81,16 +82,18 @@ public class Arena {
 		Arena.sectionManager = plugin.getSectionManager();
 	}
 
-	public Arena(String name, Player player) {
-		this(name, player.getWorld(), null, null, null, null, 2, 8);
+	public Arena(String shortName, Player player) {
+		this(shortName, shortName, player.getWorld(), null, null, null, null, 2, 8);
 
-		arenaData.getData().set("arenas." + name + ".world", world.getName());
+		arenaData.getData().set("arenas." + shortName + ".world", world.getName());
+		arenaData.getData().set("arenas." + shortName + ".displayName", shortName);
 		arenaData.saveArenaData();
 	}
 
-	public Arena(String name, World world, Location minPoint, Location maxPoint, Location lobby, Location plateform,
+	public Arena(String shortName, String displayName, World world, Location minPoint, Location maxPoint, Location lobby, Location plateform,
 	             int minAmountPlayer, int maxAmountPlayer) {
-		this.name = name;
+		this.shortName = shortName;
+		this.displayName = displayName;
 
 		try {
 			world.getName();
@@ -124,10 +127,10 @@ public class Arena {
 		spectator.setCanSeeFriendlyInvisibles(true);
 		setNameTagVisibilityNever();
 
-		objective = scoreboard.registerNewObjective(name, "dummy");
+		objective = scoreboard.registerNewObjective(this.shortName, "dummy");
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		objective.setDisplayName(ChatColor.translateAlternateColorCodes('&',
-				ChatColor.AQUA + name + " &f: " + local.keyWordScoreboardPlayers));
+				ChatColor.AQUA + this.displayName + " &f: " + local.keyWordScoreboardPlayers));
 		objective.getScore(ChatColor.GOLD + "-------------------").setScore(1);
 		objective.getScore(
 						ChatColor.GOLD + local.keyWordGeneralMinimum + " = " + ChatColor.AQUA + minAmountPlayer)
@@ -137,19 +140,19 @@ public class Arena {
 				.setScore(maxAmountPlayer);
 
 		if(this.minAmountPlayer < 2) {
-			Log.info("The min amount of players for the arena " + name + " can't be below 2.");
+			Log.info("The min amount of players for the arena " + this.shortName + " can't be below 2.");
 			Log.info("Using by default '2'.");
 			this.minAmountPlayer = 2;
 		}
 
 		if(this.maxAmountPlayer > 12) {
-			Log.info("The max amount of players for the arena " + name + " can't be above 12.");
+			Log.info("The max amount of players for the arena " + this.shortName + " can't be above 12.");
 			Log.info("Using by default 12.");
 			this.maxAmountPlayer = 12;
 		}
 
 		if(this.maxAmountPlayer > colorManager.getAvailableArenaBlocks().size()) {
-			Log.info("The max amount of players for the arena " + name
+			Log.info("The max amount of players for the arena " + this.shortName
 					+ " can't be above the amount of available colors.");
 			Log.info("Using by default " + colorManager.getAvailableArenaBlocks().size() + ".");
 			this.maxAmountPlayer = colorManager.getAvailableArenaBlocks().size();
@@ -171,14 +174,18 @@ public class Arena {
 			return;
 		}
 
-		for(String arenaName : arenaData.getData().getConfigurationSection("arenas").getKeys(false)) {
-
-			ConfigurationSection cs = arenaData.getData().getConfigurationSection("arenas." + arenaName);
+		for(String arenaShortName : arenaData.getData().getConfigurationSection("arenas").getKeys(false)) {
+			ConfigurationSection cs = arenaData.getData().getConfigurationSection("arenas." + arenaShortName);
 			assert cs != null;
 			ConfigurationSection ccs;
 
-			playerData.getData().set("arenas." + arenaName + ".material", null);
+			playerData.getData().set("arenas." + arenaShortName + ".material", null);
 			playerData.savePlayerData();
+
+			String displayName = cs.getString("displayName");
+			if(displayName == null) {
+				displayName = arenaShortName;
+			}
 
 			String worldName = cs.getString("world");
 			assert worldName != null;
@@ -205,7 +212,7 @@ public class Arena {
 			plateform.setPitch((float) ccs.getDouble("pitch", 0));
 			plateform.setYaw((float) ccs.getDouble("yaw", 0));
 
-			new Arena(arenaName, world, minPoint, maxPoint, lobby, plateform, minAmountPlayer, maxAmountPlayer);
+			new Arena(arenaShortName, displayName, world, minPoint, maxPoint, lobby, plateform, minAmountPlayer, maxAmountPlayer);
 		}
 	}
 
@@ -214,7 +221,11 @@ public class Arena {
 	}
 
 	public static Arena getArenaFromName(String arenaName) {
-		return arenas.stream().filter(a -> a.getName().equalsIgnoreCase(arenaName)).findFirst().orElse(null);
+		return arenas.stream().filter(a -> a.getShortName().equalsIgnoreCase(arenaName)).findFirst().orElse(null);
+	}
+
+	public static Arena getArenaFromDisplayName(String displayName) {
+		return arenas.stream().filter(a -> a.getDisplayName().equalsIgnoreCase(displayName)).findFirst().orElse(null);
 	}
 
 	public static Arena getArenaFromPlayer(Player player) {
@@ -305,7 +316,7 @@ public class Arena {
 		DacSign.arenaDelete(this);
 		arenas.remove(this);
 
-		arenaData.getData().set("arenas." + name, null);
+		arenaData.getData().set("arenas." + shortName, null);
 		arenaData.saveArenaData();
 	}
 
@@ -345,7 +356,7 @@ public class Arena {
 		maxPoint = new Location(bukkitWorld, s.getMaximumPoint().getBlockX(), s.getMaximumPoint().getBlockY(), s.getMaximumPoint().getBlockZ());
 		setTotalTile();
 
-		ConfigurationSection cs = arenaData.getData().getConfigurationSection("arenas." + name);
+		ConfigurationSection cs = arenaData.getData().getConfigurationSection("arenas." + shortName);
 		cs.set("world", bukkitWorld.getName());
 		cs.set("waterPool.minimum.x", minPoint.getBlockX());
 		cs.set("waterPool.minimum.y", minPoint.getBlockY());
@@ -400,11 +411,11 @@ public class Arena {
 						ChatColor.GOLD + local.keyWordGeneralMaximum + " = " + ChatColor.AQUA + maxAmountPlayer)
 				.setScore(3);
 
-		arenaData.getData().set("arenas." + name + ".maxPlayer", amount);
+		arenaData.getData().set("arenas." + shortName + ".maxPlayer", amount);
 		arenaData.saveArenaData();
 
 		local.sendMsg(player,
-				local.editLimitMaxSuccess.replace("%amount%", String.valueOf(amount)).replace("%arenaName%", name));
+				local.editLimitMaxSuccess.replace("%amount%", String.valueOf(amount)).replace("%arenaName%", shortName));
 	}
 
 	public void setMinimum(Player player, String arg) {
@@ -439,11 +450,38 @@ public class Arena {
 						ChatColor.GOLD + local.keyWordGeneralMinimum + " = " + ChatColor.AQUA + minAmountPlayer)
 				.setScore(2);
 
-		arenaData.getData().set("arenas." + name + ".minPlayer", amount);
+		arenaData.getData().set("arenas." + shortName + ".minPlayer", amount);
 		arenaData.saveArenaData();
 
 		local.sendMsg(player,
-				local.editLimitMinSuccess.replace("%amount%", String.valueOf(amount)).replace("%arenaName%", name));
+				local.editLimitMinSuccess.replace("%amount%", String.valueOf(amount)).replace("%arenaName%", shortName));
+	}
+
+	public void setDisplayName(Player player, String displayName) {
+		Language local = playerData.getLanguageOfPlayer(player);
+
+		if(gameState != GameState.READY && gameState != GameState.UNREADY) {
+			local.sendMsg(player, local.editLimitGameActive);
+			return;
+		}
+
+		if(displayName.isEmpty()) {
+			local.sendMsg(player, local.editErrorNoParameter);
+			return;
+		}
+
+		this.displayName = displayName;
+
+		arenaData.getData().set("arenas." + shortName + ".displayName", displayName);
+		arenaData.saveArenaData();
+
+		local.sendMsg(player,
+				Utils.replaceInComponent(
+						local.editNameSuccess,
+						"%newName%", Component.text(displayName),
+						"%arena%", Component.text(shortName)
+				)
+		);
 	}
 
 	public boolean isAllSet() {
@@ -476,7 +514,7 @@ public class Arena {
 
 		player.sendMessage(
 				ChatColor.translateAlternateColorCodes('&', "&8&m" + " ".repeat(13) + "&r &3DeACoudre &b"
-						+ local.keyWordHelpInformation + " &3: &b" + name + " &8&m" + " ".repeat(13)));
+						+ local.keyWordHelpInformation + " &3: &b" + displayName + " &8&m" + " ".repeat(13)));
 		player.sendMessage(ChatColor.translateAlternateColorCodes('&',
 				"&3" + local.keyWordHelpCurrent + " " + local.keyWordGameState + ": &7" + stringGameState));
 		player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&3" + local.keyWordHelpCurrent + " "
@@ -493,7 +531,7 @@ public class Arena {
 
 		player.sendMessage(
 				ChatColor.translateAlternateColorCodes('&', "&8&m" + " ".repeat(5) + "&r &3DeACoudre &b"
-						+ local.keyWordHelpAdvanced + " &3: &b" + name + " &8&m" + " ".repeat(5)));
+						+ local.keyWordHelpAdvanced + " &3: &b" + displayName + " &8&m" + " ".repeat(5)));
 		if(world == null) {
 			player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&3" + local.keyWordHelpWorld + ": &7null"));
 		} else {
@@ -581,7 +619,7 @@ public class Arena {
 		DacSign.updateSigns(this);
 
 		if(!eliminated) {
-			local.sendMsg(player, local.joinGamePlayer.replace("%arenaName%", name).replace("%amountInGame%",
+			local.sendMsg(player, local.joinGamePlayer.replace("%arenaName%", displayName).replace("%amountInGame%",
 					String.valueOf(getNonEliminated().size())));
 
 			for(User u : users) {
@@ -609,7 +647,7 @@ public class Arena {
 			if(plugin.getConfiguration().broadcastStart) {
 				for(Player p : Bukkit.getOnlinePlayers()) {
 					Language localInstance = playerData.getLanguageOfPlayer(p);
-					localInstance.sendMsg(p, localInstance.startBroadcast.replaceAll("%arena%", name).replace("%time%",
+					localInstance.sendMsg(p, localInstance.startBroadcast.replaceAll("%arena%", displayName).replace("%time%",
 							String.valueOf(config.countdownTime).toString()));
 				}
 			}
@@ -812,7 +850,7 @@ public class Arena {
 
 		Language local = playerData.getLanguage(config.language);
 		objective.setDisplayName(ChatColor.translateAlternateColorCodes('&',
-				ChatColor.AQUA + name + " &f: " + local.keyWordScoreboardPoints));
+				ChatColor.AQUA + displayName + " &f: " + local.keyWordScoreboardPoints));
 		objective.getScore(ChatColor.GOLD + "-------------------").setScore(98);
 		objective.getScoreboard().resetScores(ChatColor.GOLD + local.keyWordGeneralMinimum + " = " + ChatColor.AQUA
 				+ minAmountPlayer);
@@ -966,7 +1004,7 @@ public class Arena {
 					localInstance.sendMsg(p,
 							localInstance.endingBroadcastSingle
 									.replace("%player%", nonEliminated.get(0).getPlayer().getDisplayName())
-									.replace("%arenaName%", name).toString());
+									.replace("%arenaName%", displayName));
 				}
 
 				reward = ((currentTile * currentTile / 10000.0) * (config.maxAmountReward - config.minAmountReward)
@@ -982,7 +1020,7 @@ public class Arena {
 						localInstance.sendMsg(player,
 								localInstance.endingBroadcastMultiple
 										.replace("%players%", getPlayerListToDisplay(localInstance))
-										.replace("%arenaName%", name).toString());
+										.replace("%arenaName%", displayName));
 					}
 
 					reward = ((currentTile * currentTile / 10000.0) * (config.maxAmountReward - config.minAmountReward))
@@ -1009,7 +1047,7 @@ public class Arena {
 						localInstance.sendMsg(player,
 								localInstance.endingBroadcastSingle
 										.replace("%player%", nonEliminated.get(0).getDisplayName())
-										.replace("%arenaName%", name).toString());
+										.replace("%arenaName%", displayName));
 					}
 
 					reward = ((currentTile * currentTile / 10000.0) * (config.maxAmountReward - config.minAmountReward))
@@ -1019,7 +1057,7 @@ public class Arena {
 
 			for(String s : config.dispatchCommands) {
 				if(!s.contains("%winner%")) {
-					Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), s.replace("%arena%", name));
+					Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), s.replace("%arena%", shortName));
 				}
 			}
 
@@ -1054,7 +1092,7 @@ public class Arena {
 				for(String s : config.dispatchCommands) {
 					if(s.contains("%winner%")) {
 						Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
-								s.replace("%arena%", name).replace("%winner%", player.getName()));
+								s.replace("%arena%", shortName).replace("%winner%", player.getName()));
 					}
 				}
 
@@ -1204,10 +1242,10 @@ public class Arena {
 		spectator.setCanSeeFriendlyInvisibles(true);
 		setNameTagVisibilityNever();
 
-		objective = scoreboard.registerNewObjective(name, "dummy");
+		objective = scoreboard.registerNewObjective(shortName, "dummy");
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		objective.setDisplayName(ChatColor.translateAlternateColorCodes('&',
-				ChatColor.AQUA + name + " &f: " + local.keyWordScoreboardPlayers));
+				ChatColor.AQUA + displayName + " &f: " + local.keyWordScoreboardPlayers));
 		objective.getScore(ChatColor.GOLD + "-------------------").setScore(1);
 		objective.getScore(
 						ChatColor.GOLD + local.keyWordGeneralMinimum + " = " + ChatColor.AQUA + minAmountPlayer)
@@ -1380,8 +1418,12 @@ public class Arena {
 		return maxPoint;
 	}
 
-	public String getName() {
-		return name;
+	public String getShortName() {
+		return shortName;
+	}
+
+	public String getDisplayName() {
+		return displayName;
 	}
 
 	public long getStartTime() {
@@ -1423,7 +1465,7 @@ public class Arena {
 		lobby = player.getLocation();
 		lobby.add(new Vector(0, 0.5, 0));
 
-		ConfigurationSection cs = arenaData.getData().getConfigurationSection("arenas." + name);
+		ConfigurationSection cs = arenaData.getData().getConfigurationSection("arenas." + shortName);
 		cs.set("world", world.getName());
 		cs.set("lobby.x", lobby.getX());
 		cs.set("lobby.y", lobby.getY());
@@ -1452,7 +1494,7 @@ public class Arena {
 		plateform = player.getLocation();
 		plateform.add(new Vector(0, 0.5, 0));
 
-		ConfigurationSection cs = arenaData.getData().getConfigurationSection("arenas." + name);
+		ConfigurationSection cs = arenaData.getData().getConfigurationSection("arenas." + shortName);
 		cs.set("world", world.getName());
 		cs.set("plateform.x", plateform.getX());
 		cs.set("plateform.y", plateform.getY());

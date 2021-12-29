@@ -93,4 +93,20 @@ public class Utils {
 								.build()
 				);
 	}
+
+	public static Component replaceInComponent(Component message, @RegExp String pattern1, Component replacement1, @RegExp String pattern2, Component replacement2) {
+		return Component.empty()
+				.append(message)
+				.replaceText(
+						TextReplacementConfig.builder()
+								.match(pattern1)
+								.replacement(replacement1)
+								.build()
+				).replaceText(
+						TextReplacementConfig.builder()
+								.match(pattern2)
+								.replacement(replacement2)
+								.build()
+				);
+	}
 }

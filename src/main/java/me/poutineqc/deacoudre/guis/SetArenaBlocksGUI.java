@@ -136,7 +136,7 @@ public class SetArenaBlocksGUI implements Listener {
 
 		icon = new ItemStackManager(Material.PAPER);
 		icon.setTitle("&eArena:");
-		icon.addToLore("&f" + arena.getName());
+		icon.addToLore("&f" + arena.getShortName());
 
 		icon.setPosition(0);
 		icon.addToInventory(inv);

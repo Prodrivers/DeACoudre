@@ -13,8 +13,6 @@ import org.bukkit.event.block.SignChangeEvent;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -209,7 +207,7 @@ public class DacSign {
 	public static void arenaDelete(Arena arena) {
 		for(DacSign dacsign : signs) {
 
-			if(!arena.getName().equalsIgnoreCase(((Sign) dacsign.location.getBlock().getState()).getLine(2))) {
+			if(!arena.getShortName().equalsIgnoreCase(((Sign) dacsign.location.getBlock().getState()).getLine(2))) {
 				continue;
 			}
 
@@ -280,7 +278,7 @@ public class DacSign {
 
 			Sign sign = (Sign) dacsign.location.getBlock().getState();
 
-			if(!sign.getLine(2).equalsIgnoreCase(arena.getName())) {
+			if(!sign.getLine(2).equalsIgnoreCase(arena.getShortName())) {
 				continue;
 			}
 
@@ -291,7 +289,7 @@ public class DacSign {
 	public static void removePlaySigns(Arena arena) {
 		for(DacSign dacsign : signs) {
 
-			if(!arena.getName().equalsIgnoreCase(((Sign) dacsign.location.getBlock().getState()).getLine(2))
+			if(!arena.getShortName().equalsIgnoreCase(((Sign) dacsign.location.getBlock().getState()).getLine(2))
 					|| dacsign.type != SignType.PLAY) {
 				continue;
 			}

@@ -66,6 +66,10 @@ commands:
       usage: "/%command% <arenaName> setcolor"
       description: "cmd-desc-setcolor"
       permission: "dac.admin.edit.color"
+    setdisplayname:
+      usage: "/%command% <arenaName> setdisplayname <displayName>"
+      description: "cmd-desc-setdisplayname"
+      permission: "dac.admin.edit.displayname"
   admin:
     forcestart:
       usage: "/%command% forcestart"

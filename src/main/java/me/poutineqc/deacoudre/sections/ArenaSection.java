@@ -34,13 +34,13 @@ public class ArenaSection extends Section {
 
 	@Override
 	public boolean preJoin(@NonNull Player player, Section section, boolean fromParty) {
-		Log.finest("Player wants to join arena " + arena.getName());
+		Log.finest("Player wants to join arena " + arena.getShortName());
 
 		Language local = playerData.getLanguageOfPlayer(player);
 
 		if(arena.getGameState() == GameState.UNREADY) {
 			local.sendMsg(player, local.joinStateUnset);
-			Log.warning("Player wanted to join arena " + arena.getName()+ ", but is not ready.");
+			Log.warning("Player wanted to join arena " + arena.getShortName()+ ", but is not ready.");
 			return false;
 		}
 
@@ -57,7 +57,7 @@ public class ArenaSection extends Section {
 		Player player = offlinePlayer.getPlayer();
 
 		if(player == null) {
-			Log.warning("Player wanted to leave arena " + arena.getName()+ ", but is offline.");
+			Log.warning("Player wanted to leave arena " + arena.getShortName()+ ", but is offline.");
 			return true;
 		}
 
@@ -65,7 +65,7 @@ public class ArenaSection extends Section {
 		if(playerArena != arena) {
 			Language local = playerData.getLanguageOfPlayer(player);
 			local.sendMsg(player, local.errorNotInGame);
-			Log.warning("Player wanted to leave arena " + arena.getName()+ ", but is not in this arena.");
+			Log.warning("Player wanted to leave arena " + arena.getShortName()+ ", but is not in this arena.");
 			return false;
 		}
 
@@ -77,7 +77,7 @@ public class ArenaSection extends Section {
 		Player player = offlinePlayer.getPlayer();
 
 		if(player == null) {
-			Log.warning("Player wanted to leave arena " + arena.getName()+ ", but is offline.");
+			Log.warning("Player wanted to leave arena " + arena.getShortName()+ ", but is offline.");
 			return true;
 		}
 

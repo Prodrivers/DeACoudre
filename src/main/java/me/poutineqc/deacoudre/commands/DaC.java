@@ -415,7 +415,7 @@ public class DaC implements CommandExecutor {
 
 		if(cmdName.equalsIgnoreCase("delete")) {
 			arena.deleteArena();
-			local.sendMsg(player, local.editDeleteSuccess.replace("%arenaName%", arena.getName()));
+			local.sendMsg(player, local.editDeleteSuccess.replace("%arenaName%", arena.getShortName()));
 			return true;
 		}
 
@@ -446,23 +446,32 @@ public class DaC implements CommandExecutor {
 
 		if(cmdName.equalsIgnoreCase("setlobby")) {
 			arena.setLobby(player);
-			local.sendMsg(player, local.editLobbySuccess.replace("%arenaName%", arena.getName()));
+			local.sendMsg(player, local.editLobbySuccess.replace("%arenaName%", arena.getShortName()));
 			return true;
 		}
 
 		if(cmdName.equalsIgnoreCase("setplateform")) {
 			arena.setPlateform(player);
-			local.sendMsg(player, local.editPlateformSuccess.replace("%arenaName%", arena.getName()));
+			local.sendMsg(player, local.editPlateformSuccess.replace("%arenaName%", arena.getShortName()));
 			return true;
 		}
 
 		if(cmdName.equalsIgnoreCase("setpool")) {
 			if(arena.setPool(player)) {
-				local.sendMsg(player, local.editPoolSuccess.replace("%arenaName%", arena.getName()));
+				local.sendMsg(player, local.editPoolSuccess.replace("%arenaName%", arena.getShortName()));
 			} else {
 				local.sendMsg(player, local.editPoolNoSelection);
 			}
 
+			return true;
+		}
+
+		if(cmdName.equalsIgnoreCase("setdisplayname")) {
+			if(args.length == 2) {
+				local.sendMsg(player, local.editLimitNoParameter);
+			} else {
+				arena.setDisplayName(player, args[2]);
+			}
 			return true;
 		}
 
@@ -575,7 +584,7 @@ public class DaC implements CommandExecutor {
 
 		Section currentSection = sectionManager.getCurrentSection(player);
 		if(currentSection == null || !currentSection.getFullName().equals(arena.getFullSectionName())) {
-			Log.severe("Player is seemingly in arena " + arena.getName() + ", but section manager says otherwise: player is in " + currentSection + ". Kicking him.");
+			Log.severe("Player is seemingly in arena " + arena.getShortName() + ", but section manager says otherwise: player is in " + currentSection + ". Kicking him.");
 			player.kick(local.errorInternal);
 			return;
 		}
@@ -631,7 +640,7 @@ public class DaC implements CommandExecutor {
 		if(plugin.getConfiguration().broadcastStart) {
 			for(Player p : Bukkit.getOnlinePlayers()) {
 				Language localInstance = playerData.getLanguageOfPlayer(p);
-				localInstance.sendMsg(p, localInstance.startBroadcast.replaceAll("%arena%", arena.getName())
+				localInstance.sendMsg(p, localInstance.startBroadcast.replaceAll("%arena%", arena.getShortName())
 						.replace("%time%", String.valueOf(config.countdownTime).toString()));
 			}
 		}

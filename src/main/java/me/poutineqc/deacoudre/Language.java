@@ -146,6 +146,7 @@ public class Language {
 	public String editLimitMinBelowMin;
 	public String editLimitErrorMinMax;
 	public String editLimitNoParameter;
+	public Component editNameSuccess;
 	public String keyWordColorRandom;
 	public String errorCommandNotFound;
 	public String errorArenaOrCommandNotFound;
@@ -435,6 +436,9 @@ public class Language {
 		editColorNoPool = languageData.getString("editColorNoPool", "&cYou can't edit the colors before the pool has been defined.");
 		editColorChoosen = languageData.getString("editColorChoosen", "&cYou can't remove this block right now. It has already been choosen by a player.");
 		editColorActive = languageData.getString("editColorActive", "&cYou can't edit the colors while a game is active.");
+		editNameSuccess = LegacyComponentSerializer.legacyAmpersand().deserialize(
+				languageData.getString("editNameSuccess", "&aSuccessfully set &2%arena%&a name to &2%newName%&a.")
+		);
 
 		reloadSucess = languageData.getString("reloadSucess", "&aDaC has been successfully reloaded.");
 		forcestartError = languageData.getString("forcestartError", "&cMust have only one player in a game to forcestart it.");

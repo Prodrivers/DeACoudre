@@ -59,6 +59,7 @@ cmd-desc-setplateform: "&7Définit la position de la plateforme pour l'arène s�
 cmd-desc-setminplayer: "&7Définit la quantité de joueur mimimale pour une arène."
 cmd-desc-setmaxplayer: "&7Définit la quantité de joueur maximale pour une arène."
 cmd-desc-setcolor: "&7Choisi les blocs disponibles pour une arène."
+cmd-desc-setdisplayname: "&7Définit le nom d'affichage de l'arène, dans les menus et autres interfaces."
 cmd-desc-reload: "&7Recharge la configuration, les fichiers de données et les fichiers de langues."
 cmd-desc-forcestart: "&7Force le début d'une partie afin d'en tester le fonctionnement."
 cmd-desc-filetomysql: "&7Utiliser cette commande une seule fois la première fois que vous vous connectez à la base de donnée avec le DeACoudre afin d'y copier les données des fichiers."

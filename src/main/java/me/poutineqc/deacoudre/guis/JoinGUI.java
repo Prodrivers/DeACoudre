@@ -64,7 +64,7 @@ public class JoinGUI implements Listener {
 			return;
 		}
 
-		Arena arena = Arena.getArenaFromName(itemName);
+		Arena arena = Arena.getArenaFromDisplayName(itemName);
 		if(arena == null) {
 			return;
 		}
@@ -83,21 +83,17 @@ public class JoinGUI implements Listener {
 	public void openJoinGui(Player player, int page) {
 		Language local = playerData.getLanguageOfPlayer(player);
 
-		List<String> Arenas = new ArrayList<>();
-		for(Arena arena : Arena.getArenas()) {
-			Arenas.add(arena.getName());
-		}
-		java.util.Collections.sort(Arenas);
+		List<Arena> arenas = Arena.getArenas();
 
 		if((page - 1) * 36 > 0) {
-			Arenas.subList(0, (page - 1) * 36).clear();
+			arenas.subList(0, (page - 1) * 36).clear();
 		}
 
 		int size;
-		if(Arenas.size() > 36) {
+		if(arenas.size() > 36) {
 			size = 54;
 		} else {
-			size = (int) (Math.ceil((Arenas.size() + 18.0) / 9.0) * 9.0);
+			size = (int) (Math.ceil((arenas.size() + 18.0) / 9.0) * 9.0);
 		}
 
 		Inventory inv = Bukkit.createInventory(null, size,
@@ -143,38 +139,32 @@ public class JoinGUI implements Listener {
 		}
 
 		/***************************************************
-		 * arenas
+		 * Arenas
 		 ***************************************************/
-
 		int slot = 18;
 
-		for(String s : Arenas) {
-			Arena arena = Arena.getArenaFromName(s);
-
+		for(Arena arena : arenas) {
 			if(!arena.isAllSet()) {
-				icon = new ItemStackManager(Material.GRAY_DYE);
+				icon = new ItemStackManager(Material.GRAY_CONCRETE);
 				icon.addToLore(ChatColor.translateAlternateColorCodes('&', local.keyWordGameStateUnset));
-
 			} else if(arena.getGameState() == GameState.ACTIVE || arena.getGameState() == GameState.ENDING) {
-				icon = new ItemStackManager(Material.RED_DYE);
+				icon = new ItemStackManager(Material.RED_CONCRETE);
 				icon.addToLore(ChatColor.translateAlternateColorCodes('&', local.keyWordGameStateStarted));
-
 			} else if(arena.getUsers().size() >= arena.getMaxPlayer()) {
-				icon = new ItemStackManager(Material.RED_DYE);
+				icon = new ItemStackManager(Material.RED_CONCRETE);
 				icon.addToLore(ChatColor.translateAlternateColorCodes('&', local.keyWordGameStateFull));
 				icon.addToLore(ChatColor.translateAlternateColorCodes('&', local.keyWordScoreboardPlayers)
 						+ ChatColor.DARK_GRAY + " : " + arena.getNonEliminated().size() + "/"
 						+ arena.getMaxPlayer());
-
 			} else {
-				icon = new ItemStackManager(Material.GREEN_DYE);
+				icon = new ItemStackManager(Material.GREEN_CONCRETE);
 				icon.addToLore(ChatColor.translateAlternateColorCodes('&', local.keyWordGameStateReady));
 				icon.addToLore(ChatColor.translateAlternateColorCodes('&', local.keyWordScoreboardPlayers)
 						+ ChatColor.DARK_GRAY + " : " + arena.getNonEliminated().size() + "/"
 						+ arena.getMaxPlayer());
 			}
 
-			icon.setTitle(ChatColor.GOLD + s);
+			icon.setTitle(ChatColor.GOLD + arena.getDisplayName());
 
 			icon.setPosition(slot++);
 			icon.addToInventory(inv);
@@ -183,7 +173,7 @@ public class JoinGUI implements Listener {
 			 * NextPage
 			 ***************************************************/
 
-			if(slot == 54 && Arenas.size() > 36) {
+			if(slot == 54 && arenas.size() > 36) {
 				icon = new ItemStackManager(Material.ARROW, 8);
 				icon.setTitle(local.keyWordGuiNextPage);
 				icon.addToLore(String.valueOf(page + 1));

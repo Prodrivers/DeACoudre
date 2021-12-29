@@ -49,7 +49,7 @@ public class ColorManager {
 			throw new IllegalArgumentException("Material not corresponding to any usable block.");
 		}
 
-		String usableBlocksConfigurationPath = "arenas." + arena.getName() + ".usableBlocks";
+		String usableBlocksConfigurationPath = "arenas." + arena.getShortName() + ".usableBlocks";
 
 		List<String> arenaMaterialStrings = arenaData.getData().getStringList(usableBlocksConfigurationPath);
 
@@ -88,7 +88,7 @@ public class ColorManager {
 		allAuthorizedGameBlocks = new ArrayList<>();
 		arenaBlocks = new ArrayList<>();
 
-		List<String> arenaMaterialStrings = arenaData.getData().getStringList("arenas." + arena.getName() + ".usableBlocks");
+		List<String> arenaMaterialStrings = arenaData.getData().getStringList("arenas." + arena.getShortName() + ".usableBlocks");
 
 		arenaMaterials = arenaMaterialStrings.stream().map(Material::valueOf).collect(Collectors.toSet());
 

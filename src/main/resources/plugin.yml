@@ -103,6 +103,7 @@ permissions:
       dac.admin.edit.plateform: true
       dac.admin.edit.pool: true
       dac.admin.edit.color: true
+      dac.admin.edit.displayname: true
       dac.admin.edit.amountplayer.*: true
   dac.admin.edit.new:
     description: Allows to create a new arena
@@ -121,6 +122,9 @@ permissions:
     default: op
   dac.admin.edit.color:
     description: Allows to set the arena's pillars's material
+    default: op
+  dac.admin.edit.displayname:
+    description: Allows to set the arena's display namee
     default: op
   dac.admin.edit.amountplayer.*:
     description: Gives access to all languages permissions
