@@ -1,5 +1,10 @@
 package me.poutineqc.deacoudre;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import fr.prodrivers.bukkit.commons.ProdriversCommons;
+import fr.prodrivers.bukkit.commons.parties.PartyManager;
+import fr.prodrivers.bukkit.commons.sections.SectionManager;
 import me.poutineqc.deacoudre.achievements.Achievement;
 import me.poutineqc.deacoudre.achievements.AchievementsGUI;
 import me.poutineqc.deacoudre.achievements.TopManager;
@@ -41,6 +46,10 @@ public class DeACoudre extends JavaPlugin {
 	private DaC dac;
 	private DacSign signData;
 
+	private Injector injector;
+
+	private SectionManager sectionManager;
+
 	public static boolean isEconomyEnabled() {
 		return econ != null;
 	}
@@ -59,6 +68,8 @@ public class DeACoudre extends JavaPlugin {
 
 		// Setup logging
 		Log.init(getLogger(), config.logLevel);
+
+		setup();
 
 		if(!initialiseEconomy()) {
 			return;
@@ -98,6 +109,15 @@ public class DeACoudre extends JavaPlugin {
 			Arena.loadArenas();
 			DacSign.loadAllSigns();
 		}, 0L);
+	}
+
+	public void setup() {
+		this.injector = Guice.createInjector(
+				ProdriversCommons.getGuiceModule(),
+				new DeACoudreModule(this)
+		);
+
+		this.sectionManager = this.injector.getInstance(SectionManager.class);
 	}
 
 	private void connectMySQL() {
@@ -252,5 +272,9 @@ public class DeACoudre extends JavaPlugin {
 
 	public DacSign getSignData() {
 		return signData;
+	}
+
+	public SectionManager getSectionManager() {
+		return sectionManager;
 	}
 }
