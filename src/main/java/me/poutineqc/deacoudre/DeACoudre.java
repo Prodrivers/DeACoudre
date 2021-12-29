@@ -78,7 +78,7 @@ public class DeACoudre extends JavaPlugin {
 		playerDamage = new PlayerDamage(this);
 		arenaData = new ArenaData(this);
 		signData = new DacSign(this);
-		new Arena(this);
+		Arena.init(this);
 
 		registerEvents();
 

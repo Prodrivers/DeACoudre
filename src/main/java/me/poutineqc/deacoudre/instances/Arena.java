@@ -34,7 +34,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Arena {
-
 	protected static PlayerDamage playerDamage;
 	private static DeACoudre plugin;
 	private static Configuration config;
@@ -66,7 +65,7 @@ public class Arena {
 	private Scoreboard scoreboard;
 	private Team spectator;
 
-	public Arena(DeACoudre plugin) {
+	public static void init(DeACoudre plugin) {
 		Arena.plugin = plugin;
 		Arena.config = plugin.getConfiguration();
 		Arena.mysql = plugin.getMySQL();
@@ -77,31 +76,7 @@ public class Arena {
 	}
 
 	public Arena(String name, Player player) {
-		this.name = name;
-		world = player.getWorld();
-		arenas.add(this);
-		colorManager = new ColorManager(plugin, this);
-		this.minAmountPlayer = 2;
-		this.maxAmountPlayer = 8;
-
-		Language local = playerData.getLanguage(config.language);
-		scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-
-		spectator = scoreboard.registerNewTeam("spectator");
-		spectator.setCanSeeFriendlyInvisibles(true);
-		setNameTagVisibilityNever();
-
-		objective = scoreboard.registerNewObjective(name, "dummy");
-		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-		objective.setDisplayName(ChatColor.translateAlternateColorCodes('&',
-				ChatColor.AQUA + name + " &f: " + local.keyWordScoreboardPlayers));
-		objective.getScore(ChatColor.GOLD + "-------------------").setScore(1);
-		objective.getScore(
-						ChatColor.GOLD + local.keyWordGeneralMinimum + " = " + ChatColor.AQUA + minAmountPlayer)
-				.setScore(minAmountPlayer);
-		objective.getScore(
-						ChatColor.GOLD + local.keyWordGeneralMaximum + " = " + ChatColor.AQUA + maxAmountPlayer)
-				.setScore(maxAmountPlayer);
+		this(name, player.getWorld(), null, null, null, null, 2, 8);
 
 		arenaData.getData().set("arenas." + name + ".world", world.getName());
 		arenaData.saveArenaData();
@@ -110,16 +85,21 @@ public class Arena {
 	public Arena(String name, World world, Location minPoint, Location maxPoint, Location lobby, Location plateform,
 	             int minAmountPlayer, int maxAmountPlayer) {
 		this.name = name;
+
 		try {
 			world.getName();
 			this.world = world;
+		} catch(NullPointerException e) {
+			this.world = null;
+		}
+
+		try {
 			this.minPoint = minPoint;
 			this.maxPoint = maxPoint;
 			this.lobby = lobby;
 			this.plateform = plateform;
 			setNullIfDefault();
 		} catch(NullPointerException e) {
-			this.world = null;
 			this.minPoint = null;
 			this.maxPoint = null;
 			this.lobby = null;
