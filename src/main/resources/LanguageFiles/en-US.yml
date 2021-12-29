@@ -21,6 +21,7 @@ pluginHelp: "&3Type &b/%command% help &3 for the list of commands."
 #   Error Messages
 ###################################################################
 
+errorInternal: "&cAn internal error occurred."
 errorNoPermission: "&cYou don't have the permission to do that!"
 errorPermissionHelp: "&cYou do not have any permissions in this category."
 errorArenaNotExist: "&cNot a valid arena name."

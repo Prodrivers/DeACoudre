@@ -212,6 +212,7 @@ public class Language {
 	public String prefixLong;
 	public String prefixShort;
 	public Component prefixShortComponent;
+	public Component errorInternal;
 	String errorNoPermission;
 	private File languageFile;
 	private FileConfiguration languageData;
@@ -278,6 +279,9 @@ public class Language {
 		pluginVersion = languageData.getString("pluginVersion", "&3Version: &7%version%");
 		pluginHelp = languageData.getString("pluginHelp", "&3Type &b/%command% help &3 for the list of commands.");
 
+		errorInternal = LegacyComponentSerializer.legacyAmpersand().deserialize(
+				languageData.getString("errorInternal", "&cAn internal error occurred.")
+		);
 		errorNoPermission = languageData.getString("errorNoPermission", "&cYou don't have the permission to do that!");
 		errorPermissionHelp = languageData.getString("errorPermissionHelp", "&cYou do not have any permissions in this category.");
 		errorArenaNotExist = languageData.getString("errorArenaNotExist", "&cNot a valid arena name.");

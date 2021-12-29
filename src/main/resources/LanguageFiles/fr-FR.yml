@@ -21,6 +21,7 @@ pluginHelp: "&3Fais &b/%command% help &3 pour la liste des commandes."
 #   Error Messages
 ###################################################################
 
+errorInternal: "&cUne erreur interne est survenue."
 errorNoPermission: "&cTu n'as pas la permission de faire cela!"
 errorPermissionHelp: "&cTu n'as pas de permissions dans cette catégorie."
 errorArenaNotExist: "&cNom d'arène non valide."
