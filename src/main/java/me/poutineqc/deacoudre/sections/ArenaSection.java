@@ -15,13 +15,11 @@ import java.util.Collections;
 import java.util.Set;
 
 public class ArenaSection extends Section {
-	private static final String DAC_ARENA_SECTION_PREFIX = "dac.";
-
 	private final PlayerData playerData;
 	private final Arena arena;
 
 	public ArenaSection(@NonNull PlayerData playerData, @NonNull Arena arena) {
-		super(DAC_ARENA_SECTION_PREFIX + arena.getName());
+		super(MainDACSection.DAC_SECTION_NAME + "." + arena.getShortName());
 
 		this.playerData = playerData;
 		this.arena = arena;

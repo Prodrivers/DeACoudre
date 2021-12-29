@@ -1,11 +1,14 @@
 package me.poutineqc.deacoudre.guis;
 
+import fr.prodrivers.bukkit.commons.sections.Section;
 import fr.prodrivers.bukkit.commons.sections.SectionManager;
+import fr.prodrivers.bukkit.commons.ui.section.SelectionUI;
 import me.poutineqc.deacoudre.DeACoudre;
 import me.poutineqc.deacoudre.Language;
 import me.poutineqc.deacoudre.PlayerData;
 import me.poutineqc.deacoudre.instances.Arena;
 import me.poutineqc.deacoudre.instances.GameState;
+import me.poutineqc.deacoudre.sections.MainDACSection;
 import me.poutineqc.deacoudre.tools.ItemStackManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,8 +23,9 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class JoinGUI implements Listener {
+public class JoinGUI implements Listener, SelectionUI {
 	private final PlayerData playerData;
 	private final SectionManager sectionManager;
 
@@ -182,5 +186,12 @@ public class JoinGUI implements Listener {
 			}
 		}
 		player.openInventory(inv);
+	}
+
+	@Override
+	public void ui(Section section, Player player) {
+		if(MainDACSection.DAC_SECTION_NAME.equals(section.getFullName())) {
+			openJoinGui(player, 0);
+		}
 	}
 }

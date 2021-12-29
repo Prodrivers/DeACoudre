@@ -18,6 +18,7 @@ import me.poutineqc.deacoudre.guis.JoinGUI;
 import me.poutineqc.deacoudre.guis.SetArenaBlocksGUI;
 import me.poutineqc.deacoudre.instances.Arena;
 import me.poutineqc.deacoudre.instances.User;
+import me.poutineqc.deacoudre.sections.MainDACSection;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -118,6 +119,9 @@ public class DeACoudre extends JavaPlugin {
 		);
 
 		this.sectionManager = this.injector.getInstance(SectionManager.class);
+
+		MainDACSection mainDACSection = this.injector.getInstance(MainDACSection.class);
+		this.sectionManager.register(mainDACSection);
 	}
 
 	private void connectMySQL() {
