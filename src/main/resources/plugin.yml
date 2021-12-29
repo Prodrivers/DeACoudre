@@ -6,8 +6,8 @@ author: PoutineQc
 website: http://poutineqc.ca/plugins/DaC/
 main: me.poutineqc.deacoudre.DeACoudre
 database: false
-depend: [ WorldEdit ]
-softdepend: [ Vault ]
+depend: [ProdriversCommons, WorldEdit]
+softdepend: [Vault]
 prefix: DaC
 api-version: "1.16"
 

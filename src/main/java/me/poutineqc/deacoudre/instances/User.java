@@ -31,7 +31,7 @@ public class User {
 		User.config = plugin.getConfiguration();
 	}
 
-	public User(PlayerData playerData, Player player, Arena arena, boolean tpAuto, boolean eliminated) {
+	public User(PlayerData playerData, Player player, Arena arena, boolean eliminated) {
 		this.player = player;
 		this.arena = arena;
 		this.name = ChatColor.stripColor(player.getName());
@@ -49,9 +49,7 @@ public class User {
 
 		originalStats = new OriginalPlayerStats(config, playerData, player);
 
-		if(tpAuto) {
-			player.teleport(arena.getLobby());
-		}
+		player.teleport(arena.getLobby());
 
 		originalStats.fillOtherStats(player);
 		maxStats(false);

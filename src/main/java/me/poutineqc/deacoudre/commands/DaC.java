@@ -1,5 +1,7 @@
 package me.poutineqc.deacoudre.commands;
 
+import fr.prodrivers.bukkit.commons.sections.Section;
+import fr.prodrivers.bukkit.commons.sections.SectionManager;
 import me.poutineqc.deacoudre.*;
 import me.poutineqc.deacoudre.achievements.AchievementsGUI;
 import me.poutineqc.deacoudre.guis.ColorsGUI;
@@ -31,6 +33,7 @@ public class DaC implements CommandExecutor {
 	private final AchievementsGUI achievementsGUI;
 	private final MySQL mysql;
 	private final DacSign signData;
+	private final SectionManager sectionManager;
 
 	public DaC(DeACoudre plugin) {
 		DaC.plugin = plugin;
@@ -42,6 +45,7 @@ public class DaC implements CommandExecutor {
 		this.chooseColorGUI = plugin.getChooseColorGUI();
 		this.joinGUI = plugin.getJoinGUI();
 		this.achievementsGUI = plugin.getAchievementsGUI();
+		this.sectionManager = plugin.getSectionManager();
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String cmdValue, String[] args) {
@@ -532,7 +536,7 @@ public class DaC implements CommandExecutor {
 			return;
 		}
 
-		arena.addPlayerToTeam(player, teleport);
+		sectionManager.enter(player, arena.getFullSectionName());
 	}
 
 	public void openColorGUI(DacCommand command, Player player) {
@@ -569,7 +573,14 @@ public class DaC implements CommandExecutor {
 			return;
 		}
 
-		arena.removePlayerFromGame(player);
+		Section currentSection = sectionManager.getCurrentSection(player);
+		if(currentSection == null || !currentSection.getFullName().equals(arena.getFullSectionName())) {
+			Log.severe("Player is seemingly in arena " + arena.getName() + ", but section manager says otherwise: player is in " + currentSection + ". Kicking him.");
+			player.kick(local.errorInternal);
+			return;
+		}
+
+		sectionManager.enter(player);
 	}
 
 	public void startGame(DacCommand command, Player player) {

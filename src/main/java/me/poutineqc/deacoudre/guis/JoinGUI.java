@@ -1,5 +1,6 @@
 package me.poutineqc.deacoudre.guis;
 
+import fr.prodrivers.bukkit.commons.sections.SectionManager;
 import me.poutineqc.deacoudre.DeACoudre;
 import me.poutineqc.deacoudre.Language;
 import me.poutineqc.deacoudre.PlayerData;
@@ -21,11 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JoinGUI implements Listener {
-
 	private final PlayerData playerData;
+	private final SectionManager sectionManager;
 
 	public JoinGUI(DeACoudre plugin) {
 		this.playerData = plugin.getPlayerData();
+		this.sectionManager = plugin.getSectionManager();
 	}
 
 	@EventHandler
@@ -73,7 +75,7 @@ public class JoinGUI implements Listener {
 			return;
 		}
 
-		arena.addPlayerToTeam(player, true);
+		sectionManager.enter(player, arena.getFullSectionName());
 
 		player.closeInventory();
 	}

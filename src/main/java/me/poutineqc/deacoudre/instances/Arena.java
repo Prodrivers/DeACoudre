@@ -5,11 +5,13 @@ import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.regions.Region;
+import fr.prodrivers.bukkit.commons.sections.SectionManager;
 import me.poutineqc.deacoudre.*;
 import me.poutineqc.deacoudre.achievements.Achievement;
 import me.poutineqc.deacoudre.commands.DacSign;
 import me.poutineqc.deacoudre.events.PlayerDamage;
 import me.poutineqc.deacoudre.guis.InventoryBar;
+import me.poutineqc.deacoudre.sections.ArenaSection;
 import me.poutineqc.deacoudre.tools.ColorManager;
 import me.poutineqc.deacoudre.tools.Utils;
 import net.kyori.adventure.text.Component;
@@ -41,6 +43,7 @@ public class Arena {
 	private static PlayerData playerData;
 	private static ArenaData arenaData;
 	private static Achievement achievements;
+	private static SectionManager sectionManager;
 	private static List<Arena> arenas = new ArrayList<>();
 	private final List<User> users = new ArrayList<>();
 	private String name;
@@ -65,6 +68,8 @@ public class Arena {
 	private Scoreboard scoreboard;
 	private Team spectator;
 
+	private ArenaSection section;
+
 	public static void init(DeACoudre plugin) {
 		Arena.plugin = plugin;
 		Arena.config = plugin.getConfiguration();
@@ -73,6 +78,7 @@ public class Arena {
 		Arena.playerData = plugin.getPlayerData();
 		Arena.achievements = plugin.getAchievement();
 		Arena.playerDamage = plugin.getPlayerDamage();
+		Arena.sectionManager = plugin.getSectionManager();
 	}
 
 	public Arena(String name, Player player) {
@@ -150,6 +156,12 @@ public class Arena {
 		}
 
 		arenas.add(this);
+
+		// Delay section creation to give a fully-constructed object
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+			this.section = new ArenaSection(playerData, this);
+			sectionManager.register(this.section);
+		}, 1);
 	}
 
 	public static void loadArenas() {
@@ -237,6 +249,10 @@ public class Arena {
 			outsideGame.add(player);
 		}
 		return outsideGame;
+	}
+
+	public String getFullSectionName() {
+		return section.getFullName();
 	}
 
 	public User getActivePlayer() {
@@ -524,16 +540,14 @@ public class Arena {
 	 * Big Game Methodes
 	 */
 
-	public void addPlayerToTeam(Player player, boolean tpAuto) {
+	public boolean addPlayerToTeam(Player player) {
 		Language local = playerData.getLanguageOfPlayer(player);
 
-		Arena arena = Arena.getArenaFromPlayer(player);
-		if(arena != null) {
-			local.sendMsg(player, local.errorAlreadyInGame);
-			return;
-		} else if(gameState == GameState.UNREADY) {
+		// No need to check if player is already in a game, sections ensure that he will quit previous game appropriately
+
+		if(gameState == GameState.UNREADY) {
 			local.sendMsg(player, local.joinStateUnset);
-			return;
+			return false;
 		}
 
 		boolean eliminated = false;
@@ -552,14 +566,14 @@ public class Arena {
 			}
 		}
 
-		User user = new User(playerData, player, this, tpAuto, eliminated);
+		User user = new User(playerData, player, this, eliminated);
 		users.add(user);
 
-		if(player.getLocation().distance(lobby) > 1 && tpAuto) {
+		if(player.getLocation().distance(lobby) > 1) {
 			local.sendMsg(player,
 					ChatColor.RED + "Error: Could not teleport you to the lobby. Failed to join the game.");
-			removeUserFromGame(user, false);
-			return;
+			// No need to teleport player, returning false will force Section Manager to move player elsewhere
+			return false;
 		}
 
 		InventoryBar.giveLobbyTools(user, local);
@@ -584,7 +598,8 @@ public class Arena {
 		if(getNonEliminated().size() >= minAmountPlayer && config.autostart && gameState == GameState.READY) {
 			if(startTime + 30000 > System.currentTimeMillis()) {
 				local.sendMsg(player, local.startAutoFail);
-				return;
+				// Return true as this is not a fatal error
+				return true;
 			}
 
 			gameState = GameState.STARTUP;
@@ -599,6 +614,8 @@ public class Arena {
 				}
 			}
 		}
+
+		return true;
 	}
 
 	public boolean removePlayerFromGame(Player player) {
@@ -609,26 +626,21 @@ public class Arena {
 			return false;
 		}
 
-		removeUserFromGame(getUser(player), true);
-		return true;
-	}
+		User user = getUser(player);
 
-	public void removeUserFromGame(User user, boolean messages) {
 		User newUser = getNonEliminated().size() == maxAmountPlayer && getNonEliminated().size() < users.size()
 				? getFirstWaitingPlayer() : null;
 
 		if(!user.isEliminated()) {
 			eliminateUser(user);
 
-			if(messages) {
-				Language local = playerData.getLanguageOfPlayer(user);
-				local.sendMsg(user, local.quitGamePlayer);
-				for(User u : getUsers()) {
-					if(user != u) {
-						Language localTemp = playerData.getLanguageOfPlayer(u);
-						localTemp.sendMsg(u.getPlayer(),
-								localTemp.quitGameOthers.replace("%player%", user.getDisplayName()));
-					}
+			Language local = playerData.getLanguageOfPlayer(user);
+			local.sendMsg(user, local.quitGamePlayer);
+			for(User u : getUsers()) {
+				if(user != u) {
+					Language localTemp = playerData.getLanguageOfPlayer(u);
+					localTemp.sendMsg(u.getPlayer(),
+							localTemp.quitGameOthers.replace("%player%", user.getDisplayName()));
 				}
 			}
 		}
@@ -662,7 +674,8 @@ public class Arena {
 		}
 
 		if(gameState != GameState.ACTIVE) {
-			return;
+			// Player left while game is not active, nothing more to do
+			return true;
 		}
 
 		if(isOver()) {
@@ -675,6 +688,7 @@ public class Arena {
 			nextPlayer();
 		}
 
+		return true;
 	}
 
 	private User getFirstWaitingPlayer() {

@@ -8,10 +8,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerDisconnect implements Listener {
-
 	@EventHandler
 	public void onPlayerDisconnect(PlayerQuitEvent event) {
-
 		Player player = event.getPlayer();
 
 		Arena arena = Arena.getArenaFromPlayer(player);
@@ -19,7 +17,6 @@ public class PlayerDisconnect implements Listener {
 			return;
 		}
 
-		User user = arena.getUser(player);
-		arena.removeUserFromGame(user, true);
+		arena.removePlayerFromGame(player);
 	}
 }
