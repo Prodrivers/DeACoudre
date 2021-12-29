@@ -76,7 +76,7 @@
     </dependencies>
 
     <build>
-        <finalName>${project.artifactId}</finalName>
+        <finalName>${project.artifactId}-${project.version}</finalName>
         <defaultGoal>clean compile resources:resources package</defaultGoal>
 
         <resources>
