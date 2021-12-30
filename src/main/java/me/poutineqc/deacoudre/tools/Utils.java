@@ -6,6 +6,7 @@ import net.kyori.adventure.title.Title;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.geysermc.floodgate.api.FloodgateApi;
 import org.intellij.lang.annotations.RegExp;
 
 import java.time.Duration;
@@ -108,5 +109,17 @@ public class Utils {
 								.replacement(replacement2)
 								.build()
 				);
+	}
+
+	public static boolean hasBedrockSession(Player player) {
+		try {
+			// Check presence of FloodgateApi
+			Class.forName("org.geysermc.floodgate.api.FloodgateApi");
+
+			FloodgateApi api = FloodgateApi.getInstance();
+			return api != null && api.isFloodgatePlayer(player.getUniqueId());
+		} catch(ClassNotFoundException e) {
+			return false;
+		}
 	}
 }

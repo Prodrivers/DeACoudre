@@ -77,7 +77,8 @@ languageChangeSuccess: "&aLangue changée au %language% avec succès."
 ###################################################################
 
 joinGuiTitle: "&2Liste d'arène &0: &3DeACoudre"
-joinGuiTooltip: "&7Clique sur l'arène que tu\n&7souhaites joindre\n&7Clique droit pour voir\n&7ses informations"
+joinGuiTooltip: "&7Clique sur l'arène que tu souhaites joindre\n&7Clique droit pour voir ses informations"
+joinGuiTooltipBedrock: "Clique sur l'arène que tu souhaites joindre"
 joinStateUnset: "&cCette arène n'est pas prète à être utilisée. Demande à un admin de finir de la configurer."
 joinStateFull: "&cCette arène est pleine."
 joinStateStarted: "&cLa partie est déjà commencée."

@@ -77,7 +77,8 @@ languageChangeSuccess: "&aLanguage successfully set to %language%"
 ###################################################################
 
 joinGuiTitle: "&2Arena List &0: &3DeACoudre"
-joinGuiTooltip: "&7Click on the arena\n&7you wish to join\n&7Right click to display\n&7it's infos"
+joinGuiTooltip: "&7Click on the arena you wish to join\n&7Right click to display it's infos"
+joinGuiTooltipBedrock: "Click on the arena you wish to join"
 joinStateUnset: "&cThis arena is not ready to use. Ask an admin to finish setting it up."
 joinStateFull: "&cThe arena is full."
 joinStateStarted: "&cThe game has already started."

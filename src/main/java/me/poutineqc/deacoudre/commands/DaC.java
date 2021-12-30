@@ -535,7 +535,7 @@ public class DaC implements CommandExecutor {
 		}
 
 		if(argsLength == 1 || command.getCommandName().equalsIgnoreCase("list")) {
-			joinGUI.openJoinGui(player, 1);
+			joinGUI.openJoinGui(player);
 			return;
 		}
 

@@ -6,7 +6,7 @@ author: PoutineQc
 website: http://poutineqc.ca/plugins/DaC/
 main: me.poutineqc.deacoudre.DeACoudre
 database: false
-depend: [ProdriversCommons, WorldEdit]
+depend: [WorldEdit, ProdriversCommons, floodgate, InventoryGUIAPI]
 softdepend: [Vault]
 prefix: DaC
 api-version: "1.16"

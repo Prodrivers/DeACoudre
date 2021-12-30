@@ -110,7 +110,7 @@ public class SetArenaBlocksGUI implements Listener {
 		 ***************************************************/
 
 		icon = new ItemStackManager(Material.BOOKSHELF, 4);
-		icon.setTitle(local.keyWordGuiInstrictions);
+		icon.setTitle(local.keyWordGuiInstructions);
 		for(String loreLine : local.editColorGuiTooltip.split("\n")) {
 			icon.addToLore(loreLine);
 		}

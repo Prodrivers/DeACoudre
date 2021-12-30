@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -157,9 +158,10 @@ public class Language {
 	public String endingRewardItemsSpaceMultiple;
 	public String endingRewardItemsSpaceOne;
 	public String endingRewardItemsReceive;
-	public String joinGuiTooltip;
+	public String[] joinGuiTooltip;
+	public String[] joinGuiTooltipBedrock;
 	public String editColorGuiTitle;
-	public String keyWordGuiInstrictions;
+	public String keyWordGuiInstructions;
 	public String editColorGuiTooltip;
 	public String editColorActive;
 	public String pluginDevelopper;
@@ -305,7 +307,14 @@ public class Language {
 		languageChangeSuccess = languageData.getString("languageChangeSuccess", "&aLanguage successfully set to %language%");
 
 		joinGuiTitle = languageData.getString("joinGuiTitle", "&2Arena List &0: &3DeACoudre");
-		joinGuiTooltip = languageData.getString("joinGuiTooltip", "&7Click on the arena\n&7you wish to join\n&7Right click to display\n&7it's infos");
+		joinGuiTooltip = Arrays.stream(languageData.getString("joinGuiTooltip", "&7Click on the arena you wish to join\n&7Right click to display it's infos")
+				.split("\n"))
+				.map(s -> ChatColor.translateAlternateColorCodes('&', s))
+				.toArray(String[]::new);
+		joinGuiTooltipBedrock = Arrays.stream(languageData.getString("joinGuiTooltipBedrock", "&7Click on the arena you wish to join\n&7Right click to display it's infos")
+						.split("\n"))
+				.map(s -> ChatColor.translateAlternateColorCodes('&', s))
+				.toArray(String[]::new);
 		joinStateUnset = languageData.getString("joinStateUnset", "&cThis arena is not ready to use. Ask an admin to finish setting it up.");
 		joinStateFull = languageData.getString("joinStateFull", "&cThe arena is full.");
 		joinStateStarted = languageData.getString("joinStateStarted", "&cThe game has already started.");
@@ -506,7 +515,7 @@ public class Language {
 
 		keyWordGuiPreviousPage = languageData.getString("keyWordGuiPreviousPage", "&dPrevious Page");
 		keyWordGuiNextPage = languageData.getString("keyWordGuiNextPage", "&dNext Page");
-		keyWordGuiInstrictions = languageData.getString("keyWordGuiInstrictions", "&6Instructions");
+		keyWordGuiInstructions = languageData.getString("keyWordGuiInstrictions", "&6Instructions");
 
 	}
 

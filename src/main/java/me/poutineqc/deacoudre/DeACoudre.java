@@ -193,7 +193,6 @@ public class DeACoudre extends JavaPlugin {
 		pm.registerEvents(chooseColorGUI, this);
 		pm.registerEvents(achievementsGUI, this);
 		pm.registerEvents(new ColorsGUI(this), this);
-		pm.registerEvents(joinGUI, this);
 		pm.registerEvents(new InventoryBar(this), this);
 		dac = new DaC(this);
 		pm.registerEvents(new BlockBreak(), this);
