@@ -1,11 +1,12 @@
 package me.poutineqc.deacoudre;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.sql.*;
 import java.util.Optional;
 
+@Singleton
 public class MySQL {
-
-	private DeACoudre plugin;
 	private Configuration config;
 
 	private String host;
@@ -16,25 +17,22 @@ public class MySQL {
 
 	private Connection connection;
 
-	public MySQL() {
-		connection = null;
-	}
-
+	@Inject
 	public MySQL(DeACoudre plugin) {
-		this.plugin = plugin;
 		this.config = plugin.getConfiguration();
 
-		this.host = config.host;
-		this.port = config.port;
-		this.database = config.database;
-		this.user = config.user;
-		this.password = config.password;
+		if(config.mysql) {
+			this.host = config.host;
+			this.port = config.port;
+			this.database = config.database;
+			this.user = config.user;
+			this.password = config.password;
 
-		connect();
+			connect();
+		}
 	}
 
 	public void updateInfo(DeACoudre plugin) {
-		this.plugin = plugin;
 		this.config = plugin.getConfiguration();
 
 		this.host = config.host;

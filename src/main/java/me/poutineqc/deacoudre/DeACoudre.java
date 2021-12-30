@@ -80,13 +80,10 @@ public class DeACoudre extends JavaPlugin {
 		new Permissions(this);
 		new DacCommand(this);
 		loadLanguages();
-		connectMySQL();
-		playerData = new PlayerData(this);
 		achievement = new Achievement(this);
 		new TopManager(this);
 		achievementsGUI = new AchievementsGUI(this);
 		chooseColorGUI = new SetArenaBlocksGUI(this);
-		joinGUI = new JoinGUI(this);
 		playerDamage = new PlayerDamage(this);
 		arenaData = new ArenaData(this);
 		signData = new DacSign(this);
@@ -122,18 +119,14 @@ public class DeACoudre extends JavaPlugin {
 
 		MainDACSection mainDACSection = this.injector.getInstance(MainDACSection.class);
 		this.sectionManager.register(mainDACSection);
-	}
 
-	private void connectMySQL() {
-		if(config.mysql) {
-			mysql = new MySQL(this);
-			if(mysql.hasConnection()) {
-				createMySQLTables();
-			}
-		} else {
-			mysql = new MySQL();
+		this.mysql = this.injector.getInstance(MySQL.class);
+		if(this.mysql.hasConnection()) {
+			createMySQLTables();
 		}
 
+		this.playerData = this.injector.getInstance(PlayerData.class);
+		this.joinGUI = this.injector.getInstance(JoinGUI.class);
 	}
 
 	private void createMySQLTables() {

@@ -3,7 +3,6 @@ package me.poutineqc.deacoudre.guis;
 import fr.prodrivers.bukkit.commons.sections.Section;
 import fr.prodrivers.bukkit.commons.sections.SectionManager;
 import fr.prodrivers.bukkit.commons.ui.section.SelectionUI;
-import me.poutineqc.deacoudre.DeACoudre;
 import me.poutineqc.deacoudre.Language;
 import me.poutineqc.deacoudre.PlayerData;
 import me.poutineqc.deacoudre.instances.Arena;
@@ -20,18 +19,23 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Singleton
 public class JoinGUI implements Listener, SelectionUI {
+	private final Plugin plugin;
 	private final PlayerData playerData;
 	private final SectionManager sectionManager;
 
-	public JoinGUI(DeACoudre plugin) {
-		this.playerData = plugin.getPlayerData();
-		this.sectionManager = plugin.getSectionManager();
+	@Inject
+	public JoinGUI(final Plugin plugin, final PlayerData playerData, final SectionManager sectionManager) {
+		this.plugin = plugin;
+		this.playerData = playerData;
+		this.sectionManager = sectionManager;
 	}
 
 	@EventHandler

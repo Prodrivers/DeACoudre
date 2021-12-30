@@ -11,6 +11,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -21,18 +23,18 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+@Singleton
 public class PlayerData implements Listener {
 	private final HashMap<String, String> originalPlayerName = new HashMap<>();
 	private final File playerFile;
 	private final MySQL mysql;
 	private final Configuration config;
 	private FileConfiguration playerData;
-	private boolean lastVersion;
-	private String latestVersion;
 
-	public PlayerData(final DeACoudre plugin) {
+	@Inject
+	public PlayerData(final DeACoudre plugin, final MySQL mySQL) {
 		this.config = plugin.getConfiguration();
-		this.mysql = plugin.getMySQL();
+		this.mysql = mySQL;
 
 		playerFile = new File(plugin.getDataFolder(), "playerData.yml");
 		if(!playerFile.exists()) {
@@ -189,14 +191,6 @@ public class PlayerData implements Listener {
 			playerData.set("players." + player.getUniqueId() + ".language", key);
 			savePlayerData();
 		}
-	}
-
-	public boolean isLatestVersion() {
-		return lastVersion;
-	}
-
-	public String getLatestVersion() {
-		return latestVersion;
 	}
 
 	/**
