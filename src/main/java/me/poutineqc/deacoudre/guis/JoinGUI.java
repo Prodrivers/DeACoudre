@@ -101,23 +101,47 @@ public class JoinGUI implements SelectionUI {
 						ChatColor.translateAlternateColorCodes('&', local.keyWordGameStateStarted)
 				);
 			} else if(arena.getUsers().size() >= arena.getMaxPlayer()) {
-				item = GUIElementFactory.formatItem(
-						new ItemStack(Material.RED_CONCRETE, 1),
-						title,
-						ChatColor.translateAlternateColorCodes('&', local.keyWordGameStateFull),
-						ChatColor.translateAlternateColorCodes('&', local.keyWordScoreboardPlayers)
-								+ ChatColor.DARK_GRAY + " : " + arena.getNonEliminated().size() + "/"
-								+ arena.getMaxPlayer()
-				);
+				if(isBedrockContent) {
+					item = GUIElementFactory.formatItem(
+							new ItemStack(Material.RED_CONCRETE, 1),
+							title,
+							ChatColor.translateAlternateColorCodes('&', local.keyWordGameStateFull)
+									+ " | "
+									+ ChatColor.translateAlternateColorCodes('&', local.keyWordScoreboardPlayers)
+									+ ChatColor.DARK_GRAY + " : " + arena.getNonEliminated().size() + "/"
+									+ arena.getMaxPlayer()
+					);
+				} else {
+					item = GUIElementFactory.formatItem(
+							new ItemStack(Material.RED_CONCRETE, 1),
+							title,
+							ChatColor.translateAlternateColorCodes('&', local.keyWordGameStateFull),
+							ChatColor.translateAlternateColorCodes('&', local.keyWordScoreboardPlayers)
+									+ ChatColor.DARK_GRAY + " : " + arena.getNonEliminated().size() + "/"
+									+ arena.getMaxPlayer()
+					);
+				}
 			} else {
-				item = GUIElementFactory.formatItem(
-						new ItemStack(Material.GREEN_CONCRETE, 1),
-						title,
-						ChatColor.translateAlternateColorCodes('&', local.keyWordGameStateReady),
-						ChatColor.translateAlternateColorCodes('&', local.keyWordScoreboardPlayers)
-								+ ChatColor.DARK_GRAY + " : " + arena.getNonEliminated().size() + "/"
-								+ arena.getMaxPlayer()
-				);
+				if(isBedrockContent) {
+					item = GUIElementFactory.formatItem(
+							new ItemStack(Material.GREEN_CONCRETE, 1),
+							title,
+							ChatColor.translateAlternateColorCodes('&', local.keyWordGameStateReady)
+									+ " | "
+									+ ChatColor.translateAlternateColorCodes('&', local.keyWordScoreboardPlayers)
+									+ ChatColor.DARK_GRAY + " : " + arena.getNonEliminated().size() + "/"
+									+ arena.getMaxPlayer()
+					);
+				} else {
+					item = GUIElementFactory.formatItem(
+							new ItemStack(Material.GREEN_CONCRETE, 1),
+							title,
+							ChatColor.translateAlternateColorCodes('&', local.keyWordGameStateReady),
+							ChatColor.translateAlternateColorCodes('&', local.keyWordScoreboardPlayers)
+									+ ChatColor.DARK_GRAY + " : " + arena.getNonEliminated().size() + "/"
+									+ arena.getMaxPlayer()
+					);
+				}
 			}
 
 			contents.add(GUIElementFactory.createActionItem(
