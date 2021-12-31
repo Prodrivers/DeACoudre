@@ -30,8 +30,6 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 public class DeACoudre extends JavaPlugin {
-
-	public static String NMS_VERSION;
 	public static boolean aboveOneNine;
 	private static Economy econ;
 	private Configuration config;
@@ -62,8 +60,6 @@ public class DeACoudre extends JavaPlugin {
 	public void onEnable() {
 		final PluginDescriptionFile pdfFile = getDescription();
 		final Logger logger = getLogger();
-
-		NMS_VERSION = getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
 
 		config = new Configuration(this);
 

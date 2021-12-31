@@ -297,19 +297,7 @@ public class Arena {
 	}
 
 	private void setNameTagVisibilityNever() {
-		try {
-			Object craftTeam = Class
-					.forName("org.bukkit.craftbukkit." + DeACoudre.NMS_VERSION + ".scoreboard.CraftTeam")
-					.cast(spectator);
-			Method method = craftTeam.getClass()
-					.getMethod("setOption", Class.forName("org.bukkit.scoreboard.Team$Option"),
-							Class.forName("org.bukkit.scoreboard.Team$OptionStatus"));
-			method.setAccessible(true);
-			method.invoke(craftTeam, Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
-			method.setAccessible(false);
-		} catch(Exception e) {
-			Log.severe("Error on name tag visibility setting.", e);
-		}
+		spectator.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
 	}
 
 	public void deleteArena() {
