@@ -660,13 +660,15 @@ public class Arena {
 		if(!user.isEliminated()) {
 			eliminateUser(user);
 
-			Language local = playerData.getLanguageOfPlayer(user);
-			local.sendMsg(user, local.quitGamePlayer);
-			for(User u : getUsers()) {
-				if(user != u) {
-					Language localTemp = playerData.getLanguageOfPlayer(u);
-					localTemp.sendMsg(u.getPlayer(),
-							localTemp.quitGameOthers.replace("%player%", user.getDisplayName()));
+			if(gameState != GameState.ENDING) {
+				Language local = playerData.getLanguageOfPlayer(user);
+				local.sendMsg(user, local.quitGamePlayer);
+				for(User u : getUsers()) {
+					if(user != u) {
+						Language localTemp = playerData.getLanguageOfPlayer(u);
+						localTemp.sendMsg(u.getPlayer(),
+								localTemp.quitGameOthers.replace("%player%", user.getDisplayName()));
+					}
 				}
 			}
 		}
