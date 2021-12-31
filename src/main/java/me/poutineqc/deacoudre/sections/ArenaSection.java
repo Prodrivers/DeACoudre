@@ -55,16 +55,14 @@ public class ArenaSection extends Section {
 		Player player = offlinePlayer.getPlayer();
 
 		if(player == null) {
-			Log.warning("Player wanted to leave arena " + arena.getShortName()+ ", but is offline.");
+			Log.warning("Player wanted to leave arena " + arena.getShortName() + ", but is offline.");
 			return true;
 		}
 
 		Arena playerArena = Arena.getArenaFromPlayer(player);
 		if(playerArena != arena) {
-			Language local = playerData.getLanguageOfPlayer(player);
-			local.sendMsg(player, local.errorNotInGame);
-			Log.warning("Player wanted to leave arena " + arena.getShortName()+ ", but is not in this arena.");
-			return false;
+			Log.warning("Player wanted to leave arena " + arena.getShortName() + ", but is not in this arena.");
+			return true;
 		}
 
 		return true;
@@ -76,6 +74,12 @@ public class ArenaSection extends Section {
 
 		if(player == null) {
 			Log.warning("Player wanted to leave arena " + arena.getShortName()+ ", but is offline.");
+			return true;
+		}
+
+		Arena playerArena = Arena.getArenaFromPlayer(player);
+		if(playerArena != arena) {
+			Log.warning("Player wanted to leave arena " + arena.getShortName() + ", but is not in this arena.");
 			return true;
 		}
 
