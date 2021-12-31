@@ -1215,9 +1215,13 @@ public class Arena {
 	}
 
 	private void kickPlayers() {
-		for(User user : users) {
+		Collection<User> usersToKick = new ArrayList<>(users);
+
+		for(User user : usersToKick) {
 			user.maxStats(false);
 			user.returnOriginalPlayerStats();
+
+			sectionManager.enter(user.getPlayer());
 		}
 
 		Language local = playerData.getLanguage(config.language);
