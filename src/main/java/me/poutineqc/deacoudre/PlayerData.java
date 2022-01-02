@@ -162,24 +162,19 @@ public class PlayerData implements Listener {
 		}
 
 		if(fileName == null) {
-			return Language.getLanguages().get(config.language);
+			return Language.getDefaultLanguage();
 		}
 
 		return getLanguage(fileName);
 	}
 
 	public Language getLanguage(String fileName) {
-		for(Entry<String, Language> local : Language.getLanguages().entrySet()) {
-			if(local.getKey().equalsIgnoreCase(fileName)) {
-				return local.getValue();
-			}
+		Language locale = Language.getLanguages().get(fileName);
+		if(locale != null) {
+			return locale;
 		}
 
-		if(Language.getLanguages().containsKey(config.language)) {
-			return Language.getLanguages().get(config.language);
-		}
-
-		return Language.getLanguages().get("en-US");
+		return Language.getDefaultLanguage();
 
 	}
 

@@ -85,7 +85,7 @@ public class DacSign {
 	}
 
 	public DacSign(SignChangeEvent event, SignType type) {
-		Language local = playerData.getLanguage(config.language);
+		Language local = Language.getDefaultLanguage();
 
 		Arena arena = Arena.getArenaFromName(event.getLine(2));
 		this.uuid = UUID.randomUUID();
@@ -222,8 +222,7 @@ public class DacSign {
 	}
 
 	public static void updateSigns() {
-
-		Language local = playerData.getLanguage(config.language);
+		Language local = Language.getDefaultLanguage();
 		for(DacSign dacsign : signs) {
 
 			Sign sign = (Sign) dacsign.location.getBlock().getState();
@@ -338,7 +337,7 @@ public class DacSign {
 	}
 
 	private void updateGameState(Sign sign, Arena arena) {
-		Language local = playerData.getLanguage(config.language);
+		Language local = Language.getDefaultLanguage();
 		switch(arena.getGameState()) {
 			case ACTIVE, ENDING -> sign.setLine(3, ChatColor.translateAlternateColorCodes('&', local.keyWordGameStateActive));
 			case READY, STARTUP -> sign.setLine(3,

@@ -119,7 +119,7 @@ public class Arena {
 		this.maxAmountPlayer = maxAmountPlayer;
 		colorManager = new ColorManager(plugin, this);
 
-		Language local = playerData.getLanguage(config.language);
+		Language local = Language.getDefaultLanguage();
 
 		scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 
@@ -838,7 +838,7 @@ public class Arena {
 			}
 		}
 
-		Language local = playerData.getLanguage(config.language);
+		Language local = Language.getDefaultLanguage();
 		objective.setDisplayName(ChatColor.translateAlternateColorCodes('&',
 				ChatColor.AQUA + displayName + " &f: " + local.keyWordScoreboardPoints));
 		objective.getScore(ChatColor.GOLD + "-------------------").setScore(98);
@@ -1226,7 +1226,7 @@ public class Arena {
 			sectionManager.enter(user.getPlayer());
 		}
 
-		Language local = playerData.getLanguage(config.language);
+		Language local = Language.getDefaultLanguage();
 
 		spectator.unregister();
 
@@ -1515,7 +1515,7 @@ public class Arena {
 	}
 
 	private void newRound() {
-		Language l = playerData.getLanguage(config.language);
+		Language l = Language.getDefaultLanguage();
 
 		scoreboard.resetScores(
 				ChatColor.GOLD + l.keyWordScoreboardRound + " = " + ChatColor.AQUA + roundNo);

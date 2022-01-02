@@ -6,6 +6,7 @@ import me.poutineqc.deacoudre.tools.CaseInsensitiveMap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -17,8 +18,9 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 public class Language {
-
 	private static final HashMap<String, Language> languages = new HashMap<>();
+	private static Language defaultLanguage;
+
 	private static DeACoudre plugin;
 	private static Configuration config;
 	private static File langFolder;
@@ -221,34 +223,44 @@ public class Language {
 	private FileConfiguration languageData;
 	private CaseInsensitiveMap commandDescriptions;
 
-	Language(DeACoudre plugin) {
+	Language(String name) {
+		languageFile = new File(langFolder.getPath(), name + ".yml");
+
+		if(!languageFile.exists()) {
+			InputStream local = plugin.getResource("LanguageFiles/" + name + ".yml");
+			if(local != null) {
+				plugin.saveResource("LanguageFiles/" + name + ".yml", false);
+			} else {
+				Log.info("Could not find " + name + ".yml");
+			}
+		}
+
+		if(name.equals(config.language)) {
+			defaultLanguage = this;
+		}
+
+		loadLang();
+	}
+
+	public static void init(DeACoudre plugin) {
 		Language.plugin = plugin;
 		config = plugin.getConfiguration();
+		defaultLanguage = null;
+		languages.clear();
 
 		langFolder = new File(plugin.getDataFolder(), "LanguageFiles");
 		if(!langFolder.exists()) {
 			langFolder.mkdir();
 		}
-	}
 
-	Language(String fileName, boolean forceFileOverwrite) {
-		languageFile = new File(langFolder.getPath(), fileName + ".yml");
-		if(forceFileOverwrite) {
-			languageFile.delete();
-			plugin.saveResource("LanguageFiles/" + fileName + ".yml", false);
+		for(File languageFile : langFolder.listFiles()) {
+			String langName = languageFile.getName().replaceAll("\\.yml", "");
+			languages.put(langName, new Language(langName));
 		}
 
-		if(!languageFile.exists()) {
-			InputStream local = plugin.getResource("LanguageFiles/" + fileName + ".yml");
-			if(local != null) {
-				plugin.saveResource("LanguageFiles/" + fileName + ".yml", false);
-			} else {
-				Log.info("Could not find " + fileName + ".yml");
-			}
+		if(defaultLanguage == null) {
+			defaultLanguage = languages.values().iterator().next();
 		}
-
-		languages.put(fileName, this);
-		loadLang();
 	}
 
 	public static Entry<String, Language> getLanguage(String languageName) {
@@ -265,8 +277,8 @@ public class Language {
 		return languages;
 	}
 
-	static void clearLanguages() {
-		languages.clear();
+	public static Language getDefaultLanguage() {
+		return defaultLanguage;
 	}
 
 	public void loadLang() {
@@ -523,19 +535,19 @@ public class Language {
 		sendMsg(user.getPlayer(), msg);
 	}
 
-	public void sendMsg(Player player, String msg) {
+	public void sendMsg(CommandSender sender, String msg) {
 		if(config.introInFrontOfEveryMessage) {
-			player.sendMessage(ChatColor.translateAlternateColorCodes('&', prefixShort + msg.toString()));
+			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefixShort + msg.toString()));
 		} else {
-			player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg.toString()));
+			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', msg.toString()));
 		}
 	}
 
-	public void sendMsg(Player player, Component msg) {
+	public void sendMsg(CommandSender sender, Component msg) {
 		if(config.introInFrontOfEveryMessage) {
-			player.sendMessage(Component.join(Component.empty(), prefixShortComponent, msg));
+			sender.sendMessage(Component.join(Component.empty(), prefixShortComponent, msg));
 		} else {
-			player.sendMessage(msg);
+			sender.sendMessage(msg);
 		}
 	}
 

@@ -21,7 +21,7 @@ public class SignChange implements Listener {
 
 	@EventHandler
 	public void onSignChange(SignChangeEvent e) {
-		Language local = playerData.getLanguage(config.language);
+		Language local = Language.getDefaultLanguage();
 
 		if(isPrefixInLine(
 				ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', e.getLine(0))).toLowerCase(), local)) {

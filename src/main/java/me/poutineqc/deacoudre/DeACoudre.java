@@ -75,7 +75,7 @@ public class DeACoudre extends JavaPlugin {
 		new User(this);
 		new Permissions(this);
 		new DacCommand(this);
-		loadLanguages();
+		Language.init(this);
 		achievement = new Achievement(this);
 		new TopManager(this);
 		achievementsGUI = new AchievementsGUI(this);
@@ -158,15 +158,6 @@ public class DeACoudre extends JavaPlugin {
 				+ config.tablePrefix + "PLAYERS ORDER BY gamesLost DESC LIMIT 10");
 		mysql.update("CREATE OR REPLACE VIEW " + config.tablePrefix + "DACDONE AS SELECT name, DaCdone FROM "
 				+ config.tablePrefix + "PLAYERS ORDER BY DaCdone DESC LIMIT 10");
-	}
-
-	public void loadLanguages() {
-		Language.clearLanguages();
-
-		new Language(this);
-		new Language("en-US", false);
-		new Language("fr-FR", false);
-		new Language(config.language, false);
 	}
 
 	public void onDisable() {
