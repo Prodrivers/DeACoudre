@@ -573,11 +573,11 @@ public class DaCCommands implements CommandExecutor, TabCompleter {
 							int minAmountPlayer = sc.getInt("minPlayer", 2);
 							int maxAmountPlayer = sc.getInt("maxPlayer", 8);
 							long colorIndice = sc.getLong("colorIndice", 2122219134);
-							double plateformX = sc.getDouble("plateform.x", 0);
-							double plateformY = sc.getDouble("plateform.y", 0);
-							double plateformZ = sc.getDouble("plateform.z", 0);
-							double plateformYaw = sc.getDouble("plateform.yaw", 0);
-							double plateformPitch = sc.getDouble("plateform.pitch", 0);
+							double platformX = sc.getDouble("platform.x", 0);
+							double platformY = sc.getDouble("platform.y", 0);
+							double platformZ = sc.getDouble("platform.z", 0);
+							double platformYaw = sc.getDouble("platform.yaw", 0);
+							double platformPitch = sc.getDouble("platform.pitch", 0);
 							double lobbyX = sc.getDouble("lobby.x", 0);
 							double lobbyY = sc.getDouble("lobby.y", 0);
 							double lobbyZ = sc.getDouble("lobby.z", 0);
@@ -592,15 +592,15 @@ public class DaCCommands implements CommandExecutor, TabCompleter {
 
 							mysql.update("INSERT INTO " + config.tablePrefix
 									+ "ARENAS (name, world, minAmountPlayer, maxAmountPlayer, colorIndice,"
-									+ "plateformX, plateformY, plateformZ, plateformYaw, plateformPitch,"
+									+ "platformX, platformY, platformZ, platformYaw, platformPitch,"
 									+ "lobbyX, lobbyY, lobbyZ, lobbyYaw, lobbyPitch, minPointX,"
 									+ "minPointY, minPointZ, maxPointX," + "maxPointY, maxPointZ) VALUES ('"
 									+ name + "','" + world + "','" + minAmountPlayer + "','"
 									+ maxAmountPlayer + "','" + colorIndice
-									+ "','" + plateformX + "','"
-									+ plateformY + "','" + plateformZ
-									+ "','" + plateformYaw + "','"
-									+ plateformPitch + "','" + lobbyX
+									+ "','" + platformX + "','"
+									+ platformY + "','" + platformZ
+									+ "','" + platformYaw + "','"
+									+ platformPitch + "','" + lobbyX
 									+ "','" + lobbyY + "','" + lobbyZ
 									+ "','" + lobbyYaw + "','" + lobbyPitch
 									+ "','" + minPointX + "','" + minPointY
@@ -713,8 +713,8 @@ public class DaCCommands implements CommandExecutor, TabCompleter {
 			return;
 		}
 
-		arena.setPlateform(player);
-		locale.sendMsg(player, locale.editPlateformSuccess.replace("%arenaName%", arena.getShortName()));
+		arena.setPlatform(player);
+		locale.sendMsg(player, locale.editPlatformSuccess.replace("%arenaName%", arena.getShortName()));
 	}
 
 	private void commandArenaSetPool(CommandSender sender, Language locale, Arena arena) {

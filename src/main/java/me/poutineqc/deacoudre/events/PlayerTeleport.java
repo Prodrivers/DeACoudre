@@ -33,7 +33,7 @@ public class PlayerTeleport implements Listener {
 		}
 
 		if(event.getTo().getWorld() == arena.getWorld()) {
-			if((event.getTo().distance(arena.getPlateform())) < 1 || (event.getTo().distance(arena.getLobby())) < 1) {
+			if((event.getTo().distance(arena.getPlatform())) < 1 || (event.getTo().distance(arena.getLobby())) < 1) {
 				return;
 			}
 		}

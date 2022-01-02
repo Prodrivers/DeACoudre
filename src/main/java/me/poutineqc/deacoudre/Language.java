@@ -140,7 +140,7 @@ public class Language {
 	public String editErrorNoParameter;
 	public String editDeleteSuccess;
 	public String editLobbySuccess;
-	public String editPlateformSuccess;
+	public String editPlatformSuccess;
 	public String editPoolNoSelection;
 	public String editPoolSuccess;
 	public String editLimitMinSuccess;
@@ -194,7 +194,7 @@ public class Language {
 	public String keyWordHelpAdvanced;
 	public String keyWordHelpLobby;
 	public String keyWordHelpWorld;
-	public String keyWordHelpPlateform;
+	public String keyWordHelpPlatform;
 	public String keyWordHelpPool;
 	public String editColorColorLessPlayer;
 	public String endingTeleport;
@@ -442,7 +442,7 @@ public class Language {
 		editNewSuccess = languageData.getString("editNewSuccess", "&aNew arena &2%arenaName% &asuccessfully created.");
 		editDeleteSuccess = languageData.getString("editDeleteSuccess", "&aSuccessfully deleted the arena &2%arenaName%");
 		editLobbySuccess = languageData.getString("editLobbySuccess", "&aLobby sucessfully set for the arena &2%arenaName%&a.");
-		editPlateformSuccess = languageData.getString("editPlateformSuccess", "&aPlateform sucessfully set for the arena &2%arenaName%&a.");
+		editPlatformSuccess = languageData.getString("editPlatformSuccess", "&aPlatform sucessfully set for the arena &2%arenaName%&a.");
 		editPoolNoSelection = languageData.getString("editPoolNoSelection", "&cYou must first make a selection with world edit.");
 		editPoolSuccess = languageData.getString("editPoolSuccess", "&aPool sucessfully set for the arena &2%arenaName%&a.");
 		editLimitMinSuccess = languageData.getString("editLimitMinSuccess", "&aSuccessfully set to &2%amount% &athe minimum amount of players for the arena &2%arenaName%");
@@ -518,7 +518,7 @@ public class Language {
 		keyWordHelpAmountPlayer = languageData.getString("keyWordHelpAmountPlayer", "amount of players");
 		keyWordHelpWorld = languageData.getString("keyWordHelpWorld", "World");
 		keyWordHelpLobby = languageData.getString("keyWordHelpLobby", "Lobby");
-		keyWordHelpPlateform = languageData.getString("keyWordHelpPlateform", "Plateform");
+		keyWordHelpPlatform = languageData.getString("keyWordHelpPlatform", "Platform");
 		keyWordHelpPool = languageData.getString("keyWordHelpPool", "Pool");
 
 		keyWordScoreboardPlayers = languageData.getString("keyWordScoreboardPlayers", "&6Players");

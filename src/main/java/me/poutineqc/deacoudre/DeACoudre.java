@@ -136,8 +136,8 @@ public class DeACoudre extends JavaPlugin {
 				+ "maxPointX INT DEFAULT 0, maxPointY INT DEFAULT 0,maxPointZ INT DEFAULT 0,"
 				+ "lobbyX DOUBLE DEFAULT 0,lobbyY DOUBLE DEFAULT 0,lobbyZ DOUBLE DEFAULT 0,"
 				+ "lobbyPitch FLOAT DEFAULT 0,lobbyYaw FLOAT DEFAULT 0,"
-				+ "plateformX DOUBLE DEFAULT 0,plateformY DOUBLE DEFAULT 0,plateformZ DOUBLE DEFAULT 0,"
-				+ "plateformPitch FLOAT DEFAULT 0,plateformYaw FLOAT DEFAULT 0);");
+				+ "platformX DOUBLE DEFAULT 0,platformY DOUBLE DEFAULT 0,platformZ DOUBLE DEFAULT 0,"
+				+ "platformPitch FLOAT DEFAULT 0,platformYaw FLOAT DEFAULT 0);");
 		mysql.update("ALTER TABLE " + config.tablePrefix + "ARENAS CONVERT TO CHARACTER SET utf8;");
 
 		mysql.update("CREATE TABLE IF NOT EXISTS " + config.tablePrefix

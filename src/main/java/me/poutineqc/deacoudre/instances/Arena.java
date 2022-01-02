@@ -50,7 +50,7 @@ public class Arena {
 	private String displayName;
 	private World world;
 	private Location lobby;
-	private Location plateform;
+	private Location platform;
 	private Location minPoint;
 	private Location maxPoint;
 	private int maxAmountPlayer;
@@ -90,7 +90,7 @@ public class Arena {
 		arenaData.saveArenaData();
 	}
 
-	public Arena(String shortName, String displayName, World world, Location minPoint, Location maxPoint, Location lobby, Location plateform,
+	public Arena(String shortName, String displayName, World world, Location minPoint, Location maxPoint, Location lobby, Location platform,
 	             int minAmountPlayer, int maxAmountPlayer) {
 		this.shortName = shortName;
 		this.displayName = displayName;
@@ -106,13 +106,13 @@ public class Arena {
 			this.minPoint = minPoint;
 			this.maxPoint = maxPoint;
 			this.lobby = lobby;
-			this.plateform = plateform;
+			this.platform = platform;
 			setNullIfDefault();
 		} catch(NullPointerException e) {
 			this.minPoint = null;
 			this.maxPoint = null;
 			this.lobby = null;
-			this.plateform = null;
+			this.platform = null;
 		}
 
 		this.minAmountPlayer = minAmountPlayer;
@@ -206,13 +206,13 @@ public class Arena {
 			lobby.setPitch((float) ccs.getDouble("pitch", 0));
 			lobby.setYaw((float) ccs.getDouble("yaw", 0));
 
-			ccs = cs.getConfigurationSection("plateform");
-			Location plateform = new Location(world, ccs.getDouble("x", 0), ccs.getDouble("y", 0),
+			ccs = cs.getConfigurationSection("platform");
+			Location platform = new Location(world, ccs.getDouble("x", 0), ccs.getDouble("y", 0),
 					ccs.getDouble("z", 0));
-			plateform.setPitch((float) ccs.getDouble("pitch", 0));
-			plateform.setYaw((float) ccs.getDouble("yaw", 0));
+			platform.setPitch((float) ccs.getDouble("pitch", 0));
+			platform.setYaw((float) ccs.getDouble("yaw", 0));
 
-			new Arena(arenaShortName, displayName, world, minPoint, maxPoint, lobby, plateform, minAmountPlayer, maxAmountPlayer);
+			new Arena(arenaShortName, displayName, world, minPoint, maxPoint, lobby, platform, minAmountPlayer, maxAmountPlayer);
 		}
 	}
 
@@ -279,8 +279,8 @@ public class Arena {
 			lobby = null;
 		}
 
-		if((0 == plateform.getX()) && (0 == plateform.getY()) && (0 == plateform.getZ())) {
-			plateform = null;
+		if((0 == platform.getX()) && (0 == platform.getY()) && (0 == platform.getZ())) {
+			platform = null;
 		}
 
 		if(isReady()) {
@@ -289,7 +289,7 @@ public class Arena {
 	}
 
 	private boolean isReady() {
-		return lobby != null && plateform != null && minPoint != null && maxPoint != null;
+		return lobby != null && platform != null && minPoint != null && maxPoint != null;
 	}
 
 	private void setNameTagVisibilityNever() {
@@ -486,7 +486,7 @@ public class Arena {
 	}
 
 	public boolean isAllSet() {
-		return lobby != null && plateform != null && maxPoint != null && minPoint != null;
+		return lobby != null && platform != null && maxPoint != null && minPoint != null;
 	}
 
 	/******************************************************************************************************
@@ -547,14 +547,14 @@ public class Arena {
 							+ ((int) (lobby.getY() * 100)) / (double) 100 + ", "
 							+ ((int) (lobby.getZ() * 100)) / (double) 100 + "}"));
 		}
-		if(plateform == null) {
+		if(platform == null) {
 			player.sendMessage(
-					ChatColor.translateAlternateColorCodes('&', "&3" + local.keyWordHelpPlateform + ": &7null"));
+					ChatColor.translateAlternateColorCodes('&', "&3" + local.keyWordHelpPlatform + ": &7null"));
 		} else {
 			player.sendMessage(ChatColor.translateAlternateColorCodes('&',
-					"&3" + local.keyWordHelpPlateform + ": &7{" + ((int) (plateform.getX() * 100)) / (double) 100 + ", "
-							+ ((int) (plateform.getY() * 100)) / (double) 100 + ", "
-							+ ((int) (plateform.getZ() * 100)) / (double) 100 + "}"));
+					"&3" + local.keyWordHelpPlatform + ": &7{" + ((int) (platform.getX() * 100)) / (double) 100 + ", "
+							+ ((int) (platform.getY() * 100)) / (double) 100 + ", "
+							+ ((int) (platform.getZ() * 100)) / (double) 100 + "}"));
 		}
 		if(minPoint == null) {
 			player.sendMessage(ChatColor.translateAlternateColorCodes('&',
@@ -939,7 +939,7 @@ public class Arena {
 				}
 			}
 
-			player.teleport(plateform);
+			player.teleport(platform);
 			activePlayer.maxStats(false);
 			scoreboard.resetScores(activePlayer.getName());
 			objective.getScore(ChatColor.AQUA + activePlayer.getName()).setScore(activePlayer.getPoint());
@@ -1486,11 +1486,11 @@ public class Arena {
 		}
 	}
 
-	public Location getPlateform() {
-		return plateform;
+	public Location getPlatform() {
+		return platform;
 	}
 
-	public void setPlateform(Player player) {
+	public void setPlatform(Player player) {
 		gameState = GameState.UNREADY;
 
 		if(!world.getName().equalsIgnoreCase(player.getWorld().getName())) {
@@ -1498,16 +1498,16 @@ public class Arena {
 		}
 
 		world = player.getWorld();
-		plateform = player.getLocation();
-		plateform.add(new Vector(0, 0.5, 0));
+		platform = player.getLocation();
+		platform.add(new Vector(0, 0.5, 0));
 
 		ConfigurationSection cs = arenaData.getData().getConfigurationSection("arenas." + shortName);
 		cs.set("world", world.getName());
-		cs.set("plateform.x", plateform.getX());
-		cs.set("plateform.y", plateform.getY());
-		cs.set("plateform.z", plateform.getZ());
-		cs.set("plateform.pitch", plateform.getPitch());
-		cs.set("plateform.yaw", plateform.getYaw());
+		cs.set("platform.x", platform.getX());
+		cs.set("platform.y", platform.getY());
+		cs.set("platform.z", platform.getZ());
+		cs.set("platform.pitch", platform.getPitch());
+		cs.set("platform.yaw", platform.getYaw());
 		arenaData.saveArenaData();
 
 		if(isReady()) {
