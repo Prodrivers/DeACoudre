@@ -100,7 +100,7 @@ permissions:
       dac.admin.edit.new: true
       dac.admin.edit.delete: true
       dac.admin.edit.lobby: true
-      dac.admin.edit.plateform: true
+      dac.admin.edit.platform: true
       dac.admin.edit.pool: true
       dac.admin.edit.color: true
       dac.admin.edit.displayname: true
@@ -114,8 +114,8 @@ permissions:
   dac.admin.edit.lobby:
     description: Allows to set an arena's lobby
     default: op
-  dac.admin.edit.plateform:
-    description: Allows to set an arena's plateform
+  dac.admin.edit.platform:
+    description: Allows to set an arena's platform
     default: op
   dac.admin.edit.pool:
     description: Allows to set an arena's pool

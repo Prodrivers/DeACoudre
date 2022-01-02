@@ -19,6 +19,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -29,7 +30,6 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Vector;
 
-import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -46,7 +46,7 @@ public class Arena {
 	private static SectionManager sectionManager;
 	private static List<Arena> arenas = new ArrayList<>();
 	private final List<User> users = new ArrayList<>();
-	private String shortName;
+	private final String shortName;
 	private String displayName;
 	private World world;
 	private Location lobby;
@@ -224,10 +224,6 @@ public class Arena {
 		return arenas.stream().filter(a -> a.getShortName().equalsIgnoreCase(arenaName)).findFirst().orElse(null);
 	}
 
-	public static Arena getArenaFromDisplayName(String displayName) {
-		return arenas.stream().filter(a -> a.getDisplayName().equalsIgnoreCase(displayName)).findFirst().orElse(null);
-	}
-
 	public static Arena getArenaFromPlayer(Player player) {
 		for(Arena a : arenas) {
 			for(User p : a.users) {
@@ -361,11 +357,17 @@ public class Arena {
 		return true;
 	}
 
-	public void setMaximum(Player player, String arg) {
-		Language local = playerData.getLanguageOfPlayer(player);
+	public void setMaximum(CommandSender sender, String arg) {
+		Language locale;
+		if(sender instanceof Player player) {
+			locale = playerData.getLanguageOfPlayer(player);
+		} else {
+			locale = Language.getDefaultLanguage();
+		}
+		Language defaultLocale = Language.getDefaultLanguage();
 
 		if(gameState != GameState.READY && gameState != GameState.UNREADY) {
-			local.sendMsg(player, local.editLimitGameActive);
+			locale.sendMsg(sender, locale.editLimitGameActive);
 			return;
 		}
 
@@ -373,44 +375,50 @@ public class Arena {
 		try {
 			amount = Integer.parseInt(arg);
 		} catch(NumberFormatException e) {
-			local.sendMsg(player, local.editLimitNaN);
+			locale.sendMsg(sender, locale.editLimitNaN);
 			return;
 		}
 
 		if(amount < minAmountPlayer) {
-			local.sendMsg(player, local.editLimitErrorMinMax);
+			locale.sendMsg(sender, locale.editLimitErrorMinMax);
 			return;
 		}
 
 		if(amount > colorManager.getArenaBlocks().size()) {
-			local.sendMsg(player, local.editColorColorLessPlayer);
+			locale.sendMsg(sender, locale.editColorColorLessPlayer);
 			return;
 		}
 
 		if(amount > 12) {
-			local.sendMsg(player, local.editLimitMaxAboveMax);
+			locale.sendMsg(sender, locale.editLimitMaxAboveMax);
 			return;
 		}
 
-		scoreboard.resetScores(ChatColor.GOLD + local.keyWordGeneralMaximum + " = " + ChatColor.AQUA
+		scoreboard.resetScores(ChatColor.GOLD + defaultLocale.keyWordGeneralMaximum + " = " + ChatColor.AQUA
 				+ maxAmountPlayer);
 		maxAmountPlayer = amount;
 		objective.getScore(
-						ChatColor.GOLD + local.keyWordGeneralMaximum + " = " + ChatColor.AQUA + maxAmountPlayer)
+						ChatColor.GOLD + defaultLocale.keyWordGeneralMaximum + " = " + ChatColor.AQUA + maxAmountPlayer)
 				.setScore(3);
 
 		arenaData.getData().set("arenas." + shortName + ".maxPlayer", amount);
 		arenaData.saveArenaData();
 
-		local.sendMsg(player,
-				local.editLimitMaxSuccess.replace("%amount%", String.valueOf(amount)).replace("%arenaName%", shortName));
+		locale.sendMsg(sender,
+				locale.editLimitMaxSuccess.replace("%amount%", String.valueOf(amount)).replace("%arenaName%", shortName));
 	}
 
-	public void setMinimum(Player player, String arg) {
-		Language local = playerData.getLanguageOfPlayer(player);
+	public void setMinimum(CommandSender sender, String arg) {
+		Language locale;
+		if(sender instanceof Player player) {
+			locale = playerData.getLanguageOfPlayer(player);
+		} else {
+			locale = Language.getDefaultLanguage();
+		}
+		Language defaultLocale = Language.getDefaultLanguage();
 
 		if(gameState != GameState.READY && gameState != GameState.UNREADY) {
-			local.sendMsg(player, local.editLimitGameActive);
+			locale.sendMsg(sender, locale.editLimitGameActive);
 			return;
 		}
 
@@ -418,43 +426,48 @@ public class Arena {
 		try {
 			amount = Integer.parseInt(arg);
 		} catch(NumberFormatException e) {
-			local.sendMsg(player, local.editLimitNaN);
+			locale.sendMsg(sender, locale.editLimitNaN);
 			return;
 		}
 
 		if(amount < 2) {
-			local.sendMsg(player, local.editLimitMinBelowMin);
+			locale.sendMsg(sender, locale.editLimitMinBelowMin);
 			return;
 		}
 		if(amount > maxAmountPlayer) {
-			local.sendMsg(player, local.editLimitErrorMinMax);
+			locale.sendMsg(sender, locale.editLimitErrorMinMax);
 			return;
 		}
 
-		scoreboard.resetScores(ChatColor.GOLD + local.keyWordGeneralMinimum + " = " + ChatColor.AQUA
+		scoreboard.resetScores(ChatColor.GOLD + defaultLocale.keyWordGeneralMinimum + " = " + ChatColor.AQUA
 				+ minAmountPlayer);
 		minAmountPlayer = amount;
 		objective.getScore(
-						ChatColor.GOLD + local.keyWordGeneralMinimum + " = " + ChatColor.AQUA + minAmountPlayer)
+						ChatColor.GOLD + defaultLocale.keyWordGeneralMinimum + " = " + ChatColor.AQUA + minAmountPlayer)
 				.setScore(2);
 
 		arenaData.getData().set("arenas." + shortName + ".minPlayer", amount);
 		arenaData.saveArenaData();
 
-		local.sendMsg(player,
-				local.editLimitMinSuccess.replace("%amount%", String.valueOf(amount)).replace("%arenaName%", shortName));
+		locale.sendMsg(sender,
+				locale.editLimitMinSuccess.replace("%amount%", String.valueOf(amount)).replace("%arenaName%", shortName));
 	}
 
-	public void setDisplayName(Player player, String displayName) {
-		Language local = playerData.getLanguageOfPlayer(player);
+	public void setDisplayName(CommandSender sender, String displayName) {
+		Language locale;
+		if(sender instanceof Player player) {
+			locale = playerData.getLanguageOfPlayer(player);
+		} else {
+			locale = Language.getDefaultLanguage();
+		}
 
 		if(gameState != GameState.READY && gameState != GameState.UNREADY) {
-			local.sendMsg(player, local.editLimitGameActive);
+			locale.sendMsg(sender, locale.editLimitGameActive);
 			return;
 		}
 
 		if(displayName.isEmpty()) {
-			local.sendMsg(player, local.editErrorNoParameter);
+			locale.sendMsg(sender, locale.editErrorNoParameter);
 			return;
 		}
 
@@ -463,9 +476,9 @@ public class Arena {
 		arenaData.getData().set("arenas." + shortName + ".displayName", displayName);
 		arenaData.saveArenaData();
 
-		local.sendMsg(player,
+		locale.sendMsg(sender,
 				Utils.replaceInComponent(
-						local.editNameSuccess,
+						locale.editNameSuccess,
 						"%newName%", Component.text(displayName),
 						"%arena%", Component.text(shortName)
 				)

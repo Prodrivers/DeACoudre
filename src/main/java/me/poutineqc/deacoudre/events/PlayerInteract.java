@@ -3,8 +3,8 @@ package me.poutineqc.deacoudre.events;
 import me.poutineqc.deacoudre.DeACoudre;
 import me.poutineqc.deacoudre.Language;
 import me.poutineqc.deacoudre.achievements.AchievementsGUI;
-import me.poutineqc.deacoudre.commands.DaC;
-import me.poutineqc.deacoudre.commands.DacCommand;
+import me.poutineqc.deacoudre.commands.DaCCommands;
+import me.poutineqc.deacoudre.commands.DaCCommandDescription;
 import me.poutineqc.deacoudre.commands.DacSign;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -16,7 +16,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 public class PlayerInteract implements Listener {
 
 	private final AchievementsGUI achievementsGUI;
-	private final DaC dac;
+	private final DaCCommands dac;
 
 	public PlayerInteract(DeACoudre plugin, Language local) {
 		this.achievementsGUI = plugin.getAchievementsGUI();
@@ -42,11 +42,11 @@ public class PlayerInteract implements Listener {
 		Player player = e.getPlayer();
 
 		switch(dacsign.getSignType()) {
-			case COLOR -> dac.openColorGUI(DacCommand.getCommand("color"), player);
-			case JOIN -> dac.commandJoin(DacCommand.getCommand("join"), player, 2, s.getLine(2), true);
-			case PLAY -> dac.commandJoin(DacCommand.getCommand("join"), player, 2, s.getLine(2), false);
-			case QUIT -> dac.quitGame(DacCommand.getCommand("quit"), player);
-			case START -> dac.startGame(DacCommand.getCommand("start"), player);
+			case COLOR -> dac.commandColor(DaCCommandDescription.getCommand("color"), player);
+			case JOIN -> dac.commandJoin(DaCCommandDescription.getCommand("join"), player, 2, s.getLine(2), true);
+			case PLAY -> dac.commandJoin(DaCCommandDescription.getCommand("join"), player, 2, s.getLine(2), false);
+			case QUIT -> dac.commandQuitGame(DaCCommandDescription.getCommand("quit"), player);
+			case START -> dac.commandStartGame(DaCCommandDescription.getCommand("start"), player);
 			case STATS -> achievementsGUI.openStats(player);
 		}
 	}

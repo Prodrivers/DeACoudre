@@ -3,37 +3,41 @@ package me.poutineqc.deacoudre.commands;
 import me.poutineqc.deacoudre.DeACoudre;
 import me.poutineqc.deacoudre.Log;
 import me.poutineqc.deacoudre.Permissions;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
-public class DacCommand {
-
-	private static ArrayList<DacCommand> commands;
+public class DaCCommandDescription {
+	private static Map<String, DaCCommandDescription> commands;
 	private static DeACoudre plugin;
 	private static File commandFile;
 	private static FileConfiguration commandData;
-	private String commandName;
-	private String description;
-	private String permission;
-	private String usage;
-	private CommandType type;
+	private final String commandName;
+	private final String description;
+	private final String permission;
+	private final String usage;
+	private final List<String> arguments;
+	private final CommandType type;
+	private final boolean isPlayerOnly;
 
-	public DacCommand(String commandName, String description, String permission, String usage, CommandType type) {
+	public DaCCommandDescription(String commandName, String description, String permission, String usage, CommandType type, List<String> arguments, boolean isPlayerOnly) {
 		this.commandName = commandName;
 		this.description = description;
 		this.permission = permission;
 		this.usage = usage;
 		this.type = type;
+		this.arguments = arguments;
+		this.isPlayerOnly = isPlayerOnly;
 	}
 
-	public DacCommand(DeACoudre plugin) {
-		DacCommand.plugin = plugin;
+	public static void init(DeACoudre plugin) {
+		DaCCommandDescription.plugin = plugin;
 
 		commandFile = new File(plugin.getDataFolder(), "commands.yml");
 		loadCommands();
@@ -48,7 +52,7 @@ public class DacCommand {
 		}
 
 		commandData = YamlConfiguration.loadConfiguration(commandFile);
-		commands = new ArrayList<>();
+		commands = new HashMap<>();
 
 		readingProcess();
 
@@ -57,59 +61,39 @@ public class DacCommand {
 
 	private static void readingProcess() {
 		for(String commandType : commandData.getConfigurationSection("commands").getKeys(false)) {
-
-			CommandType type;
-			switch(commandType) {
-				case "game":
-					type = CommandType.GAME_COMMANDS;
-					break;
-				case "arena":
-					type = CommandType.ARENA_COMMANDS;
-					break;
-				case "general":
-					type = CommandType.GENERAL;
-					break;
-				case "admin":
-					type = CommandType.ADMIN_COMMANDS;
-					break;
-				default:
-					type = CommandType.ALL;
-			}
+			CommandType type = switch(commandType) {
+				case "game" -> CommandType.GAME;
+				case "arena" -> CommandType.ARENA;
+				case "general" -> CommandType.GENERAL;
+				case "admin" -> CommandType.ADMIN;
+				default -> CommandType.ALL;
+			};
 
 			for(String commandName : commandData.getConfigurationSection("commands." + commandType).getKeys(false)) {
 				String description = commandData.getString("commands." + commandType + "." + commandName + ".description");
 				String permission = commandData.getString("commands." + commandType + "." + commandName + ".permission");
 				String usage = commandData.getString("commands." + commandType + "." + commandName + ".usage");
-				commands.add(new DacCommand(commandName, description, permission, usage, type));
+				List<String> arguments = commandData.getStringList("commands." + commandType + "." + commandName + ".arguments");
+				boolean isPlayerOnly = commandData.getBoolean("commands." + commandType + "." + commandName + ".playeronly");
+				commands.put(commandName, new DaCCommandDescription(commandName, description, permission, usage, type, arguments, isPlayerOnly));
 			}
 		}
 	}
 
-	public static ArrayList<DacCommand> getCommands() {
-		return commands;
+	public static Collection<DaCCommandDescription> getCommands() {
+		return commands.values();
 	}
 
-	public static List<DacCommand> getRequiredCommands(Player player, CommandType commandType) {
-		List<DacCommand> requestedCommands = new ArrayList<>();
-
-		for(DacCommand cmd : commands) {
-			if(cmd.type == commandType || commandType == CommandType.ALL) {
-				if(Permissions.hasPermission(player, cmd.permission, false)) {
-					requestedCommands.add(cmd);
-				}
-			}
-		}
-
-		return requestedCommands;
+	public static List<DaCCommandDescription> getRequiredCommands(CommandSender sender, CommandType commandType) {
+		return commands.values().stream()
+				.filter(cmd -> cmd.type == commandType || commandType == CommandType.ALL)
+				.filter(cmd -> Permissions.hasPermission(sender, cmd.permission, false))
+				.filter(cmd -> cmd.canExecute(sender))
+				.collect(Collectors.toList());
 	}
 
-	public static DacCommand getCommand(String argument) {
-		for(DacCommand command : commands) {
-			if(command.commandName.equalsIgnoreCase(argument)) {
-				return command;
-			}
-		}
-		return null;
+	public static DaCCommandDescription getCommand(String argument) {
+		return commands.get(argument);
 	}
 
 	public String getCommandName() {
@@ -126,5 +110,17 @@ public class DacCommand {
 
 	public String getUsage() {
 		return usage;
+	}
+
+	public CommandType getType() {
+		return type;
+	}
+
+	public List<String> getArguments() {
+		return arguments;
+	}
+
+	public boolean canExecute(CommandSender sender) {
+		return !isPlayerOnly || sender instanceof Player;
 	}
 }

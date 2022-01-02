@@ -3,13 +3,12 @@ package me.poutineqc.deacoudre;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import fr.prodrivers.bukkit.commons.ProdriversCommons;
-import fr.prodrivers.bukkit.commons.parties.PartyManager;
 import fr.prodrivers.bukkit.commons.sections.SectionManager;
 import me.poutineqc.deacoudre.achievements.Achievement;
 import me.poutineqc.deacoudre.achievements.AchievementsGUI;
 import me.poutineqc.deacoudre.achievements.TopManager;
-import me.poutineqc.deacoudre.commands.DaC;
-import me.poutineqc.deacoudre.commands.DacCommand;
+import me.poutineqc.deacoudre.commands.DaCCommands;
+import me.poutineqc.deacoudre.commands.DaCCommandDescription;
 import me.poutineqc.deacoudre.commands.DacSign;
 import me.poutineqc.deacoudre.events.*;
 import me.poutineqc.deacoudre.guis.ColorsGUI;
@@ -42,7 +41,7 @@ public class DeACoudre extends JavaPlugin {
 	private AchievementsGUI achievementsGUI;
 	private PlayerDamage playerDamage;
 	private JoinGUI joinGUI;
-	private DaC dac;
+	private DaCCommands dac;
 	private DacSign signData;
 
 	private Injector injector;
@@ -74,7 +73,7 @@ public class DeACoudre extends JavaPlugin {
 
 		new User(this);
 		new Permissions(this);
-		new DacCommand(this);
+		DaCCommandDescription.init(this);
 		Language.init(this);
 		achievement = new Achievement(this);
 		new TopManager(this);
@@ -181,7 +180,7 @@ public class DeACoudre extends JavaPlugin {
 		pm.registerEvents(achievementsGUI, this);
 		pm.registerEvents(new ColorsGUI(this), this);
 		pm.registerEvents(new InventoryBar(this), this);
-		dac = new DaC(this);
+		dac = new DaCCommands(this);
 		pm.registerEvents(new BlockBreak(), this);
 		pm.registerEvents(new PlayerInteract(this, mainLanguage), this);
 
@@ -249,7 +248,7 @@ public class DeACoudre extends JavaPlugin {
 		return joinGUI;
 	}
 
-	public DaC getDAC() {
+	public DaCCommands getDAC() {
 		return dac;
 	}
 
@@ -259,5 +258,28 @@ public class DeACoudre extends JavaPlugin {
 
 	public SectionManager getSectionManager() {
 		return sectionManager;
+	}
+
+	public void reload() {
+		if(mysql.hasConnection()) {
+			mysql.close();
+		}
+
+		config.loadConfig(this);
+
+		setup();
+
+		initialiseEconomy();
+		Language.init(this);
+
+		if(!mysql.hasConnection()) {
+			playerData.loadPlayerData();
+			arenaData.loadArenaData();
+		}
+
+		achievement.load_achievements();
+
+		Arena.loadArenas();
+		DacSign.loadAllSigns();
 	}
 }

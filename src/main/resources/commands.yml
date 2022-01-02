@@ -1,43 +1,64 @@
 commands:
   general:
+    help:
+      usage: "/%command% help"
+      description: "cmd-desc-help"
+      permission: "dac.player.help"
+      arguments:
+        - "helptopics"
     language:
       usage: "/%command% language <language>"
       description: "cmd-desc-language"
       permission: "dac.player.language"
+      arguments:
+        - "locale"
+      playeronly: true
     stats:
       usage: "/%command% stats"
       description: "cmd-desc-stats"
       permission: "dac.player.stats"
+      playeronly: true
   game:
     list:
       usage: "/%command% list"
       description: "cmd-desc-list"
       permission: "dac.player.list"
+      playeronly: true
     info:
       usage: "/%command% info <arena>"
       description: "cmd-desc-info"
       permission: "dac.player.info"
+      arguments:
+        - "arena"
+      playeronly: true
     join:
       usage: "/%command% join [arena]"
       description: "cmd-desc-join"
       permission: "dac.player.play.join"
+      arguments:
+        - "arena"
+      playeronly: true
     quit:
       usage: "/%command% quit"
       description: "cmd-desc-quit"
       permission: "dac.player.play.quit"
+      playeronly: true
     color:
       usage: "/%command% color"
       description: "cmd-desc-color"
       permission: "dac.player.play.color"
+      playeronly: true
     start:
       usage: "/%command% start"
       description: "cmd-desc-start"
       permission: "dac.player.play.start"
+      playeronly: true
   arena:
     new:
-      usage: "/%command% new <arenaName>"
+      usage: "/%command% <arenaName> new"
       description: "cmd-desc-new"
       permission: "dac.admin.edit.new"
+      playeronly: true
     delete:
       usage: "/%command% <arenaName> delete"
       description: "cmd-desc-delete"
@@ -46,14 +67,17 @@ commands:
       usage: "/%command% <arenaName> setpool"
       description: "cmd-desc-setpool"
       permission: "dac.admin.edit.pool"
+      playeronly: true
     setlobby:
       usage: "/%command% <arenaName> setlobby"
       description: "cmd-desc-setlobby"
       permission: "dac.admin.edit.lobby"
-    setplateform:
-      usage: "/%command% <arenaName> setplateform"
-      description: "cmd-desc-setplateform"
-      permission: "dac.admin.edit.plateform"
+      playeronly: true
+    setplatform:
+      usage: "/%command% <arenaName> setplatform"
+      description: "cmd-desc-setplatform"
+      permission: "dac.admin.edit.platform"
+      playeronly: true
     setminplayer:
       usage: "/%command% <arenaName> setminplayer <amount>"
       description: "cmd-desc-setminplayer"
@@ -66,6 +90,7 @@ commands:
       usage: "/%command% <arenaName> setcolor"
       description: "cmd-desc-setcolor"
       permission: "dac.admin.edit.color"
+      playeronly: true
     setdisplayname:
       usage: "/%command% <arenaName> setdisplayname <displayName>"
       description: "cmd-desc-setdisplayname"
@@ -75,6 +100,7 @@ commands:
       usage: "/%command% forcestart"
       description: "cmd-desc-forcestart"
       permission: "dac.admin.forcestart"
+      playeronly: true
     reload:
       usage: "/%command% reload"
       description: "cmd-desc-reload"

@@ -1,6 +1,7 @@
 package me.poutineqc.deacoudre;
 
-import me.poutineqc.deacoudre.commands.DacCommand;
+import me.poutineqc.deacoudre.commands.DaCCommandDescription;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class Permissions {
@@ -14,20 +15,24 @@ public class Permissions {
 		Permissions.plugin = plugin;
 	}
 
-	public static boolean hasPermission(Player player, DacCommand command, boolean warning) {
-		return hasPermission(player, command.getPermission(), warning);
+	public static boolean hasPermission(CommandSender sender, DaCCommandDescription command, boolean warning) {
+		return hasPermission(sender, command.getPermission(), warning);
 	}
 
-	public static boolean hasPermission(Player player, String permission, boolean warning) {
-		if(player.hasPermission(permission)) {
+	public static boolean hasPermission(CommandSender sender, String permission, boolean warning) {
+		if(sender.hasPermission(permission)) {
 			return true;
 		} else {
 			if(warning) {
-				Language local = plugin.getPlayerData().getLanguageOfPlayer(player);
-				local.sendMsg(player, local.errorNoPermission);
+				Language local;
+				if(sender instanceof Player player) {
+					local = plugin.getPlayerData().getLanguageOfPlayer(player);
+				} else {
+					local = Language.getDefaultLanguage();
+				}
+				local.sendMsg(sender, local.errorNoPermission);
 			}
 			return false;
 		}
 	}
-
 }

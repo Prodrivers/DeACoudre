@@ -1,6 +1,6 @@
 package me.poutineqc.deacoudre;
 
-import me.poutineqc.deacoudre.commands.DacCommand;
+import me.poutineqc.deacoudre.commands.DaCCommandDescription;
 import me.poutineqc.deacoudre.instances.User;
 import me.poutineqc.deacoudre.tools.CaseInsensitiveMap;
 import net.kyori.adventure.text.Component;
@@ -152,6 +152,7 @@ public class Language {
 	public Component editNameSuccess;
 	public String keyWordColorRandom;
 	public String errorCommandNotFound;
+	public String errorCommandExecutableOnlyByPlayers;
 	public String errorArenaOrCommandNotFound;
 	public String reloadSucess;
 	public String keyWordMaterialPrefix;
@@ -300,6 +301,7 @@ public class Language {
 		errorNoPermission = languageData.getString("errorNoPermission", "&cYou don't have the permission to do that!");
 		errorPermissionHelp = languageData.getString("errorPermissionHelp", "&cYou do not have any permissions in this category.");
 		errorArenaNotExist = languageData.getString("errorArenaNotExist", "&cNot a valid arena name.");
+		errorCommandExecutableOnlyByPlayers = languageData.getString("errorCommandExecutableOnlyByPlayers", "&cThis command is executable only by players.");
 		errorCommandNotFound = languageData.getString("errorCommandNotFound", "&eCommand does not exist &b(&3/dac help &bfor help)&e.");
 		errorArenaOrCommandNotFound = languageData.getString("errorArenaOrCommandNotFound", "&eCommand or arena not found &b(&3/dac help &bfor help)&e.");
 		errorInGame = languageData.getString("errorInGame", "&cYou can't do that during a game.");
@@ -469,7 +471,7 @@ public class Language {
 		convertComplete = languageData.getString("convertComplete", "&aThe file to mysql conversion is finished!");
 
 		commandDescriptions = new CaseInsensitiveMap();
-		for(DacCommand cmd : DacCommand.getCommands()) {
+		for(DaCCommandDescription cmd : DaCCommandDescription.getCommands()) {
 			commandDescriptions.put(cmd.getDescription(),
 					languageData.getString(cmd.getDescription(), "&cOops, an Error has occured!"));
 		}
