@@ -667,6 +667,10 @@ public class Arena {
 
 		User user = getUser(player);
 
+		if(user.getColor() != null) {
+			user.getColor().setAvailable(true);
+		}
+
 		User newUser = getNonEliminated().size() == maxAmountPlayer && getNonEliminated().size() < users.size()
 				? getFirstWaitingPlayer() : null;
 
