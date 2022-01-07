@@ -19,20 +19,16 @@ import org.bukkit.inventory.ItemStack;
 
 public class InventoryBar implements Listener {
 	private final PlayerData playerData;
+	private final ColorsGUI playerSelectColorGUI;
 
-	public InventoryBar(DeACoudre plugin) {
+	public InventoryBar(DeACoudre plugin, ColorsGUI playerSelectColorGUI) {
 		this.playerData = plugin.getPlayerData();
+		this.playerSelectColorGUI = playerSelectColorGUI;
 	}
 
-	/**
-	 * Handle Player Interaction Event.
-	 * Used for the Parkour Tools whilst on a Course.
-	 *
-	 * @param event PlayerInteractEvent
-	 */
 	@EventHandler
 	public void onInventoryInteract(PlayerInteractEvent event) {
-		if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && !event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+		if(event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR) {
 			return;
 		}
 
@@ -58,7 +54,7 @@ public class InventoryBar implements Listener {
 
 		if(locale.colorGuiOpenItemTitle.equals(itemInHand.getItemMeta().displayName()) || (itemInHand.getItemMeta().hasLore() && locale.colorGuiOpenItemColorSelectedLore.equals(itemInHand.getItemMeta().lore().get(0)))) {
 			event.setCancelled(true);
-			ColorsGUI.openColorsGui(player, locale, arena);
+			this.playerSelectColorGUI.openColorsGui(player, locale, arena);
 		}
 	}
 

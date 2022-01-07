@@ -171,4 +171,16 @@ itemRewards:
 commands:
 #  - eco give %winner% 20
 #  - broadcast The arena %arena% is now ready for a new game
-  
+
+# Bedrock form images for GUIs
+gui:
+  image:
+    random:
+      type: PATH
+      path: 'textures/ui/dev_glyph_color.png'
+    taken:
+      type: PATH
+      path: 'textures/ui/cancel.png'
+    selected:
+      type: PATH
+      path: 'textures/ui/check.png'

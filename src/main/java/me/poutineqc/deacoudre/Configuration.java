@@ -1,5 +1,6 @@
 package me.poutineqc.deacoudre;
 
+import me.eddie.inventoryguiapi.gui.elements.FormImage;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -56,6 +57,11 @@ public class Configuration {
 	public String user;
 	public String password;
 	public String tablePrefix;
+
+	public FormImage guiPlayerColorSelectedImage;
+	public FormImage guiPlayerColorTakenImage;
+	public FormImage guiPlayerColorRandomImage;
+
 	private FileConfiguration config;
 
 	public Configuration(DeACoudre plugin) {
@@ -139,6 +145,10 @@ public class Configuration {
 		if(!itemReward.equalsIgnoreCase("none")) {
 			loadItemRewards(plugin);
 		}
+
+		guiPlayerColorSelectedImage = getFormImage("gui.image.selected");
+		guiPlayerColorTakenImage = getFormImage("gui.image.taken");
+		guiPlayerColorRandomImage = getFormImage("gui.image.random");
 	}
 
 	private void loadItemRewards(Plugin plugin) {
@@ -189,6 +199,17 @@ public class Configuration {
 			}
 
 			rewardItems.add(tempReward);
+		}
+	}
+
+	private FormImage getFormImage(String path) {
+		try {
+			return new FormImage(
+					FormImage.Type.valueOf(config.getString(path + ".type", "DEFAULT")),
+					config.getString(path + ".path", "")
+			);
+		} catch(IllegalArgumentException e) {
+			return FormImage.DEFAULT;
 		}
 	}
 }

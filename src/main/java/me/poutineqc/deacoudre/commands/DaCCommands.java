@@ -36,6 +36,7 @@ public class DaCCommands implements CommandExecutor, TabCompleter {
 	private final ArenaData arenaData;
 	private final SetArenaBlocksGUI chooseColorGUI;
 	private final JoinGUI joinGUI;
+	private final ColorsGUI playerSelectColorGUI;
 	private final AchievementsGUI achievementsGUI;
 	private final MySQL mysql;
 	private final DacSign signData;
@@ -50,6 +51,7 @@ public class DaCCommands implements CommandExecutor, TabCompleter {
 		this.signData = plugin.getSignData();
 		this.chooseColorGUI = plugin.getChooseColorGUI();
 		this.joinGUI = plugin.getJoinGUI();
+		this.playerSelectColorGUI = plugin.getPlayerSelectColorGUI();
 		this.achievementsGUI = plugin.getAchievementsGUI();
 		this.sectionManager = plugin.getSectionManager();
 	}
@@ -347,7 +349,7 @@ public class DaCCommands implements CommandExecutor, TabCompleter {
 			return;
 		}
 
-		ColorsGUI.openColorsGui(player, local, arena);
+		this.playerSelectColorGUI.openColorsGui(player, local, arena);
 	}
 
 	public void commandQuitGame(DaCCommandDescription command, CommandSender sender) {
