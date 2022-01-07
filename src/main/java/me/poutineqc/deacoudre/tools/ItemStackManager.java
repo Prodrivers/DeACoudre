@@ -74,6 +74,10 @@ public class ItemStackManager {
 		addToLore(LegacyComponentSerializer.legacyAmpersand().deserialize(loreLine));
 	}
 
+	public void addToLore(String... loreLines) {
+		Arrays.stream(loreLines).forEach(this::addToLore);
+	}
+
 	public void addToLore(Component loreLine) {
 		lore.add(loreLine);
 	}
@@ -87,6 +91,10 @@ public class ItemStackManager {
 
 	public void addEnchantement(Enchantment enchantment, int level) {
 		meta.addEnchant(enchantment, level, false);
+	}
+
+	public boolean hasEnchantment(Enchantment enchantment) {
+		return meta.hasEnchant(enchantment);
 	}
 
 	public void clearEnchantements() {

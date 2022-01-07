@@ -102,8 +102,8 @@ public class Language {
 	public String keyWordStatsCompleted;
 	public String keyWordStatsNotCompleted;
 	public String keyWordStatsTop10;
-	public String keyWordGuiPreviousPage;
-	public String keyWordGuiNextPage;
+	public String arenaColorSelectInfoTitle;
+	public String arenaColorSelectInfoLore;
 	public String startCooldown;
 	public String errorInGame;
 	public String joinGuiTitle;
@@ -476,6 +476,9 @@ public class Language {
 					languageData.getString(cmd.getDescription(), "&cOops, an Error has occured!"));
 		}
 
+		arenaColorSelectInfoTitle = languageData.getString("arenaColorSelectInfoTitle", "&eArena:");
+		arenaColorSelectInfoLore = languageData.getString("arenaColorSelectInfoLore", "&f%ARENA%");
+
 		keyWordGeneralAnd = languageData.getString("keyWordGeneralAnd", " &6and &f");
 		keyWordGeneralComma = languageData.getString("keyWordGeneralComma", "&6, &f");
 		keyWordGeneralMinimum = languageData.getString("keyWordGeneralMinimum", "Minimum");
@@ -527,8 +530,6 @@ public class Language {
 
 		keyWordJumpFast = languageData.getString("keyWordJumpFast", "Jump!");
 
-		keyWordGuiPreviousPage = languageData.getString("keyWordGuiPreviousPage", "&dPrevious Page");
-		keyWordGuiNextPage = languageData.getString("keyWordGuiNextPage", "&dNext Page");
 		keyWordGuiInstructions = languageData.getString("keyWordGuiInstrictions", "&6Instructions");
 
 	}

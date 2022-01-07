@@ -79,7 +79,6 @@ public class DeACoudre extends JavaPlugin {
 		achievement = new Achievement(this);
 		new TopManager(this);
 		achievementsGUI = new AchievementsGUI(this);
-		chooseColorGUI = new SetArenaBlocksGUI(this);
 		playerDamage = new PlayerDamage(this);
 		arenaData = new ArenaData(this);
 		signData = new DacSign(this);
@@ -124,6 +123,7 @@ public class DeACoudre extends JavaPlugin {
 		this.playerData = this.injector.getInstance(PlayerData.class);
 		this.joinGUI = this.injector.getInstance(JoinGUI.class);
 		this.playerSelectColorGUI = this.injector.getInstance(ColorsGUI.class);
+		this.chooseColorGUI = this.injector.getInstance(SetArenaBlocksGUI.class);
 	}
 
 	private void createMySQLTables() {
@@ -178,7 +178,6 @@ public class DeACoudre extends JavaPlugin {
 		pm.registerEvents(new PlayerTeleport(this), this);
 		pm.registerEvents(new SignChange(this, mainLanguage), this);
 		pm.registerEvents(new AsyncPlayerChat(this), this);
-		pm.registerEvents(chooseColorGUI, this);
 		pm.registerEvents(achievementsGUI, this);
 		pm.registerEvents(new InventoryBar(this, playerSelectColorGUI), this);
 		dac = new DaCCommands(this);

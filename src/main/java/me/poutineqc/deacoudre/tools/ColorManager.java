@@ -1,6 +1,9 @@
 package me.poutineqc.deacoudre.tools;
 
-import me.poutineqc.deacoudre.*;
+import me.poutineqc.deacoudre.ArenaData;
+import me.poutineqc.deacoudre.Configuration;
+import me.poutineqc.deacoudre.DeACoudre;
+import me.poutineqc.deacoudre.Language;
 import me.poutineqc.deacoudre.instances.Arena;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -8,14 +11,10 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ColorManager {
-	private final MySQL mysql;
 	private final Configuration config;
 	private final Arena arena;
 	private final ArenaData arenaData;
@@ -24,7 +23,6 @@ public class ColorManager {
 	private Set<Material> arenaMaterials;
 
 	public ColorManager(DeACoudre plugin, Arena arena) {
-		this.mysql = plugin.getMySQL();
 		this.arenaData = plugin.getArenaData();
 		this.config = plugin.getConfiguration();
 		this.arena = arena;
@@ -128,7 +126,7 @@ public class ColorManager {
 		return allAuthorizedGameBlocks;
 	}
 
-	public List<ItemStackManager> getArenaBlocks() {
+	public Collection<ItemStackManager> getArenaBlocks() {
 		return arenaBlocks;
 	}
 

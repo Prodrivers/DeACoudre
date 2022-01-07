@@ -190,6 +190,9 @@ signNoPermission3: "&cDaC, &4Desolé..."
 #   Arena Edit Messages
 ###################################################################
 
+arenaColorSelectInfoTitle: "&eArène :"
+arenaColorSelectInfoLore: "&f%ARENA%"
+
 editErrorNoArena: "&cTu dois choisir le nom de l'arène pour cette commande."
 editErrorNoParameter: "&eTu dois choisir ce que tu veux faire avec cette arène."
 editNewNoName: "&cTu dois fournir un nom pour cette nouvelle arène."
@@ -282,6 +285,4 @@ keyWordScoreboardRound: "Tour"
 
 keyWordJumpFast: "Saute!"
 
-keyWordGuiPreviousPage: "&dPage précédente"
-keyWordGuiNextPage: "&dPage suivante"
 keyWordGuiInstrictions: "&6Instructions"

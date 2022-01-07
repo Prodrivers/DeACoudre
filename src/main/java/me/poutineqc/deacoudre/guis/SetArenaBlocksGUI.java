@@ -1,5 +1,13 @@
 package me.poutineqc.deacoudre.guis;
 
+import me.eddie.inventoryguiapi.gui.contents.UnlimitedGUIPopulator;
+import me.eddie.inventoryguiapi.gui.elements.FormImage;
+import me.eddie.inventoryguiapi.gui.elements.GUIElement;
+import me.eddie.inventoryguiapi.gui.elements.GUIElementFactory;
+import me.eddie.inventoryguiapi.gui.guis.GUIBuilder;
+import me.eddie.inventoryguiapi.gui.guis.InventoryGUI;
+import me.eddie.inventoryguiapi.gui.view.BedrockGUIPresenter;
+import me.eddie.inventoryguiapi.util.Callback;
 import me.poutineqc.deacoudre.Configuration;
 import me.poutineqc.deacoudre.DeACoudre;
 import me.poutineqc.deacoudre.Language;
@@ -8,56 +16,44 @@ import me.poutineqc.deacoudre.instances.Arena;
 import me.poutineqc.deacoudre.instances.GameState;
 import me.poutineqc.deacoudre.tools.ColorManager;
 import me.poutineqc.deacoudre.tools.ItemStackManager;
+import me.poutineqc.deacoudre.tools.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-public class SetArenaBlocksGUI implements Listener {
+@Singleton
+public class SetArenaBlocksGUI {
+	private final Plugin plugin;
 	private final PlayerData playerData;
 	private final Configuration config;
 
+	private final FormImage imageSelected;
+
+	@Inject
 	public SetArenaBlocksGUI(DeACoudre plugin) {
+		this.plugin = plugin;
 		this.playerData = plugin.getPlayerData();
 		this.config = plugin.getConfiguration();
+		this.imageSelected = plugin.getConfiguration().guiPlayerColorSelectedImage;
 	}
 
-	@EventHandler
-	public void onInventoryClick(InventoryClickEvent event) {
-		if(!(event.getWhoClicked() instanceof Player player)) {
-			return;
-		}
-
-		if(event.getAction() == InventoryAction.NOTHING || event.getAction() == InventoryAction.UNKNOWN) {
-			return;
-		}
-
-		Language local = playerData.getLanguageOfPlayer(player);
-
-		if(!ChatColor.stripColor(event.getView().getTitle()).equalsIgnoreCase(ChatColor
-				.stripColor(ChatColor.translateAlternateColorCodes('&', local.editColorGuiTitle)))) {
-			return;
-		}
-
-		event.setCancelled(true);
-
-		ItemStack item = event.getCurrentItem();
-
-		Arena arena = Arena
-				.getArenaFromName(ChatColor.stripColor(event.getInventory().getItem(0).getItemMeta().getLore().get(0)));
+	public void onColorSelected(Player player, Arena arena, Language locale, ItemStack authorizedGameItem) {
 		ColorManager colorManager = arena.getColorManager();
 
-		boolean isChoosable = colorManager.isArenaBlockChoosableByPlayers(item);
+		boolean isChoosable = colorManager.isArenaBlockChoosableByPlayers(authorizedGameItem);
 		if(isChoosable && colorManager.getArenaBlocks().size() <= arena.getMaxPlayer()) {
-			local.sendMsg(player, local.editColorColorLessPlayer);
+			locale.sendMsg(player, locale.editColorColorLessPlayer);
 			openColorGUI(player, arena);
 			return;
 		}
@@ -65,88 +61,144 @@ public class SetArenaBlocksGUI implements Listener {
 		if(arena.getGameState() == GameState.UNREADY) {
 			if(arena.getMinPoolPoint() == null || arena.getMaxPoolPoint() == null) {
 				player.closeInventory();
-				local.sendMsg(player, local.editColorNoPool);
+				locale.sendMsg(player, locale.editColorNoPool);
 				return;
 			}
 		}
 
 		if(arena.getGameState() != GameState.READY && arena.getGameState() != GameState.UNREADY) {
 			player.closeInventory();
-			local.sendMsg(player, local.editColorActive);
+			locale.sendMsg(player, locale.editColorActive);
 			return;
 		}
 
-		Optional<ItemStackManager> correspondingArenaItem = arena.getColorManager().getBlock(item);
+		Optional<ItemStackManager> correspondingArenaItem = arena.getColorManager().getBlock(authorizedGameItem);
 		if(correspondingArenaItem.isEmpty()) {
 			return;
 		}
 
 		if(!correspondingArenaItem.get().isAvailable()) {
 			player.closeInventory();
-			local.sendMsg(player, local.editColorChoosen);
+			locale.sendMsg(player, locale.editColorChoosen);
 			return;
 		}
 
 
-		int valueOfItem = config.usableBlocks.indexOf(item.getType());
+		int valueOfItem = config.usableBlocks.indexOf(authorizedGameItem.getType());
 		if(valueOfItem == -1) {
 			return;
 		}
 
-		colorManager.setAsArenaBlock(item, !isChoosable);
+		colorManager.setAsArenaBlock(authorizedGameItem, !isChoosable);
 
-		arena.resetArena(item);
+		arena.resetArena(authorizedGameItem);
 		openColorGUI(player, arena);
 	}
 
-	public void openColorGUI(Player player, Arena arena) {
-		Language local = playerData.getLanguageOfPlayer(player);
+	private List<GUIElement> generateContent(Player player, Arena arena, Language locale, boolean isBedrockContent) {
+		List<GUIElement> contents = new ArrayList<>();
 
-		Inventory inv = Bukkit.createInventory(null, 6 * 9,
-				ChatColor.translateAlternateColorCodes('&', local.editColorGuiTitle));
-		ItemStackManager icon;
-		/***************************************************
-		 * Instructions
-		 ***************************************************/
+		// Instructions
 
-		icon = new ItemStackManager(Material.BOOKSHELF, 4);
-		icon.setTitle(local.keyWordGuiInstructions);
-		for(String loreLine : local.editColorGuiTooltip.split("\n")) {
-			icon.addToLore(loreLine);
-		}
-		icon.addToInventory(inv);
+		ItemStackManager instructionIcon = new ItemStackManager(Material.BOOKSHELF);
+		instructionIcon.setTitle(locale.keyWordGuiInstructions);
+		instructionIcon.addToLore(locale.editColorGuiTooltip.split("\n"));
 
-		/***************************************************
-		 * Blocks
-		 ***************************************************/
-		int i = 9; // Offset by one line as it is already occupied
-		for(ItemStackManager item : arena.getColorManager().getAllAuthorizedGameBlocks()) {
-			if(i >= 6 * 9) {
-				// Do not go over 6 lines
-				break;
+		contents.add(GUIElementFactory.createLabelItem(
+				4,
+				instructionIcon.getItem()
+		));
+
+		// Blocks
+
+		int slot = 9; // Offset by one line as it is already occupied
+		for(ItemStackManager authorizedGameBlock : arena.getColorManager().getAllAuthorizedGameBlocks()) {
+			ItemStackManager item = authorizedGameBlock.clone();
+			item.setTitle(ColorManager.getTranslatedMaterialName(item.getItem(), locale));
+
+			FormImage image = FormImage.DEFAULT;
+			if(authorizedGameBlock.hasEnchantment(Enchantment.DURABILITY)) {
+				image = this.imageSelected;
 			}
-			item.setPosition(i);
-			item.addToInventory(inv);
-			i++;
+
+			contents.add(GUIElementFactory.createActionItem(
+					slot++,
+					item.getItem(),
+					(Callback<Player>) callbackPlayer -> Bukkit.getScheduler().runTask(this.plugin,
+							() -> this.onColorSelected(player, arena, locale, authorizedGameBlock.getItem())
+					),
+					image
+			));
 		}
 
-		/***************************************************
-		 * ArenaName
-		 ***************************************************/
+		// Arena name
 
-		icon = new ItemStackManager(Material.PAPER);
-		icon.setTitle("&eArena:");
-		icon.addToLore("&f" + arena.getShortName());
+		ItemStack arenaItem = GUIElementFactory.formatItem(
+				new ItemStack(Material.PAPER),
+				ChatColor.translateAlternateColorCodes('&', locale.arenaColorSelectInfoTitle),
+				ChatColor.translateAlternateColorCodes('&', locale.arenaColorSelectInfoLore.replaceAll("%ARENA%", arena.getDisplayName()))
+		);
 
-		icon.setPosition(0);
-		icon.addToInventory(inv);
-		icon.setPosition(8);
-		icon.addToInventory(inv);
+		if(!isBedrockContent) {
+			contents.add(GUIElementFactory.createActionItem(
+					0,
+					arenaItem,
+					(Callback<Player>) callbackPlayer -> {
+					}
+			));
+			contents.add(GUIElementFactory.createActionItem(
+					8,
+					arenaItem,
+					(Callback<Player>) callbackPlayer -> {
+					}
+			));
+		}
 
-		/***************************************************
-		 * Display
-		 ***************************************************/
+		return contents;
+	}
 
-		player.openInventory(inv);
+	public void openColorGUI(Player player, Arena arena) {
+		Language locale = playerData.getLanguageOfPlayer(player);
+
+		String title = ChatColor.translateAlternateColorCodes('&', locale.editColorGuiTitle);
+
+		InventoryGUI gui;
+		if(Utils.hasBedrockSession(player)) {
+			gui = new GUIBuilder()
+					.guiStateBehaviour(GUIBuilder.GUIStateBehaviour.LOCAL_TO_SESSION)
+					.inventoryType(InventoryType.CHEST)
+					.dynamicallyResizeToWrapContent(true)
+					.size(54)
+					.presenter(new BedrockGUIPresenter())
+					.populator(new UnlimitedGUIPopulator())
+					.contents(
+							title,
+							generateContent(player, arena, locale, true),
+							false,
+							false,
+							false
+					)
+					.build();
+		} else {
+			gui = new GUIBuilder()
+					.guiStateBehaviour(GUIBuilder.GUIStateBehaviour.LOCAL_TO_SESSION)
+					.inventoryType(InventoryType.CHEST)
+					.dynamicallyResizeToWrapContent(true)
+					.size(54)
+					.contents(
+							title,
+							generateContent(player, arena, locale, false),
+							true,
+							true,
+							true
+					)
+					.build();
+		}
+
+		try {
+			gui.open(player);
+		} catch(IllegalStateException e) {
+			// Ignore multiple form opening exception
+		}
 	}
 }
