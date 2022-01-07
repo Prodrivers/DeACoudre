@@ -14,7 +14,6 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.material.Colorable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,9 +37,16 @@ public class ItemStackManager {
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 	}
 
+	public ItemStackManager(Material material, ItemMeta itemMeta, int position) {
+		this.position = position;
+		item = new ItemStack(material);
+		meta = itemMeta;
+		item.setItemMeta(meta);
+		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+	}
+
 	public ItemStackManager clone() {
-		ItemStackManager newItem = new ItemStackManager(this.item.getType(), this.position);
-		newItem.item.setItemMeta(this.meta.clone());
+		ItemStackManager newItem = new ItemStackManager(this.item.getType(), this.meta.clone(), this.position);
 		newItem.lore.addAll(this.lore);
 		newItem.available = this.available;
 		return newItem;
