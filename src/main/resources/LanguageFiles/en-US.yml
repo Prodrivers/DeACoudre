@@ -92,6 +92,8 @@ joinNewPlacePlayer: "&3You are added to the game to replace &f%leaver%&3!"
 joinInfoMissingName: "&cYou need to choose an arena."
 joinInfoTooltip: "&8[&7Tip&8] &7You may also do &8/%cmd% list &7and right click an arena to display it's information."
 
+quitGameItemTitle: "&6Leave arena &f%arena%"
+quitGameItemLore: "&fLeave arena"
 quitGamePlayer: "&aYou left the DaC game."
 quitGameOthers: "&f%player% &3left the DaC game."
 

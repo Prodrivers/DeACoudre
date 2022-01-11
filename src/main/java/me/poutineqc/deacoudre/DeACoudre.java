@@ -179,7 +179,7 @@ public class DeACoudre extends JavaPlugin {
 		pm.registerEvents(new SignChange(this, mainLanguage), this);
 		pm.registerEvents(new AsyncPlayerChat(this), this);
 		pm.registerEvents(achievementsGUI, this);
-		pm.registerEvents(new InventoryBar(this, playerSelectColorGUI), this);
+		pm.registerEvents(new InventoryBar(sectionManager, playerData, playerSelectColorGUI), this);
 		dac = new DaCCommands(this);
 		pm.registerEvents(new BlockBreak(), this);
 		pm.registerEvents(new PlayerInteract(this, mainLanguage), this);

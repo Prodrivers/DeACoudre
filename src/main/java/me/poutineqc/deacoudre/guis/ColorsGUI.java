@@ -10,26 +10,17 @@ import me.eddie.inventoryguiapi.gui.view.BedrockGUIPresenter;
 import me.eddie.inventoryguiapi.util.Callback;
 import me.poutineqc.deacoudre.DeACoudre;
 import me.poutineqc.deacoudre.Language;
-import me.poutineqc.deacoudre.PlayerData;
 import me.poutineqc.deacoudre.achievements.Achievement;
 import me.poutineqc.deacoudre.instances.Arena;
 import me.poutineqc.deacoudre.instances.User;
 import me.poutineqc.deacoudre.tools.ColorManager;
 import me.poutineqc.deacoudre.tools.ItemStackManager;
 import me.poutineqc.deacoudre.tools.Utils;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import javax.inject.Inject;
@@ -54,7 +45,7 @@ public class ColorsGUI {
 		this.imageRandom = plugin.getConfiguration().guiPlayerColorRandomImage;
 	}
 
-	public void onColorSelected(User user, Language locale, ItemStackManager arenaItem) {
+	public void onColorSelected(Arena arena, User user, Language locale, ItemStackManager arenaItem) {
 		Player player = user.getPlayer();
 
 		player.closeInventory();
@@ -69,7 +60,7 @@ public class ColorsGUI {
 			);
 		}
 
-		InventoryBar.giveLobbyTools(user, locale);
+		InventoryBar.giveArenaLobbyTools(arena, user, locale);
 	}
 
 	private List<GUIElement> generateContent(Player player, Arena arena, Language locale, boolean isBedrockContent) {
@@ -124,7 +115,7 @@ public class ColorsGUI {
 					slot++,
 					item.getItem(),
 					(Callback<Player>) callbackPlayer -> Bukkit.getScheduler().runTask(this.plugin,
-							() -> this.onColorSelected(user, locale, arenaBlock)
+							() -> this.onColorSelected(arena, user, locale, arenaBlock)
 					),
 					image
 			));
@@ -148,7 +139,7 @@ public class ColorsGUI {
 
 					user.removeColor();
 					locale.sendMsg(player, locale.colorRandom);
-					InventoryBar.giveLobbyTools(user, locale);
+					InventoryBar.giveArenaLobbyTools(arena, user, locale);
 				},
 				this.imageRandom
 		));

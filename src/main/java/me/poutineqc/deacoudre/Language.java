@@ -38,6 +38,8 @@ public class Language {
 	public String joinAsSpectator;
 	public String joinGamePlayer;
 	public String joinGameOthers;
+	public Component quitGameItemTitle;
+	public Component quitGameItemLore;
 	public String quitGamePlayer;
 	public String quitGameOthers;
 	public String gameTimeOutPlayer;
@@ -340,6 +342,12 @@ public class Language {
 		joinInfoMissingName = languageData.getString("joinInfoMissingName", "&cYou need to choose an arena.");
 		joinInfoTooltip = languageData.getString("joinInfoTooltip", "&8[&7Tip&8] &7You may also do &8/%cmd% list &7and right click an arena to display it's information.");
 
+		quitGameItemTitle = LegacyComponentSerializer.legacyAmpersand().deserialize(
+				languageData.getString("quitGameItemTitle", "&6Leave arena &f%arena%")
+		);
+		quitGameItemLore = LegacyComponentSerializer.legacyAmpersand().deserialize(
+				languageData.getString("quitGameItemLore", "&fLeave arena")
+		);
 		quitGamePlayer = languageData.getString("quitGamePlayer", "&aYou left the DaC game.");
 		quitGameOthers = languageData.getString("quitGameOthers", "&f%player% &3left the DaC game.");
 

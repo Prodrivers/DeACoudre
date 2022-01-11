@@ -92,6 +92,8 @@ joinNewPlacePlayer: "&3Tu es ajouté à la partie afin de remplacer &f%leaver%&3
 joinInfoMissingName: "&cTu dois choisir une arène."
 joinInfoTooltip: "&8[&7Truc&8] &7Tu peux aussi faire &8/%cmd% list &7et cliquer droit l'arène pour voir ses informations."
 
+quitGameItemTitle: "&6Quitter l'arène &f%arena%"
+quitGameItemLore: "&fQuitter l'arène"
 quitGamePlayer: "&aTu as quitté la partie de DeACoudre."
 quitGameOthers: "&f%player% &3a quitté la partie de DeACoudre."
 

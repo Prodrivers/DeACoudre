@@ -615,7 +615,7 @@ public class Arena {
 			return false;
 		}
 
-		InventoryBar.giveLobbyTools(user, local);
+		InventoryBar.giveArenaLobbyTools(this, user, local);
 
 		DacSign.updateSigns(this);
 
