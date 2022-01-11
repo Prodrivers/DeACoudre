@@ -1,4 +1,4 @@
-package me.poutineqc.deacoudre.guis;
+package me.poutineqc.deacoudre.ui;
 
 import me.eddie.inventoryguiapi.gui.contents.UnlimitedGUIPopulator;
 import me.eddie.inventoryguiapi.gui.elements.FormImage;

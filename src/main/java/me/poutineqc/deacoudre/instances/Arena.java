@@ -10,7 +10,7 @@ import me.poutineqc.deacoudre.*;
 import me.poutineqc.deacoudre.achievements.Achievement;
 import me.poutineqc.deacoudre.commands.DacSign;
 import me.poutineqc.deacoudre.events.PlayerDamage;
-import me.poutineqc.deacoudre.guis.InventoryBar;
+import me.poutineqc.deacoudre.ui.InventoryBar;
 import me.poutineqc.deacoudre.sections.ArenaSection;
 import me.poutineqc.deacoudre.tools.ColorManager;
 import me.poutineqc.deacoudre.tools.Utils;

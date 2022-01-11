@@ -3,7 +3,7 @@ package me.poutineqc.deacoudre.sections;
 import fr.prodrivers.bukkit.commons.sections.Section;
 import fr.prodrivers.bukkit.commons.sections.SectionCapabilities;
 import fr.prodrivers.bukkit.commons.ui.section.SelectionUI;
-import me.poutineqc.deacoudre.guis.JoinGUI;
+import me.poutineqc.deacoudre.ui.JoinGUI;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;

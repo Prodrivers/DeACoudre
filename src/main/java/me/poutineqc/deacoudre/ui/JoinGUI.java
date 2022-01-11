@@ -1,4 +1,4 @@
-package me.poutineqc.deacoudre.guis;
+package me.poutineqc.deacoudre.ui;
 
 import fr.prodrivers.bukkit.commons.sections.Section;
 import fr.prodrivers.bukkit.commons.sections.SectionManager;
