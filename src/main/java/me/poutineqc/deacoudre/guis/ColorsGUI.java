@@ -110,6 +110,7 @@ public class ColorsGUI {
 
 			FormImage image = FormImage.DEFAULT;
 
+			item.clearEnchantements();
 			if(!item.isAvailable()) {
 				item.addEnchantement(Enchantment.DURABILITY, 1);
 				image = this.imageTaken;
