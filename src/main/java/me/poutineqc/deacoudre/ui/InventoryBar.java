@@ -94,6 +94,8 @@ public class InventoryBar implements Listener {
 
 		player.getInventory().setItem(5, quitItem.getItem());
 
+		player.getInventory().setHeldItemSlot(3);
+
 		player.updateInventory();
 	}
 
@@ -101,6 +103,9 @@ public class InventoryBar implements Listener {
 		Player player = user.getPlayer();
 
 		player.getInventory().clear();
+
+		player.getInventory().setHeldItemSlot(0);
+
 		player.updateInventory();
 	}
 }
