@@ -32,11 +32,11 @@ public class PlayerDamage implements Listener {
 			return;
 		}
 
+		event.setCancelled(true);
+
 		if(arena.getGameState() != GameState.ACTIVE) {
 			return;
 		}
-
-		event.setCancelled(true);
 
 		if(!event.getCause().equals(DamageCause.FALL)) {
 			return;
@@ -47,7 +47,6 @@ public class PlayerDamage implements Listener {
 		if(players == arena.getActivePlayer()) {
 			losingAlgorithm(player, arena, players);
 		}
-
 	}
 
 	public void losingAlgorithm(Player player, Arena arena, User user) {
