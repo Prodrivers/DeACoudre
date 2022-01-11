@@ -177,9 +177,11 @@ public class ArenaUI {
 		}
 	}
 
-	public void onCountdownCancelled(Player player) {
-		Language locale = playerData.getLanguageOfPlayer(player);
-		locale.sendMsg(player, locale.startStopped);
+	public void onCountdownCancelled(Arena arena) {
+		for(User user : arena.getUsers()) {
+			Language locale = playerData.getLanguageOfPlayer(user.getPlayer());
+			locale.sendMsg(user.getPlayer(), locale.startStopped);
+		}
 	}
 
 	public void onArenaStart(Arena arena) {

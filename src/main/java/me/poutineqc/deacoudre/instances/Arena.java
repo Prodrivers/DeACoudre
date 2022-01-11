@@ -1426,8 +1426,10 @@ public class Arena {
 			if(arena.gameState != GameState.STARTUP) {
 				for(User user : arena.getUsers()) {
 					user.maxStats(false);
+				}
 
-					arenaUI.onCountdownCancelled(user.getPlayer());
+				if(arena.gameState != GameState.ACTIVE) {
+					arenaUI.onCountdownCancelled(arena);
 				}
 
 				return;
@@ -1441,9 +1443,8 @@ public class Arena {
 				arena.startGame(false);
 			} else {
 				arenaUI.onCountdownStep(this, time);
+				arena.countdown(arena, time - 1);
 			}
-
-			arena.countdown(arena, time - 1);
 		}, 1L);
 	}
 
