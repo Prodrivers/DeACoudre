@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.material.Colorable;
 import org.bukkit.util.Vector;
 
 import java.sql.ResultSet;
@@ -139,8 +138,8 @@ public class PlayerMove implements Listener {
 
 			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
 				do {
-					if(user.getColor().getItem().getData() instanceof Colorable) {
-						getTo.getBlock().setType(Utils.colorToStainedGlassBlock(((Colorable) user.getColor().getItem().getData()).getColor()));
+					if(user.getColor() != null && user.getColor().getColor() != null) {
+						getTo.getBlock().setType(Utils.colorToStainedGlassBlock(user.getColor().getColor()));
 					} else {
 						getTo.getBlock().setType(Material.BLACK_STAINED_GLASS);
 					}
