@@ -10,13 +10,13 @@ import me.poutineqc.deacoudre.*;
 import me.poutineqc.deacoudre.achievements.Achievement;
 import me.poutineqc.deacoudre.commands.DacSign;
 import me.poutineqc.deacoudre.events.PlayerDamage;
+import me.poutineqc.deacoudre.ui.ArenaUI;
 import me.poutineqc.deacoudre.ui.InventoryBar;
 import me.poutineqc.deacoudre.sections.ArenaSection;
 import me.poutineqc.deacoudre.tools.ColorManager;
 import me.poutineqc.deacoudre.tools.Utils;
+import me.poutineqc.deacoudre.ui.PlayerUI;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
@@ -44,6 +44,8 @@ public class Arena {
 	private static ArenaData arenaData;
 	private static Achievement achievements;
 	private static SectionManager sectionManager;
+	private static ArenaUI arenaUI;
+	private static PlayerUI playerUI;
 	private static List<Arena> arenas = new ArrayList<>();
 	private final List<User> users = new ArrayList<>();
 	private final String shortName;
@@ -80,6 +82,8 @@ public class Arena {
 		Arena.achievements = plugin.getAchievement();
 		Arena.playerDamage = plugin.getPlayerDamage();
 		Arena.sectionManager = plugin.getSectionManager();
+		Arena.arenaUI = plugin.getArenaUI();
+		Arena.playerUI = plugin.getPlayerUI();
 	}
 
 	public Arena(String shortName, Player player) {
@@ -580,27 +584,23 @@ public class Arena {
 	 */
 
 	public boolean addPlayerToTeam(Player player) {
-		Language local = playerData.getLanguageOfPlayer(player);
-
 		// No need to check if player is already in a game, sections ensure that he will quit previous game appropriately
 
 		if(gameState == GameState.UNREADY) {
-			local.sendMsg(player, local.joinStateUnset);
+			arenaUI.onPlayerJoinedUnsetArena(player);
 			return false;
 		}
 
 		boolean eliminated = false;
 
 		if(gameState == GameState.ACTIVE || gameState == GameState.ENDING) {
-			local.sendMsg(player, local.joinStateStarted);
-			local.sendMsg(player, local.joinAsSpectator);
+			arenaUI.onPlayerJoinedActiveOrEndingArena(player);
 			eliminated = true;
 		}
 
 		if(!eliminated) {
 			if(getNonEliminated().size() >= maxAmountPlayer) {
-				local.sendMsg(player, local.joinStateFull);
-				local.sendMsg(player, local.joinAsSpectator);
+				arenaUI.onPlayerJoinedNonStartedFullGame(player);
 				eliminated = true;
 			}
 		}
@@ -609,34 +609,24 @@ public class Arena {
 		users.add(user);
 
 		if(player.getLocation().distance(lobby) > 1) {
-			local.sendMsg(player,
-					ChatColor.RED + "Error: Could not teleport you to the lobby. Failed to join the game.");
+			arenaUI.onLobbyTeleportFailed(player);
 			// No need to teleport player, returning false will force Section Manager to move player elsewhere
 			return false;
 		}
 
-		InventoryBar.giveArenaLobbyTools(this, user, local);
+		InventoryBar.giveArenaLobbyTools(this, user, playerData.getLanguageOfPlayer(player));
 
 		DacSign.updateSigns(this);
 
 		if(!eliminated) {
-			local.sendMsg(player, local.joinGamePlayer.replace("%arenaName%", displayName).replace("%amountInGame%",
-					String.valueOf(getNonEliminated().size())));
-
-			for(User u : users) {
-				if(u != user) {
-					Language localInstance = playerData.getLanguageOfPlayer(u);
-					localInstance.sendMsg(u, localInstance.joinGameOthers.replace("%player%", user.getDisplayName())
-							.replace("%amountInGame%", String.valueOf(getNonEliminated().size())));
-				}
-			}
+			arenaUI.onPlayerJoined(user, this);
 		} else if(gameState == GameState.ACTIVE || gameState == GameState.ENDING) {
 			user.maxStats(true);
 		}
 
 		if(getNonEliminated().size() >= minAmountPlayer && config.autostart && gameState == GameState.READY) {
 			if(startTime + 30000 > System.currentTimeMillis()) {
-				local.sendMsg(player, local.startAutoFail);
+				arenaUI.onAutoStartFailed(player);
 				// Return true as this is not a fatal error
 				return true;
 			}
@@ -645,13 +635,7 @@ public class Arena {
 			setStartTime();
 			countdown(this, config.countdownTime * 20);
 
-			if(plugin.getConfiguration().broadcastStart) {
-				for(Player p : Bukkit.getOnlinePlayers()) {
-					Language localInstance = playerData.getLanguageOfPlayer(p);
-					localInstance.sendMsg(p, localInstance.startBroadcast.replaceAll("%arena%", displayName).replace("%time%",
-							String.valueOf(config.countdownTime).toString()));
-				}
-			}
+			arenaUI.onCountdownStarted(this);
 		}
 
 		return true;
@@ -678,15 +662,7 @@ public class Arena {
 			eliminateUser(user);
 
 			if(gameState != GameState.ENDING) {
-				Language local = playerData.getLanguageOfPlayer(user);
-				local.sendMsg(user, local.quitGamePlayer);
-				for(User u : getUsers()) {
-					if(user != u) {
-						Language localTemp = playerData.getLanguageOfPlayer(u);
-						localTemp.sendMsg(u.getPlayer(),
-								localTemp.quitGameOthers.replace("%player%", user.getDisplayName()));
-					}
-				}
+				arenaUI.onPlayerQuitRunningGame(user, this);
 			}
 		}
 
@@ -696,16 +672,8 @@ public class Arena {
 
 		if((gameState == GameState.READY || gameState == GameState.STARTUP) && newUser != null) {
 			newUser.unEliminate(this);
-			Language local = playerData.getLanguageOfPlayer(newUser);
-			local.sendMsg(newUser, local.joinNewPlacePlayer.replace("%leaver%", user.getDisplayName()));
-			for(User u : users) {
-				if(u != newUser) {
-					Language localTemp = playerData.getLanguageOfPlayer(u);
-					localTemp.sendMsg(u.getPlayer(),
-							localTemp.joinNewPlaceOthers.replace("%player%", newUser.getDisplayName())
-									.replace("%leaver%", user.getDisplayName()));
-				}
-			}
+
+			arenaUI.onPlayerJoinedActiveGameBecauseOfLeaver(user, newUser, this);
 		}
 
 		DacSign.updateSigns(this);
@@ -820,24 +788,18 @@ public class Arena {
 
 		for(User user : temporary) {
 			Player player = user.getPlayer();
-			Language local = playerData.getLanguageOfPlayer(player);
+
 			if(user.getColor() == null) {
 				user.setColor(colorManager.getRandomAvailableArenaBlock());
 
-				local.sendMsg(
-						user.getPlayer(),
-						Utils.replaceInComponent(local.startRandomColor, "%material%", ColorManager.getTranslatedMaterialName(user.getColor().getItem(), local))
-				);
+				playerUI.onAssignedColor(user);
 			}
 
 			InventoryBar.giveGameTools(user);
 		}
 
 		if(!forceStart) {
-			for(User user : users) {
-				Language local = playerData.getLanguageOfPlayer(user);
-				local.sendMsg(user, local.startRandomOrder);
-			}
+			arenaUI.onArenaNonForcedStart(this);
 		}
 
 		for(int i = 1; !temporary.isEmpty(); i++) {
@@ -847,22 +809,11 @@ public class Arena {
 			temporary.remove(j);
 
 			if(!forceStart) {
-				for(User u : users) {
-					Language local = playerData.getLanguageOfPlayer(u);
-					local.sendMsg(u, local.startPosition.replace("%player%", user.getDisplayName()).replace("%posNo%",
-							String.valueOf(i)));
-				}
+				playerUI.onPlayerAssignedPosition(user, this, i);
 			}
 		}
 
-		Language local = Language.getDefaultLanguage();
-		objective.setDisplayName(ChatColor.translateAlternateColorCodes('&',
-				ChatColor.AQUA + displayName + " &f: " + local.keyWordScoreboardPoints));
-		objective.getScore(ChatColor.GOLD + "-------------------").setScore(98);
-		objective.getScoreboard().resetScores(ChatColor.GOLD + local.keyWordGeneralMinimum + " = " + ChatColor.AQUA
-				+ minAmountPlayer);
-		objective.getScoreboard().resetScores(ChatColor.GOLD + local.keyWordGeneralMaximum + " = " + ChatColor.AQUA
-				+ maxAmountPlayer);
+		arenaUI.onArenaStart(this);
 
 		if(getNonEliminated().size() == 8) {
 			for(User user : getNonEliminated()) {
@@ -923,52 +874,22 @@ public class Arena {
 		final Arena arena = this;
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
 			activePlayer = getNextPlayer();
-			Player player = activePlayer.getPlayer();
-			Language local = null;
-			try {
-				local = playerData.getLanguageOfPlayer(player);
-			} catch(NullPointerException e) {
-				return;
-			}
 
-			if(config.verbose) {
-				local.sendMsg(activePlayer, local.gameTurnPlayer);
+			arenaUI.onPlayerChange(activePlayer, this);
 
-				for(User user : users) {
-					if(activePlayer != user) {
-						Language localInstance = playerData.getLanguageOfPlayer(user);
-						localInstance.sendMsg(user, localInstance.gameTurnOthers.replace("%player%",
-								activePlayer.getPlayer().getDisplayName()));
-					}
-				}
-			}
-
-			player.teleport(platform);
+			activePlayer.getPlayer().teleport(platform);
 			activePlayer.maxStats(false);
-			scoreboard.resetScores(activePlayer.getName());
-			objective.getScore(ChatColor.AQUA + activePlayer.getName()).setScore(activePlayer.getPoint());
 
 			timeOut(activePlayer, arena, config.timeBeforePlayerTimeOut * 20, roundNo);
-
-			Utils.sendTitle(player, Component.text(local.keyWordJumpFast, NamedTextColor.GOLD, TextDecoration.BOLD), null, 5, 10, 5);
 		}, 6L);
 	}
 
-	public void flushConfirmationQueue(User user) {
-		for(User u : getNonEliminated()) {
-			if(u.isWaitingForConfirmation() && u.getPoint() == -1) {
-				eliminateUser(u);
+	public void flushConfirmationQueue(User eliminator) {
+		for(User eliminated : getNonEliminated()) {
+			if(eliminated.isWaitingForConfirmation() && eliminated.getPoint() == -1) {
+				eliminateUser(eliminated);
 
-				Language local = playerData.getLanguageOfPlayer(u);
-				local.sendMsg(u, local.gamePointsFlushPlayer.replace("%player%", user.getPlayer().getDisplayName()));
-
-				for(User op : users) {
-					if(op != u) {
-						Language localInstance = playerData.getLanguageOfPlayer(op);
-						localInstance.sendMsg(op, localInstance.gamePointsFlushOthers
-								.replace("%player%", user.getDisplayName()).replace("%looser%", u.getDisplayName()));
-					}
-				}
+				playerUI.onNonLastPlayerEliminatedAfterOtherSuccess(eliminated, eliminator, this);
 			}
 		}
 	}
@@ -978,17 +899,7 @@ public class Arena {
 			if(user.isWaitingForConfirmation()) {
 				user.addPoint();
 
-				Language local = playerData.getLanguageOfPlayer(user);
-				local.sendMsg(user, local.gamePointsRevivePlayer.replace("%points%", String.valueOf(user.getPoint())));
-
-				for(User u : users) {
-					if(u != user) {
-						Language localInstance = playerData.getLanguageOfPlayer(u);
-						localInstance.sendMsg(u,
-								localInstance.gamePointsReviveOthers.replace("%player%", user.getDisplayName())
-										.replace("%points%", String.valueOf(user.getPoint())));
-					}
-				}
+				playerUI.onNonLastPlayerRevivedAfterNoSuccess(user, this);
 			}
 		}
 	}
@@ -1005,14 +916,7 @@ public class Arena {
 
 		if(nonEliminated.size() > 0) {
 			if(nonEliminated.size() == 1) {
-
-				for(Player p : getBroadcastCongratzList()) {
-					Language localInstance = playerData.getLanguageOfPlayer(p);
-					localInstance.sendMsg(p,
-							localInstance.endingBroadcastSingle
-									.replace("%player%", nonEliminated.get(0).getPlayer().getDisplayName())
-									.replace("%arenaName%", displayName));
-				}
+				arenaUI.onFinishSingleNonEliminated(this);
 
 				reward = ((currentTile * currentTile / 10000.0) * (config.maxAmountReward - config.minAmountReward)
 						+ config.minAmountReward);
@@ -1022,23 +926,11 @@ public class Arena {
 						achievements.testAchievement(Achievement.completedArena, user.getPlayer());
 					}
 
-					for(Player player : getBroadcastCongratzList()) {
-						Language localInstance = playerData.getLanguageOfPlayer(player);
-						localInstance.sendMsg(player,
-								localInstance.endingBroadcastMultiple
-										.replace("%players%", getPlayerListToDisplay(localInstance))
-										.replace("%arenaName%", displayName));
-					}
+					arenaUI.onFinishCompleted(this);
 
 					reward = ((currentTile * currentTile / 10000.0) * (config.maxAmountReward - config.minAmountReward))
 							+ config.minAmountReward + config.bonusCompletingArena;
 				} else {
-					for(User user : users) {
-						Language localInstance = playerData.getLanguageOfPlayer(user);
-						localInstance.sendMsg(user.getPlayer(), localInstance.endingStall.replace("%time%",
-								String.valueOf(config.maxFailBeforeEnding)));
-					}
-
 					while(1 < nonEliminated.size()) {
 						if(nonEliminated.get(0).getPoint() <= nonEliminated.get(1).getPoint()) {
 							eliminateUser(nonEliminated.get(0));
@@ -1049,13 +941,7 @@ public class Arena {
 						}
 					}
 
-					for(Player player : getBroadcastCongratzList()) {
-						Language localInstance = playerData.getLanguageOfPlayer(player);
-						localInstance.sendMsg(player,
-								localInstance.endingBroadcastSingle
-										.replace("%player%", nonEliminated.get(0).getDisplayName())
-										.replace("%arenaName%", displayName));
-					}
+					arenaUI.onFinishNonCompleted(this);
 
 					reward = ((currentTile * currentTile / 10000.0) * (config.maxAmountReward - config.minAmountReward))
 							+ config.minAmountReward;
@@ -1104,7 +990,6 @@ public class Arena {
 				}
 
 				if(config.economyReward) {
-					Language localInstance = playerData.getLanguageOfPlayer(player);
 					double newReward = Math.floor(reward);
 
 					boolean op = player.isOp();
@@ -1121,9 +1006,7 @@ public class Arena {
 					player.setOp(op);
 
 					DeACoudre.getEconomy().depositPlayer(user.getPlayer(), newReward);
-					localInstance.sendMsg(user.getPlayer(),
-							localInstance.endingRewardMoney.replace("%amount%", String.valueOf(newReward))
-									.replace("%currency%", DeACoudre.getEconomy().currencyNamePlural()));
+					playerUI.onRewarded(player, newReward);
 
 					double moneyGains = 0;
 					if(mysql.hasConnection()) {
@@ -1148,36 +1031,25 @@ public class Arena {
 				}
 
 				if(!config.itemReward.equalsIgnoreCase("none")) {
-					Language localInstance = playerData.getLanguageOfPlayer(player);
 					if(config.itemReward.equalsIgnoreCase("all")) {
 						if(player.getInventory().firstEmpty() == -1) {
-							localInstance.sendMsg(player, localInstance.endingRewardItemsSpaceOne);
+							playerUI.onRewardedSingleNoSpaceLeft(player);
 							continue;
 						}
 
 						for(ItemStack itemReward : config.rewardItems) {
 							if(player.getInventory().firstEmpty() == -1) {
-								localInstance.sendMsg(player, localInstance.endingRewardItemsSpaceMultiple);
+								playerUI.onRewardedMultipleNoSpaceLeft(player);
 								continue;
 							}
 
 							player.getInventory().addItem(itemReward);
 
-							if(itemReward.getItemMeta().hasDisplayName()) {
-								localInstance.sendMsg(player,
-										localInstance.endingRewardItemsReceive
-												.replace("%amount%", String.valueOf(itemReward.getAmount()))
-												.replace("%item%", itemReward.getItemMeta().getDisplayName()));
-							} else {
-								localInstance.sendMsg(player,
-										localInstance.endingRewardItemsReceive
-												.replace("%amount%", String.valueOf(itemReward.getAmount()))
-												.replace("%item%", itemReward.getType().name()));
-							}
+							playerUI.onRewarded(player, itemReward);
 						}
 					} else {
 						if(player.getInventory().firstEmpty() == -1) {
-							localInstance.sendMsg(player, localInstance.endingRewardItemsSpaceOne);
+							playerUI.onRewardedSingleNoSpaceLeft(player);
 							continue;
 						}
 
@@ -1185,32 +1057,16 @@ public class Arena {
 
 						player.getInventory().addItem(itemReward);
 
-						if(itemReward.getItemMeta().hasDisplayName()) {
-							localInstance.sendMsg(player,
-									localInstance.endingRewardItemsReceive
-											.replace("%amount%", String.valueOf(itemReward.getAmount()))
-											.replace("%item%", itemReward.getItemMeta().getDisplayName()));
-						} else {
-							localInstance.sendMsg(player,
-									localInstance.endingRewardItemsReceive
-											.replace("%amount%", String.valueOf(itemReward.getAmount()))
-											.replace("%item%", itemReward.getType().name()));
-						}
+						playerUI.onRewarded(player, itemReward);
 					}
 				}
 			}
 		} else if(forceStart) {
-			for(User user : users) {
-				Language local = playerData.getLanguageOfPlayer(user);
-				local.sendMsg(user, local.endingSimulation);
-			}
+			arenaUI.onForceStartedArenaFinished(this);
 		}
 
 		if(config.teleportAfterEnding) {
-			for(User u : users) {
-				Language local = playerData.getLanguageOfPlayer(u);
-				local.sendMsg(u, local.endingTeleport);
-			}
+			arenaUI.onArenaFinishedPlayerTeleported(this);
 		}
 
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
@@ -1222,7 +1078,7 @@ public class Arena {
 		}, config.teleportAfterEnding ? 100L : 0);
 	}
 
-	private List<Player> getBroadcastCongratzList() {
+	public List<Player> getBroadcastCongratulationList() {
 		List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
 		if(!config.broadcastCongradulations) {
 			players = new ArrayList<>();
@@ -1532,20 +1388,10 @@ public class Arena {
 	}
 
 	private void newRound() {
-		Language l = Language.getDefaultLanguage();
+		int previousRoundNo = roundNo;
+		roundNo++;
 
-		scoreboard.resetScores(
-				ChatColor.GOLD + l.keyWordScoreboardRound + " = " + ChatColor.AQUA + roundNo);
-		++roundNo;
-		objective.getScore(ChatColor.GOLD + l.keyWordScoreboardRound + " = " + ChatColor.AQUA + roundNo)
-				.setScore(99);
-
-		if(config.verbose) {
-			for(User p : users) {
-				Language local = playerData.getLanguageOfPlayer(p);
-				local.sendMsg(p.getPlayer(), local.gameNewRound.replace("%round%", String.valueOf(roundNo)));
-			}
-		}
+		arenaUI.onNewRound(this, previousRoundNo);
 	}
 
 	public boolean isSomeoneSurvived() {
@@ -1581,51 +1427,20 @@ public class Arena {
 				for(User user : arena.getUsers()) {
 					user.maxStats(false);
 
-					Player player = user.getPlayer();
-					Language local = playerData.getLanguageOfPlayer(player);
-					local.sendMsg(player, local.startStopped);
+					arenaUI.onCountdownCancelled(user.getPlayer());
 				}
 
 				return;
 			}
 
-			int level = (int) Math.floor(time / 20.0) + 1;
+			if(time == 0) {
+				for(User user : arena.getUsers()) {
+					user.maxStats(true);
+				}
 
-			for(User user : arena.getUsers()) {
-				user.getPlayer().setLevel(level);
-				user.getPlayer().setExp((float) ((time % 20) / 20.0));
-			}
-
-			switch(time / 20) {
-				case 30:
-				case 10:
-				case 5:
-				case 4:
-				case 3:
-				case 2:
-				case 1:
-					if(time % 20.0 == 0) {
-						for(User user : arena.getUsers()) {
-							user.getPlayer().playSound(user.getPlayer().getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
-
-							Language local = playerData.getLanguageOfPlayer(user);
-
-							Utils.sendTitle(user.getPlayer(),
-									Component.text(String.valueOf(time / 20), NamedTextColor.GOLD, TextDecoration.BOLD),
-									Component.text(String.valueOf(local.keyWordGeneralSeconds), NamedTextColor.DARK_GRAY, TextDecoration.ITALIC),
-									5, 10, 5);
-						}
-					}
-					break;
-				case 0:
-					if(time % 20.0 == 0) {
-						for(User user : users) {
-							user.maxStats(true);
-						}
-
-						arena.startGame(false);
-						return;
-					}
+				arena.startGame(false);
+			} else {
+				arenaUI.onCountdownStep(this, time);
 			}
 
 			arena.countdown(arena, time - 1);
@@ -1638,7 +1453,6 @@ public class Arena {
 			if(user != arena.activePlayer || arena.gameState != GameState.ACTIVE || arena.getRoundNo() != round) {
 				return;
 			}
-			Language local = playerData.getLanguageOfPlayer(user);
 
 			if(time == 0) {
 				user.getPlayer().teleport(lobby);
@@ -1648,16 +1462,7 @@ public class Arena {
 				}
 
 				if(config.timeOutKick) {
-
-					local.sendMsg(player, local.gameTimeOutPlayer);
-
-					for(User p : arena.users) {
-						if(user != p) {
-							Language localInstance = playerData.getLanguageOfPlayer(p);
-							localInstance.sendMsg(p.getPlayer(),
-									localInstance.gameTimeOutOthers.replace("%player%", user.getDisplayName()));
-						}
-					}
+					playerUI.onPlayerTimeOut(user, this);
 
 					arena.eliminateUser(user);
 
@@ -1668,31 +1473,14 @@ public class Arena {
 						arena.nextPlayer();
 					}
 				} else {
-					playerDamage.losingAlgorithm(player, arena, user);
+					onJumpFailed(user);
 				}
 
 				return;
 			}
 
-			int level = (int) Math.floor(time / 20.0) + 1;
-			player.setLevel(level);
-			player.setExp((float) ((time % 20) / 20.0));
+			playerUI.onPlayerTimeTick(player, time);
 
-			switch(time / 20) {
-				case 10:
-				case 9:
-				case 8:
-				case 7:
-				case 6:
-				case 5:
-				case 4:
-				case 3:
-				case 2:
-				case 1:
-					if(time % 20 == 0) {
-						player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, (float) 1, 1);
-					}
-			}
 			timeOut(user, arena, time - 1, round);
 		}, 1L);
 	}
@@ -1733,5 +1521,176 @@ public class Arena {
 
 	public World getWorld() {
 		return world;
+	}
+
+	public void onJumpInPool(User user, Location getTo) {
+		Player player = user.getPlayer();
+
+		while(getTo.add(new Vector(0, 1, 0)).getBlock().isLiquid()) {
+		}
+		getTo.add(new Vector(0, -1, 0));
+
+		Location north = new Location(getTo.getWorld(), getTo.getBlockX(), getTo.getBlockY(), getTo.getBlockZ() - 1);
+		Location south = new Location(getTo.getWorld(), getTo.getBlockX(), getTo.getBlockY(), getTo.getBlockZ() + 1);
+		Location east = new Location(getTo.getWorld(), getTo.getBlockX() + 1, getTo.getBlockY(), getTo.getBlockZ());
+		Location west = new Location(getTo.getWorld(), getTo.getBlockX() - 1, getTo.getBlockY(), getTo.getBlockZ());
+
+		playerUI.onJumpSucceeded(user, this, getTo);
+
+		resetStallingAmount();
+		bumpCurrentTile();
+
+		if(!north.getBlock().isLiquid() && !south.getBlock().isLiquid() && !west.getBlock().isLiquid()
+				&& !east.getBlock().isLiquid()) {
+			// Player has done a DaC
+
+			user.addPoint();
+
+			int DaCdone = 0;
+			if(mysql.hasConnection()) {
+				ResultSet query = mysql.query(
+						"SELECT DaCdone FROM " + config.tablePrefix + "PLAYERS WHERE UUID='" + user.getUUID() + "';"
+				);
+				try {
+					if(query.next()) {
+						DaCdone = query.getInt("DaCdone");
+					}
+				} catch(SQLException e) {
+					Log.severe("Error on player's number of DaC retrieval.", e);
+				}
+
+				mysql.update("UPDATE " + config.tablePrefix + "PLAYERS SET DaCdone='" + ++DaCdone + "' WHERE UUID='"
+						+ user.getUUID() + "';");
+			} else {
+				DaCdone = playerData.getData().getInt("players." + player.getUniqueId() + ".DaCdone") + 1;
+				playerData.getData().set("players." + player.getUniqueId() + ".DaCdone", DaCdone);
+				playerData.savePlayerData();
+			}
+
+			if(!isForceStart()) {
+				achievements.testAchievement(Achievement.dacDone, player);
+
+				if(getRoundNo() == 42) {
+					achievements.testAchievement(Achievement.dacOnFortyTwo, player);
+				}
+			}
+
+			playerUI.onDaC(this, user);
+		} else {
+			// Player successfully went in the pool
+			playerUI.onRegularJump(this, user);
+		}
+
+		user.setRoundSuccess(true);
+		flushConfirmationQueue(user);
+
+		if(!isOver() || isForceStart()) {
+			nextPlayer();
+		} else {
+			user.getPlayer().setVelocity(new Vector());
+			user.getPlayer().setFallDistance(0);
+			finishGame(false);
+		}
+	}
+
+	public void onJumpFailed(User user) {
+		final Player player = user.getPlayer();
+
+		user.removePoint();
+		player.teleport(getLobby());
+		user.maxStats(true);
+
+		playerUI.onJumpFailed(user, this);
+
+		bumpStallingAmount();
+
+		if(isForceStart()) {
+			if(user.getPoint() == -1) {
+				user.eliminate();
+
+				playerUI.onPlayerEliminated(user, this);
+
+				finishGame(false);
+			} else {
+				nextPlayer();
+
+				playerUI.onPlayerLostLife(user, this);
+			}
+			return;
+		}
+
+		if(isSomeoneSurvived()) {
+			if(user.getPoint() == -1) {
+				// IF someone already succeeded
+				// AND damaged player lost his LAST life
+
+				user.eliminate();
+
+				playerUI.onPlayerEliminated(user, this);
+			} else {
+				// IF someone already succeeded
+				// AND damaged player lost normal life
+
+				playerUI.onPlayerLostLife(user, this);
+			}
+		} else {
+			if(isLastPlayer(user)) {
+				if(user.getPoint() == -1) {
+					// IF everybody failed this round
+					// AND damaged player is last
+					// AND damaged player lost his LAST life
+
+					user.addPoint();
+					setSomeoneLostFinal(true);
+
+					playerUI.onLastRoundPlayerEliminatedAndRevivalOfEveryone(user, this);
+				} else if(isSomeoneLostFinal()) {
+					// IF everybody failed this round
+					// AND damaged player is last
+					// AND damaged player lost normal life
+					// AND other player lost his LAST life
+
+					user.addWaitingForConfirmation();
+
+					playerUI.onLastRoundPlayerLostLifeRevivalOfEveryone(user, this);
+				} else {
+					// IF everybody failed this round
+					// AND damaged player is last
+					// AND damaged player lost normal life
+					// AND nobody lost his LAST life
+
+					playerUI.onPlayerLostLife(user, this);
+				}
+			} else {
+				if(user.getPoint() == -1) {
+					// IF everybody failed this round
+					// AND damaged player NOT last
+					// AND damaged player lost his LAST life
+
+					user.addWaitingForConfirmation();
+					setSomeoneLostFinal(true);
+
+					playerUI.onNonLastRoundPlayerEliminated(user, this);
+				} else {
+					// IF everybody failed this round
+					// AND damaged player NOT last
+					// AND damaged player lost normal life
+
+					user.addWaitingForConfirmation();
+
+					playerUI.onNonLastRoundPlayerLostLife(user, this);
+				}
+			}
+		}
+
+		if(isLastPlayer(user) && isSomeoneLostFinal()) {
+			reviveConfirmationQueue();
+		}
+
+		if(isOver()) {
+			finishGame(false);
+		} else {
+			nextPlayer();
+		}
 	}
 }

@@ -11,10 +11,7 @@ import me.poutineqc.deacoudre.commands.DaCCommands;
 import me.poutineqc.deacoudre.commands.DaCCommandDescription;
 import me.poutineqc.deacoudre.commands.DacSign;
 import me.poutineqc.deacoudre.events.*;
-import me.poutineqc.deacoudre.ui.ColorsGUI;
-import me.poutineqc.deacoudre.ui.InventoryBar;
-import me.poutineqc.deacoudre.ui.JoinGUI;
-import me.poutineqc.deacoudre.ui.SetArenaBlocksGUI;
+import me.poutineqc.deacoudre.ui.*;
 import me.poutineqc.deacoudre.instances.Arena;
 import me.poutineqc.deacoudre.instances.User;
 import me.poutineqc.deacoudre.sections.MainDACSection;
@@ -37,11 +34,17 @@ public class DeACoudre extends JavaPlugin {
 	private PlayerData playerData;
 	private ArenaData arenaData;
 	private Achievement achievement;
+
+	private PlayerDamage playerDamage;
+
 	private SetArenaBlocksGUI chooseColorGUI;
 	private AchievementsGUI achievementsGUI;
-	private PlayerDamage playerDamage;
 	private JoinGUI joinGUI;
 	private ColorsGUI playerSelectColorGUI;
+
+	private ArenaUI arenaUI;
+	private PlayerUI playerUI;
+
 	private DaCCommands dac;
 	private DacSign signData;
 
@@ -79,7 +82,6 @@ public class DeACoudre extends JavaPlugin {
 		achievement = new Achievement(this);
 		new TopManager(this);
 		achievementsGUI = new AchievementsGUI(this);
-		playerDamage = new PlayerDamage(this);
 		arenaData = new ArenaData(this);
 		signData = new DacSign(this);
 		Arena.init(this);
@@ -121,9 +123,15 @@ public class DeACoudre extends JavaPlugin {
 		}
 
 		this.playerData = this.injector.getInstance(PlayerData.class);
+
 		this.joinGUI = this.injector.getInstance(JoinGUI.class);
 		this.playerSelectColorGUI = this.injector.getInstance(ColorsGUI.class);
 		this.chooseColorGUI = this.injector.getInstance(SetArenaBlocksGUI.class);
+
+		this.arenaUI = this.injector.getInstance(ArenaUI.class);
+		this.playerUI = this.injector.getInstance(PlayerUI.class);
+
+		this.playerDamage = this.injector.getInstance(PlayerDamage.class);
 	}
 
 	private void createMySQLTables() {
@@ -174,7 +182,7 @@ public class DeACoudre extends JavaPlugin {
 		pm.registerEvents(playerData, this);
 		pm.registerEvents(playerDamage, this);
 		pm.registerEvents(new PlayerDisconnect(), this);
-		pm.registerEvents(new PlayerMove(this), this);
+		pm.registerEvents(this.injector.getInstance(PlayerMove.class), this);
 		pm.registerEvents(new PlayerTeleport(this), this);
 		pm.registerEvents(new SignChange(this, mainLanguage), this);
 		pm.registerEvents(new AsyncPlayerChat(this), this);
@@ -262,6 +270,14 @@ public class DeACoudre extends JavaPlugin {
 
 	public SectionManager getSectionManager() {
 		return sectionManager;
+	}
+
+	public PlayerUI getPlayerUI() {
+		return playerUI;
+	}
+
+	public ArenaUI getArenaUI() {
+		return arenaUI;
 	}
 
 	public void reload() {
