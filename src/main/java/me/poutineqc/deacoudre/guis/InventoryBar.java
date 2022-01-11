@@ -63,20 +63,22 @@ public class InventoryBar implements Listener {
 
 		player.getInventory().clear();
 
-		ItemStackManager item;
+		boolean hasBedrockSession = Utils.hasBedrockSession(player);
+
+		ItemStackManager colorItem;
 		if(user.getColor() == null) {
-			item = Utils.getRandomHead();
-			item.setTitle(locale.colorGuiOpenItemTitle);
+			colorItem = Utils.getRandomHead(hasBedrockSession);
+			colorItem.setTitle(locale.colorGuiOpenItemTitle);
 		} else {
-			item = Utils.getColorHead(user.getColor().getColor());
-			if(item == null) {
-				item = Utils.getRandomHead();
+			colorItem = Utils.getColorHead(user.getColor().getColor(), hasBedrockSession);
+			if(colorItem == null) {
+				colorItem = Utils.getRandomHead(hasBedrockSession);
 			}
-			item.setTitle(Utils.replaceInComponent(locale.colorGuiOpenItemColorSelectedTitle, "%material%", ColorManager.getTranslatedMaterialName(user.getColor().getItem(), locale)));
-			item.addToLore(locale.colorGuiOpenItemColorSelectedLore);
+			colorItem.setTitle(Utils.replaceInComponent(locale.colorGuiOpenItemColorSelectedTitle, "%material%", ColorManager.getTranslatedMaterialName(user.getColor().getItem(), locale)));
+			colorItem.addToLore(locale.colorGuiOpenItemColorSelectedLore);
 		}
 
-		player.getInventory().setItem(4, item.getItem());
+		player.getInventory().setItem(4, colorItem.getItem());
 
 		player.updateInventory();
 	}

@@ -14,6 +14,7 @@ import java.util.HashMap;
 
 public class Utils {
 	private static final HashMap<DyeColor, Material> colorToStainedGlassBlock = new HashMap<>();
+	private static final HashMap<DyeColor, Material> colorToWool = new HashMap<>();
 
 	// https://minecraft-heads.com/custom-heads/miscellaneous/37791-refresh
 	private static final String RANDOM_TEXTURE_BASE64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmM4ZWExZjUxZjI1M2ZmNTE0MmNhMTFhZTQ1MTkzYTRhZDhjM2FiNWU5YzZlZWM4YmE3YTRmY2I3YmFjNDAifX19";
@@ -40,6 +41,25 @@ public class Utils {
 	}
 
 	static {
+		colorToWool.put(DyeColor.BLACK, Material.BLACK_WOOL);
+		colorToWool.put(DyeColor.BLUE, Material.BLUE_WOOL);
+		colorToWool.put(DyeColor.BROWN, Material.BROWN_WOOL);
+		colorToWool.put(DyeColor.CYAN, Material.CYAN_WOOL);
+		colorToWool.put(DyeColor.GRAY, Material.GRAY_WOOL);
+		colorToWool.put(DyeColor.GREEN, Material.GREEN_WOOL);
+		colorToWool.put(DyeColor.LIGHT_BLUE, Material.LIGHT_BLUE_WOOL);
+		colorToWool.put(DyeColor.LIGHT_GRAY, Material.LIGHT_GRAY_WOOL);
+		colorToWool.put(DyeColor.LIME, Material.LIME_WOOL);
+		colorToWool.put(DyeColor.MAGENTA, Material.MAGENTA_WOOL);
+		colorToWool.put(DyeColor.ORANGE, Material.ORANGE_WOOL);
+		colorToWool.put(DyeColor.PINK, Material.PINK_WOOL);
+		colorToWool.put(DyeColor.PURPLE, Material.PURPLE_WOOL);
+		colorToWool.put(DyeColor.RED, Material.RED_WOOL);
+		colorToWool.put(DyeColor.WHITE, Material.WHITE_WOOL);
+		colorToWool.put(DyeColor.YELLOW, Material.YELLOW_WOOL);
+	}
+
+	static {
 		colorToBase64HeadTexture.put(DyeColor.BLACK, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTY3YTJmMjE4YTZlNmUzOGYyYjU0NWY2YzE3NzMzZjRlZjliYmIyODhlNzU0MDI5NDljMDUyMTg5ZWUifX19"); // https://minecraft-heads.com/custom/miscellaneous/6265-black-000000
 		colorToBase64HeadTexture.put(DyeColor.BLUE, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmE0NjA1MzAxMmM2OGYyODlhYmNmYjE3YWI4MDQyZDVhZmJhOTVkY2FhOTljOTljMWUwMzYwODg2ZDM1In19fQ=="); // https://minecraft-heads.com/custom-heads/miscellaneous/6251-dark-blue-00008b
 		colorToBase64HeadTexture.put(DyeColor.BROWN, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjA5YTdlY2ZjN2FiOTIyMzY4ZGFkMWQ4NDJkZTNmZjUzOTM2OWE1ZGE2YmY4OTVhYjNkMjVjZmEwNDA1OTAifX19"); // https://minecraft-heads.com/custom/miscellaneous/6159-rosy-brown-bc8f8f
@@ -58,24 +78,38 @@ public class Utils {
 		colorToBase64HeadTexture.put(DyeColor.YELLOW, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjlhMDMwY2EyYjJjNmZlNjdmZTgwOTdkM2NkMjA2OTY5ZmM1YzAwMTdjNjBiNmI0MDk5MGM3NzJhNmYwYWMwYSJ9fX0="); // https://minecraft-heads.com/custom-heads/miscellaneous/31702-dandelion-yellow-e7e769
 	}
 
-	public static ItemStackManager getRandomHead() {
-		ItemStackManager item = new ItemStackManager(Material.PLAYER_HEAD);
-		item.setPlayerHeadTexture(RANDOM_TEXTURE_BASE64);
-		return item;
+	public static ItemStackManager getRandomHead(boolean isBedrockContent) {
+		if(!isBedrockContent) {
+			ItemStackManager item = new ItemStackManager(Material.PLAYER_HEAD);
+			item.setPlayerHeadTexture(RANDOM_TEXTURE_BASE64);
+			return item;
+		}
+		return new ItemStackManager(Material.WHITE_WOOL);
 	}
 
-	public static ItemStackManager getColorHead(DyeColor color) {
-		String base64Texture = colorToBase64HeadTexture.get(color);
-		if(base64Texture != null) {
-			ItemStackManager item = new ItemStackManager(Material.PLAYER_HEAD);
-			item.setPlayerHeadTexture(base64Texture);
-			return item;
+	public static ItemStackManager getColorHead(DyeColor color, boolean isBedrockContent) {
+		if(!isBedrockContent) {
+			String base64Texture = colorToBase64HeadTexture.get(color);
+			if(base64Texture != null) {
+				ItemStackManager item = new ItemStackManager(Material.PLAYER_HEAD);
+				item.setPlayerHeadTexture(base64Texture);
+				return item;
+			}
+		}
+
+		Material wool = colorToWool(color);
+		if(wool != null) {
+			return new ItemStackManager(wool);
 		}
 		return null;
 	}
 
 	public static Material colorToStainedGlassBlock(DyeColor color) {
 		return colorToStainedGlassBlock.get(color);
+	}
+
+	public static Material colorToWool(DyeColor color) {
+		return colorToWool.get(color);
 	}
 
 	public static void sendTitle(Player target, Component title, Component subtitle, int fadeInMs, int stayMs, int fadeOutMs) {

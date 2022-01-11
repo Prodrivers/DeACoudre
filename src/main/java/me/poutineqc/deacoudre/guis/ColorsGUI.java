@@ -83,7 +83,7 @@ public class ColorsGUI {
 
 		ItemStackManager userCurrentItem;
 		if(userCurrentColor == null) {
-			userCurrentItem = Utils.getRandomHead();
+			userCurrentItem = Utils.getRandomHead(isBedrockContent);
 			userCurrentItem.setTitle(ChatColor.translateAlternateColorCodes('&', locale.colorGuiCurrent));
 			userCurrentItem.addToLore(ChatColor.translateAlternateColorCodes('&', locale.keyWordColorRandom));
 		} else {
@@ -140,7 +140,7 @@ public class ColorsGUI {
 		contents.add(GUIElementFactory.createActionItem(
 				slot,
 				GUIElementFactory.formatItem(
-						Utils.getRandomHead().getItem(),
+						Utils.getRandomHead(isBedrockContent).getItem(),
 						ChatColor.translateAlternateColorCodes('&', locale.keyWordColorRandom)
 				),
 				(Callback<Player>) callbackPlayer -> {
