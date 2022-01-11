@@ -12,18 +12,64 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import javax.inject.Inject;
 
 public class ArenaUI {
+	private final Plugin plugin;
 	private final PlayerData playerData;
 	private final Configuration configuration;
 
 	@Inject
-	public ArenaUI(PlayerData playerData, Configuration configuration) {
+	public ArenaUI(Plugin plugin, PlayerData playerData, Configuration configuration) {
+		this.plugin = plugin;
 		this.playerData = playerData;
 		this.configuration = configuration;
+	}
+
+	private void scheduleSound(final Arena arena, final long delay, final Sound sound, final float velocity) {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+			for(User user : arena.getUsers()) {
+				user.getPlayer().playSound(
+						user.getPlayer().getLocation(),
+						sound,
+						SoundCategory.RECORDS,
+						10,
+						velocity
+				);
+			}
+		}, delay);
+	}
+
+	private void scheduleSound(final Arena arena, final long delay, final Sound sound, final float velocity, User excluded) {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+			for(User user : arena.getUsers()) {
+				if(user != excluded) {
+					user.getPlayer().playSound(
+							user.getPlayer().getLocation(),
+							sound,
+							SoundCategory.RECORDS,
+							10,
+							velocity
+					);
+				}
+			}
+		}, delay);
+	}
+
+	private void scheduleSound(final Player player, final long delay, final Sound sound, final float velocity) {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+			player.playSound(
+					player.getLocation(),
+					sound,
+					SoundCategory.RECORDS,
+					10,
+					velocity
+			);
+		}, delay);
 	}
 
 	public void onPlayerJoined(User user, Arena arena) {
@@ -34,8 +80,8 @@ public class ArenaUI {
 		locale.sendMsg(
 				user.getPlayer(),
 				locale.joinGamePlayer
-					.replace("%arenaName%", arena.getDisplayName())
-					.replace("%amountInGame%", nonEliminated)
+						.replace("%arenaName%", arena.getDisplayName())
+						.replace("%amountInGame%", nonEliminated)
 		);
 
 		for(User u : arena.getUsers()) {
@@ -139,6 +185,9 @@ public class ArenaUI {
 				);
 			}
 		}
+
+		scheduleSound(arena, 1L, Sound.BLOCK_NOTE_BLOCK_SNARE, 1f);
+		scheduleSound(arena, 6L, Sound.BLOCK_NOTE_BLOCK_SNARE, 1.8f);
 	}
 
 	public void onCountdownStep(Arena arena, int timeInTick) {
@@ -182,6 +231,9 @@ public class ArenaUI {
 			Language locale = playerData.getLanguageOfPlayer(user.getPlayer());
 			locale.sendMsg(user.getPlayer(), locale.startStopped);
 		}
+
+		scheduleSound(arena, 1L, Sound.BLOCK_NOTE_BLOCK_SNARE, 1.8f);
+		scheduleSound(arena, 6L, Sound.BLOCK_NOTE_BLOCK_SNARE, 1f);
 	}
 
 	public void onArenaStart(Arena arena) {
@@ -193,6 +245,10 @@ public class ArenaUI {
 				+ arena.getMinPlayer());
 		arena.getObjective().getScoreboard().resetScores(ChatColor.GOLD + locale.keyWordGeneralMaximum + " = " + ChatColor.AQUA
 				+ arena.getMaxPlayer());
+
+		scheduleSound(arena, 1L, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f);
+		scheduleSound(arena, 6L, Sound.BLOCK_NOTE_BLOCK_PLING, 1f);
+		scheduleSound(arena, 11L, Sound.BLOCK_NOTE_BLOCK_PLING, 2f);
 	}
 
 	public void onArenaNonForcedStart(Arena arena) {
@@ -217,6 +273,13 @@ public class ArenaUI {
 				Language locale = playerData.getLanguageOfPlayer(p);
 				locale.sendMsg(p.getPlayer(), locale.gameNewRound.replace("%round%", round));
 			}
+		}
+
+		// Play sound if this is not the first round, and not to the first player to go
+		if(previousRoundNumber < 2) {
+			User firstPlayer = arena.firstPlayer();
+			scheduleSound(arena, 1L, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, firstPlayer);
+			scheduleSound(arena, 6L, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, firstPlayer);
 		}
 	}
 
@@ -247,6 +310,9 @@ public class ArenaUI {
 		arena.getObjective().getScore(ChatColor.AQUA + activeUser.getName()).setScore(activeUser.getPoint());
 
 		Utils.sendTitle(activeUser.getPlayer(), Component.text(locale.keyWordJumpFast, NamedTextColor.GOLD, TextDecoration.BOLD), null, 5, 10, 5);
+
+		scheduleSound(activeUser.getPlayer(), 1L, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f);
+		scheduleSound(activeUser.getPlayer(), 6L, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 2f);
 	}
 
 	public void onFinishSingleNonEliminated(Arena arena) {
@@ -261,6 +327,10 @@ public class ArenaUI {
 							.replace("%arenaName%", arenaDisplayName)
 			);
 		}
+
+		scheduleSound(arena, 1L, Sound.BLOCK_NOTE_BLOCK_PLING, 2f);
+		scheduleSound(arena, 6L, Sound.BLOCK_NOTE_BLOCK_PLING, 1f);
+		scheduleSound(arena, 11L, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f);
 	}
 
 	public void onFinishCompleted(Arena arena) {
@@ -275,6 +345,10 @@ public class ArenaUI {
 							.replace("%arenaName%", arenaDisplayName)
 			);
 		}
+
+		scheduleSound(arena, 1L, Sound.BLOCK_NOTE_BLOCK_PLING, 2f);
+		scheduleSound(arena, 6L, Sound.BLOCK_NOTE_BLOCK_PLING, 1f);
+		scheduleSound(arena, 11L, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f);
 	}
 
 	public void onFinishNonCompleted(Arena arena) {
@@ -295,6 +369,10 @@ public class ArenaUI {
 							.replace("%arenaName%", arenaDisplayName)
 			);
 		}
+
+		scheduleSound(arena, 1L, Sound.BLOCK_NOTE_BLOCK_PLING, 2f);
+		scheduleSound(arena, 6L, Sound.BLOCK_NOTE_BLOCK_PLING, 1f);
+		scheduleSound(arena, 11L, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f);
 	}
 
 	public void onForceStartedArenaFinished(Arena arena) {

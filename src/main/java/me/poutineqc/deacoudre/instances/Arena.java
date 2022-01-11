@@ -1237,7 +1237,7 @@ public class Arena {
 		return lastPlayer().getPlace() <= user.getPlace();
 	}
 
-	private User firstPlayer() {
+	public User firstPlayer() {
 		User user = new User(maxAmountPlayer);
 		for(User u : getNonEliminated()) {
 			if(u.getPlace() < user.getPlace()) {

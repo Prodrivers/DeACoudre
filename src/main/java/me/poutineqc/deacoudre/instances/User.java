@@ -6,6 +6,7 @@ import me.poutineqc.deacoudre.PlayerData;
 import me.poutineqc.deacoudre.tools.ItemStackManager;
 import me.poutineqc.deacoudre.tools.OriginalPlayerStats;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Score;
 
@@ -160,6 +161,10 @@ public class User {
 
 	public String getDisplayName() {
 		return displayName;
+	}
+
+	public Location getLocation() {
+		return player.getLocation();
 	}
 
 	public void maxStats(boolean spectator) {

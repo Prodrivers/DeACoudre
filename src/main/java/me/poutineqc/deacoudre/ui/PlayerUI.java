@@ -10,8 +10,10 @@ import me.poutineqc.deacoudre.instances.User;
 import me.poutineqc.deacoudre.tools.ColorManager;
 import me.poutineqc.deacoudre.tools.Utils;
 import org.bukkit.*;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.plugin.Plugin;
 
 import javax.inject.Inject;
@@ -28,6 +30,46 @@ public class PlayerUI {
 		this.plugin = plugin;
 		this.configuration = configuration;
 		this.playerData = playerData;
+	}
+
+	private void scheduleSound(final Player player, final long delay, final Sound sound, final float velocity) {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+			player.playSound(
+					player.getLocation(),
+					sound,
+					SoundCategory.RECORDS,
+					10,
+					velocity
+			);
+		}, delay);
+	}
+
+	private void scheduleSound(final Arena arena, final long delay, final Sound sound, final float velocity) {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+			for(User user : arena.getUsers()) {
+				user.getPlayer().playSound(
+						user.getPlayer().getLocation(),
+						sound,
+						SoundCategory.RECORDS,
+						10,
+						velocity
+				);
+			}
+		}, delay);
+	}
+
+	private void spawnFirework(Location loc, Color color, Color fadeColor, float yOffset) {
+		FireworkEffect effect = FireworkEffect.builder().trail(false).flicker(false).withColor(color).withFade(fadeColor).with(FireworkEffect.Type.BALL).build();
+		final World world = loc.getWorld();
+		if(world != null) {
+			final Firework fw = world.spawn(loc.clone().add(0, yOffset, 0), Firework.class);
+			FireworkMeta meta = fw.getFireworkMeta();
+			meta.addEffect(effect);
+			meta.setPower(0);
+			fw.setFireworkMeta(meta);
+
+			Bukkit.getScheduler().runTaskLater(this.plugin, fw::detonate, 2L);
+		}
 	}
 
 	public void onJumpFailed(final User user, final Arena arena) {
@@ -82,6 +124,8 @@ public class PlayerUI {
 
 			}
 		}
+
+		scheduleSound(user.getPlayer(), 1L, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 2f);
 	}
 
 	public void onDaC(final Arena arena, final User user) {
@@ -122,6 +166,9 @@ public class PlayerUI {
 				);
 			}
 		}
+
+		scheduleSound(user.getPlayer(), 1L, Sound.ENTITY_ITEM_BREAK, 0.5f);
+		scheduleSound(user.getPlayer(), 1L, Sound.ENTITY_PLAYER_DEATH, 1);
 	}
 
 	public void onPlayerLostLife(User user, Arena arena) {
@@ -141,6 +188,8 @@ public class PlayerUI {
 				);
 			}
 		}
+
+		scheduleSound(user.getPlayer(), 1L, Sound.ENTITY_PLAYER_BIG_FALL, 1);
 	}
 
 	public void onLastRoundPlayerEliminatedAndRevivalOfEveryone(User user, Arena arena) {
@@ -159,6 +208,8 @@ public class PlayerUI {
 				);
 			}
 		}
+
+		scheduleSound(arena, 1L, Sound.ITEM_TOTEM_USE, 1);
 	}
 
 	public void onLastRoundPlayerLostLifeRevivalOfEveryone(User user, Arena arena) {
@@ -177,6 +228,8 @@ public class PlayerUI {
 				);
 			}
 		}
+
+		scheduleSound(arena, 1L, Sound.ITEM_TOTEM_USE, 1);
 	}
 
 	public void onNonLastRoundPlayerEliminated(User user, Arena arena) {
@@ -195,6 +248,9 @@ public class PlayerUI {
 				);
 			}
 		}
+
+		scheduleSound(user.getPlayer(), 1L, Sound.ENTITY_ITEM_BREAK, 0.5f);
+		scheduleSound(user.getPlayer(), 1L, Sound.ENTITY_PLAYER_DEATH, 1);
 	}
 
 	public void onNonLastRoundPlayerLostLife(User user, Arena arena) {
@@ -219,6 +275,8 @@ public class PlayerUI {
 				);
 			}
 		}
+
+		scheduleSound(user.getPlayer(), 1L, Sound.ENTITY_PLAYER_BIG_FALL, 1);
 	}
 
 	public void onNonLastPlayerEliminatedAfterOtherSuccess(User eliminated, User eliminator, Arena arena) {
@@ -238,6 +296,9 @@ public class PlayerUI {
 				);
 			}
 		}
+
+		scheduleSound(eliminated.getPlayer(), 1L, Sound.ENTITY_ITEM_BREAK, 0.5f);
+		scheduleSound(eliminated.getPlayer(), 1L, Sound.ENTITY_PLAYER_DEATH, 1);
 	}
 
 	public void onPlayerTimeTick(Player player, int timeTick) {
@@ -277,6 +338,9 @@ public class PlayerUI {
 				);
 			}
 		}
+
+		scheduleSound(user.getPlayer(), 1L, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f);
+		scheduleSound(user.getPlayer(), 6L, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f);
 	}
 
 	public void onNonLastPlayerRevivedAfterNoSuccess(User user, Arena arena) {
@@ -309,6 +373,9 @@ public class PlayerUI {
 						.replace("%amount%", String.valueOf(reward))
 						.replace("%currency%", DeACoudre.getEconomy().currencyNamePlural())
 		);
+
+		scheduleSound(player, 1L, Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 1f);
+		scheduleSound(player, 5L, Sound.ENTITY_PLAYER_LEVELUP, 1f);
 	}
 
 	public void onRewarded(Player player, ItemStack reward) {
@@ -329,6 +396,9 @@ public class PlayerUI {
 							.replace("%item%", reward.getType().name())
 			);
 		}
+
+		scheduleSound(player, 1L, Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 1f);
+		scheduleSound(player, 5L, Sound.ENTITY_PLAYER_LEVELUP, 1f);
 	}
 
 	public void onRewardedSingleNoSpaceLeft(Player player) {
