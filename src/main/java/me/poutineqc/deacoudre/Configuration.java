@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
+import javax.inject.Singleton;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +17,8 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
+@Singleton
 public class Configuration {
-
 	public final List<ItemStack> rewardItems = new ArrayList<>();
 	private final File configFile;
 	public List<String> dispatchCommands = new ArrayList<>();

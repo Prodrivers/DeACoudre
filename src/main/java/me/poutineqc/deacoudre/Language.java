@@ -539,7 +539,6 @@ public class Language {
 		keyWordJumpFast = languageData.getString("keyWordJumpFast", "Jump!");
 
 		keyWordGuiInstructions = languageData.getString("keyWordGuiInstrictions", "&6Instructions");
-
 	}
 
 	public void sendMsg(User user, String msg) {
