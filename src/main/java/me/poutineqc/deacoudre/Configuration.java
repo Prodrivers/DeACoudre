@@ -63,6 +63,11 @@ public class Configuration {
 	public FormImage guiPlayerColorTakenImage;
 	public FormImage guiPlayerColorRandomImage;
 
+	public String resourcePackUrl;
+	public String resourcePackSha1;
+	public String resourcePackEmptyUrl;
+	public String resourcePackEmptySha1;
+
 	private FileConfiguration config;
 
 	public Configuration(DeACoudre plugin) {
@@ -150,6 +155,11 @@ public class Configuration {
 		guiPlayerColorSelectedImage = getFormImage("gui.image.selected");
 		guiPlayerColorTakenImage = getFormImage("gui.image.taken");
 		guiPlayerColorRandomImage = getFormImage("gui.image.random");
+
+		resourcePackUrl = config.getString("resourcepack.dac.url");
+		resourcePackSha1 = config.getString("resourcepack.dac.sha1");
+		resourcePackEmptyUrl = config.getString("resourcepack.empty.url");
+		resourcePackEmptySha1 = config.getString("resourcepack.empty.sha1");
 	}
 
 	private void loadItemRewards(Plugin plugin) {

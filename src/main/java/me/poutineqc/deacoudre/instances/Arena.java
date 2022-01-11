@@ -608,6 +608,8 @@ public class Arena {
 		User user = new User(playerData, player, this, eliminated);
 		users.add(user);
 
+		arenaUI.onSectionEnter(player);
+
 		if(player.getLocation().distance(lobby) > 1) {
 			arenaUI.onLobbyTeleportFailed(player);
 			// No need to teleport player, returning false will force Section Manager to move player elsewhere
@@ -685,6 +687,8 @@ public class Arena {
 				gameState = GameState.READY;
 			}
 		}
+
+		arenaUI.onSectionLeave(player);
 
 		if(gameState != GameState.ACTIVE) {
 			// Player left while game is not active, nothing more to do

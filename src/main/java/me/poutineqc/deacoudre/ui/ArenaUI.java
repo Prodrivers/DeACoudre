@@ -72,6 +72,18 @@ public class ArenaUI {
 		}, delay);
 	}
 
+	public void onSectionEnter(Player player) {
+		if(configuration.resourcePackUrl != null) {
+			player.setResourcePack(configuration.resourcePackUrl, configuration.resourcePackSha1);
+		}
+	}
+
+	public void onSectionLeave(Player player) {
+		if(configuration.resourcePackEmptyUrl != null) {
+			player.setResourcePack(configuration.resourcePackEmptyUrl, configuration.resourcePackEmptySha1);
+		}
+	}
+
 	public void onPlayerJoined(User user, Arena arena) {
 		Language locale = playerData.getLanguageOfPlayer(user.getPlayer());
 		String playerDisplayName = user.getDisplayName();
