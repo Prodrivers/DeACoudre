@@ -109,13 +109,14 @@ public class ArenaUI {
 			}
 		}
 	}
-	
-	public void onAutoStartFailed(Player player) {
-		Language locale = playerData.getLanguageOfPlayer(player);
 
-		locale.sendMsg(player, locale.startAutoFail);
+	public void onAutoStartFailed(Arena arena) {
+		for(User user : arena.getUsers()) {
+			Language locale = playerData.getLanguageOfPlayer(user.getPlayer());
+			locale.sendMsg(user.getPlayer(), locale.startAutoFail);
+		}
 	}
-	
+
 	public void onLobbyTeleportFailed(Player player) {
 		playerData.getLanguageOfPlayer(player).sendMsg(
 				player,

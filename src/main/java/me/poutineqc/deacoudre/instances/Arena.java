@@ -626,7 +626,7 @@ public class Arena {
 
 		if(getNonEliminated().size() >= minAmountPlayer && config.autostart && gameState == GameState.READY) {
 			if(startTime + 30000 > System.currentTimeMillis()) {
-				arenaUI.onAutoStartFailed(player);
+				arenaUI.onAutoStartFailed(this);
 				// Return true as this is not a fatal error
 				return true;
 			}
