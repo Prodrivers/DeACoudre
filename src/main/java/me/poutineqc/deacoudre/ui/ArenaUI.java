@@ -199,7 +199,7 @@ public class ArenaUI {
 		}
 
 		scheduleSound(arena, 1L, Sound.BLOCK_NOTE_BLOCK_SNARE, 1f);
-		scheduleSound(arena, 6L, Sound.BLOCK_NOTE_BLOCK_SNARE, 1.8f);
+		scheduleSound(arena, 4L, Sound.BLOCK_NOTE_BLOCK_SNARE, 1.8f);
 	}
 
 	public void onCountdownStep(Arena arena, int timeInTick) {
@@ -245,7 +245,7 @@ public class ArenaUI {
 		}
 
 		scheduleSound(arena, 1L, Sound.BLOCK_NOTE_BLOCK_SNARE, 1.8f);
-		scheduleSound(arena, 6L, Sound.BLOCK_NOTE_BLOCK_SNARE, 1f);
+		scheduleSound(arena, 4L, Sound.BLOCK_NOTE_BLOCK_SNARE, 1f);
 	}
 
 	public void onArenaStart(Arena arena) {
@@ -259,8 +259,8 @@ public class ArenaUI {
 				+ arena.getMaxPlayer());
 
 		scheduleSound(arena, 1L, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f);
-		scheduleSound(arena, 6L, Sound.BLOCK_NOTE_BLOCK_PLING, 1f);
-		scheduleSound(arena, 11L, Sound.BLOCK_NOTE_BLOCK_PLING, 2f);
+		scheduleSound(arena, 4L, Sound.BLOCK_NOTE_BLOCK_PLING, 1f);
+		scheduleSound(arena, 7L, Sound.BLOCK_NOTE_BLOCK_PLING, 2f);
 	}
 
 	public void onArenaNonForcedStart(Arena arena) {
@@ -291,7 +291,7 @@ public class ArenaUI {
 		if(previousRoundNumber < 2) {
 			User firstPlayer = arena.firstPlayer();
 			scheduleSound(arena, 1L, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, firstPlayer);
-			scheduleSound(arena, 6L, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, firstPlayer);
+			scheduleSound(arena, 4L, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, firstPlayer);
 		}
 	}
 
@@ -324,7 +324,7 @@ public class ArenaUI {
 		Utils.sendTitle(activeUser.getPlayer(), Component.text(locale.keyWordJumpFast, NamedTextColor.GOLD, TextDecoration.BOLD), null, 5, 10, 5);
 
 		scheduleSound(activeUser.getPlayer(), 1L, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f);
-		scheduleSound(activeUser.getPlayer(), 6L, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 2f);
+		scheduleSound(activeUser.getPlayer(), 4L, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 2f);
 	}
 
 	public void onFinishSingleNonEliminated(Arena arena) {
@@ -341,8 +341,8 @@ public class ArenaUI {
 		}
 
 		scheduleSound(arena, 1L, Sound.BLOCK_NOTE_BLOCK_PLING, 2f);
-		scheduleSound(arena, 6L, Sound.BLOCK_NOTE_BLOCK_PLING, 1f);
-		scheduleSound(arena, 11L, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f);
+		scheduleSound(arena, 4L, Sound.BLOCK_NOTE_BLOCK_PLING, 1f);
+		scheduleSound(arena, 7L, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f);
 	}
 
 	public void onFinishCompleted(Arena arena) {
@@ -359,8 +359,8 @@ public class ArenaUI {
 		}
 
 		scheduleSound(arena, 1L, Sound.BLOCK_NOTE_BLOCK_PLING, 2f);
-		scheduleSound(arena, 6L, Sound.BLOCK_NOTE_BLOCK_PLING, 1f);
-		scheduleSound(arena, 11L, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f);
+		scheduleSound(arena, 4L, Sound.BLOCK_NOTE_BLOCK_PLING, 1f);
+		scheduleSound(arena, 7L, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f);
 	}
 
 	public void onFinishNonCompleted(Arena arena) {
@@ -383,8 +383,8 @@ public class ArenaUI {
 		}
 
 		scheduleSound(arena, 1L, Sound.BLOCK_NOTE_BLOCK_PLING, 2f);
-		scheduleSound(arena, 6L, Sound.BLOCK_NOTE_BLOCK_PLING, 1f);
-		scheduleSound(arena, 11L, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f);
+		scheduleSound(arena, 4L, Sound.BLOCK_NOTE_BLOCK_PLING, 1f);
+		scheduleSound(arena, 7L, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f);
 	}
 
 	public void onForceStartedArenaFinished(Arena arena) {

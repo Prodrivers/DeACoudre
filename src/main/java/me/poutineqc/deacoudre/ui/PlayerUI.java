@@ -102,7 +102,7 @@ public class PlayerUI {
 
 				getTo.add(0, -1, 0);
 			} while(getTo.getBlock().getType() == Material.WATER);
-		}, 5L);
+		}, 4L);
 	}
 
 	public void onRegularJump(final Arena arena, final User user) {
@@ -340,7 +340,7 @@ public class PlayerUI {
 		}
 
 		scheduleSound(user.getPlayer(), 1L, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f);
-		scheduleSound(user.getPlayer(), 6L, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f);
+		scheduleSound(user.getPlayer(), 4L, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f);
 	}
 
 	public void onNonLastPlayerRevivedAfterNoSuccess(User user, Arena arena) {
@@ -375,7 +375,7 @@ public class PlayerUI {
 		);
 
 		scheduleSound(player, 1L, Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 1f);
-		scheduleSound(player, 5L, Sound.ENTITY_PLAYER_LEVELUP, 1f);
+		scheduleSound(player, 4L, Sound.ENTITY_PLAYER_LEVELUP, 1f);
 	}
 
 	public void onRewarded(Player player, ItemStack reward) {
@@ -398,7 +398,7 @@ public class PlayerUI {
 		}
 
 		scheduleSound(player, 1L, Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 1f);
-		scheduleSound(player, 5L, Sound.ENTITY_PLAYER_LEVELUP, 1f);
+		scheduleSound(player, 4L, Sound.ENTITY_PLAYER_LEVELUP, 1f);
 	}
 
 	public void onRewardedSingleNoSpaceLeft(Player player) {
