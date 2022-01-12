@@ -16,6 +16,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
@@ -99,6 +100,20 @@ public class InventoryBar implements Listener {
 		}
 
 		handleItemHeld(event, player ,arena, itemInHand);
+	}
+
+	@EventHandler
+	public void onPlayerDropItem(PlayerDropItemEvent event) {
+		Player player = event.getPlayer();
+
+		Arena arena = Arena.getArenaFromPlayer(player);
+		if(arena == null) {
+			return;
+		}
+
+		event.setCancelled(true);
+
+		handleItemHeld(event, player, arena, event.getItemDrop().getItemStack());
 	}
 
 	public static void giveArenaLobbyTools(Arena arena, User user, Language locale) {
