@@ -47,7 +47,8 @@ public class Arena {
 	private static ArenaUI arenaUI;
 	private static PlayerUI playerUI;
 	private static List<Arena> arenas = new ArrayList<>();
-	private final List<User> users = new ArrayList<>();
+	private static final Map<Player, Arena> playersArena = new HashMap<>();
+	private final Set<User> users = new HashSet<>();
 	private final String shortName;
 	private String displayName;
 	private World world;
@@ -229,37 +230,20 @@ public class Arena {
 	}
 
 	public static Arena getArenaFromPlayer(Player player) {
-		for(Arena a : arenas) {
-			for(User p : a.users) {
-				if(player == p.getPlayer()) {
-					return a;
-				}
-			}
-		}
-		return null;
+		return playersArena.get(player);
 	}
 
 	public static List<Player> getAllPlayersInStartedGame() {
-		return arenas.stream()
-				.filter(a -> a.gameState == GameState.ACTIVE)
-				.map(a -> a.users)
-				.flatMap(Collection::stream)
-				.map(User::getPlayer)
+		return playersArena.entrySet().stream()
+				.filter(e -> e.getValue().gameState == GameState.ACTIVE)
+				.map(Map.Entry::getKey)
 				.collect(Collectors.toList());
 	}
 
 	public static List<Player> getAllOutsideGame(Arena arena) {
-		List<Player> outsideGame = new ArrayList<>();
-		for(Player player : Bukkit.getServer().getOnlinePlayers()) {
-			Arena a = getArenaFromPlayer(player);
-			if(a != null) {
-				if(getArenaFromPlayer(player) == arena) {
-					continue;
-				}
-			}
-			outsideGame.add(player);
-		}
-		return outsideGame;
+		return Bukkit.getServer().getOnlinePlayers().stream()
+				.filter(p -> playersArena.get(p) != arena)
+				.collect(Collectors.toList());
 	}
 
 	public String getFullSectionName() {
@@ -607,6 +591,7 @@ public class Arena {
 
 		User user = new User(playerData, player, this, eliminated);
 		users.add(user);
+		playersArena.put(player, this);
 
 		arenaUI.onSectionEnter(player);
 
@@ -669,6 +654,7 @@ public class Arena {
 		}
 
 		users.remove(user);
+		playersArena.remove(player);
 		scoreboard.resetScores(user.getName());
 		user.getPlayer().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 
@@ -1082,15 +1068,12 @@ public class Arena {
 		}, config.teleportAfterEnding ? 100L : 0);
 	}
 
-	public List<Player> getBroadcastCongratulationList() {
-		List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
+	public Collection<Player> getBroadcastCongratulationList() {
 		if(!config.broadcastCongradulations) {
-			players = new ArrayList<>();
-			for(User user : users) {
-				players.add(user.getPlayer());
-			}
+			return users.stream().map(User::getPlayer).collect(Collectors.toList());
 		}
-		return players;
+		//noinspection unchecked
+		return (Collection<Player>) Bukkit.getOnlinePlayers();
 	}
 
 	private void kickPlayers() {
@@ -1124,6 +1107,11 @@ public class Arena {
 		objective.getScore(
 						ChatColor.GOLD + local.keyWordGeneralMaximum + " = " + ChatColor.AQUA + maxAmountPlayer)
 				.setScore(3);
+
+		for(User user : users) {
+			playersArena.remove(user.getPlayer());
+		}
+
 		users.clear();
 		roundNo = 0;
 		stallingAmount = 0;
@@ -1147,13 +1135,18 @@ public class Arena {
 	}
 
 	public CharSequence getPlayerListToDisplay(Language localInstance) {
-		StringBuilder playerListToDisplay = new StringBuilder(users.get(0).getPlayer().getDisplayName());
-
-		for(int i = 1; i < users.size(); i++) {
-			if(i < users.size() - 1) {
-				playerListToDisplay.append(localInstance.keyWordGeneralComma).append(users.get(i).getPlayer().getDisplayName());
+		StringBuilder playerListToDisplay = new StringBuilder();
+		boolean first = true;
+		Iterator<User> it = users.iterator();
+		while(it.hasNext()) {
+			User u = it.next();
+			if(first) {
+				playerListToDisplay.append(u.getDisplayName());
+				first = false;
+			} else if(it.hasNext()) {
+				playerListToDisplay.append(localInstance.keyWordGeneralComma).append(u.getDisplayName());
 			} else {
-				playerListToDisplay.append(localInstance.keyWordGeneralAnd).append(users.get(i).getPlayer().getDisplayName());
+				playerListToDisplay.append(localInstance.keyWordGeneralAnd).append(u.getDisplayName());
 			}
 		}
 
@@ -1273,7 +1266,7 @@ public class Arena {
 	 * Getters and Setters
 	 */
 
-	public List<User> getUsers() {
+	public Collection<User> getUsers() {
 		return users;
 	}
 
@@ -1503,13 +1496,7 @@ public class Arena {
 	}
 
 	public List<User> getNonEliminated() {
-		List<User> nonEliminated = new ArrayList<>();
-		for(User user : users) {
-			if(!user.isEliminated()) {
-				nonEliminated.add(user);
-			}
-		}
-		return nonEliminated;
+		return users.stream().filter(u -> !u.isEliminated()).collect(Collectors.toList());
 	}
 
 	public Objective getObjective() {
