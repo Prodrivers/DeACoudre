@@ -22,7 +22,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.IOException;
 import java.util.logging.Logger;
 
 public class DeACoudre extends JavaPlugin {
@@ -89,14 +88,6 @@ public class DeACoudre extends JavaPlugin {
 		registerEvents();
 
 		getCommand("dac").setExecutor(dac);
-
-		try {
-			Metrics metrics;
-			metrics = new Metrics(this);
-			metrics.start();
-		} catch(IOException e) {
-			Log.severe("Error on Metrics initialization.", e);
-		}
 
 		logger.info(pdfFile.getName() + " has been enabled (v" + pdfFile.getVersion() + ")");
 
