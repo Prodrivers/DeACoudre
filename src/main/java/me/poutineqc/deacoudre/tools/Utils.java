@@ -7,6 +7,9 @@ import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.geysermc.floodgate.api.FloodgateApi;
+import org.geysermc.floodgate.api.player.FloodgatePlayer;
+import org.geysermc.floodgate.util.InputMode;
+import org.geysermc.floodgate.util.UiProfile;
 import org.intellij.lang.annotations.RegExp;
 
 import java.time.Duration;
@@ -152,6 +155,19 @@ public class Utils {
 
 			FloodgateApi api = FloodgateApi.getInstance();
 			return api != null && api.isFloodgatePlayer(player.getUniqueId());
+		} catch(ClassNotFoundException e) {
+			return false;
+		}
+	}
+
+	public static boolean isPlayerUsingTouchControls(Player player) {
+		try {
+			// Check presence of FloodgateApi
+			Class.forName("org.geysermc.floodgate.api.FloodgateApi");
+
+			FloodgateApi api = FloodgateApi.getInstance();
+			FloodgatePlayer floodgatePlayer = api.getPlayer(player.getUniqueId());
+			return floodgatePlayer != null && ((floodgatePlayer.getInputMode() == InputMode.TOUCH) || (floodgatePlayer.getUiProfile() == UiProfile.POCKET));
 		} catch(ClassNotFoundException e) {
 			return false;
 		}

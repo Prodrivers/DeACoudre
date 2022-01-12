@@ -12,10 +12,12 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class InventoryBar implements Listener {
@@ -27,6 +29,49 @@ public class InventoryBar implements Listener {
 		this.sectionManager = sectionManager;
 		this.playerData = playerData;
 		this.playerSelectColorGUI = playerSelectColorGUI;
+	}
+
+	private void handleItemHeld(Cancellable event, Player player, Arena arena, ItemStack itemInHand) {
+		Language locale = playerData.getLanguageOfPlayer(player);
+
+		if(locale.colorGuiOpenItemTitle.equals(itemInHand.getItemMeta().displayName()) || (itemInHand.getItemMeta().hasLore() && locale.colorGuiOpenItemColorSelectedLore.equals(itemInHand.getItemMeta().lore().get(0)))) {
+			event.setCancelled(true);
+			this.playerSelectColorGUI.openColorsGui(player, locale, arena);
+		}
+
+		if(itemInHand.getItemMeta().hasLore() && locale.quitGameItemLore.equals(itemInHand.getItemMeta().lore().get(0))) {
+			event.setCancelled(true);
+			this.sectionManager.enter(player);
+		}
+	}
+
+	@EventHandler
+	public void onPlayerItemHeldChanged(PlayerItemHeldEvent event) {
+		if(event.getNewSlot() != 3 && event.getNewSlot() != 5) {
+			return;
+		}
+
+		Player player = event.getPlayer();
+
+		Arena arena = Arena.getArenaFromPlayer(player);
+		if(arena == null) {
+			return;
+		}
+
+		ItemStack itemInHand = player.getInventory().getItem(event.getNewSlot());
+		if(itemInHand == null) {
+			return;
+		}
+
+		if(itemInHand.getType() == Material.AIR || itemInHand.getType() == Material.VOID_AIR || itemInHand.getType() == Material.CAVE_AIR) {
+			return;
+		}
+
+		if(!Utils.isPlayerUsingTouchControls(player)) {
+			return;
+		}
+
+		handleItemHeld(event, player ,arena, itemInHand);
 	}
 
 	@EventHandler
@@ -42,8 +87,6 @@ public class InventoryBar implements Listener {
 			return;
 		}
 
-		Language locale = playerData.getLanguageOfPlayer(player);
-
 		if(event.getClickedBlock() != null
 				&& event.getClickedBlock().getState() instanceof Sign) {
 			return;
@@ -55,15 +98,7 @@ public class InventoryBar implements Listener {
 			return;
 		}
 
-		if(locale.colorGuiOpenItemTitle.equals(itemInHand.getItemMeta().displayName()) || (itemInHand.getItemMeta().hasLore() && locale.colorGuiOpenItemColorSelectedLore.equals(itemInHand.getItemMeta().lore().get(0)))) {
-			event.setCancelled(true);
-			this.playerSelectColorGUI.openColorsGui(player, locale, arena);
-		}
-
-		if(itemInHand.getItemMeta().hasLore() && locale.quitGameItemLore.equals(itemInHand.getItemMeta().lore().get(0))) {
-			event.setCancelled(true);
-			this.sectionManager.enter(player);
-		}
+		handleItemHeld(event, player ,arena, itemInHand);
 	}
 
 	public static void giveArenaLobbyTools(Arena arena, User user, Language locale) {
@@ -94,7 +129,12 @@ public class InventoryBar implements Listener {
 
 		player.getInventory().setItem(5, quitItem.getItem());
 
-		player.getInventory().setHeldItemSlot(3);
+
+		if(Utils.isPlayerUsingTouchControls(player)) {
+			player.getInventory().setHeldItemSlot(0);
+		} else {
+			player.getInventory().setHeldItemSlot(3);
+		}
 
 		player.updateInventory();
 	}
