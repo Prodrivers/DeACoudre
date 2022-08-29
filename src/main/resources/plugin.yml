@@ -9,7 +9,7 @@ database: false
 depend: [WorldEdit, ProdriversCommons, floodgate, InventoryGUIAPI]
 softdepend: [Vault]
 prefix: DaC
-api-version: "1.16"
+api-version: "1.17"
 
 commands:
   DaC:
