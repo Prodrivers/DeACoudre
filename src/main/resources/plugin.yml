@@ -1,15 +1,16 @@
-name: DeACoudre
-version: 2.2.2
-description: The famous DeACoudre plugin remastered.
+name: ${project.plugin.name}
+main: ${project.plugin.mainClass}
+version: ${project.version}
+description: ${project.description}
+author: ${project.plugin.author}
+website: ${project.url}
+api-version: ${spigot.api.version}
+
 load: "POSTWORLD"
-author: PoutineQc
-website: http://poutineqc.ca/plugins/DaC/
-main: me.poutineqc.deacoudre.DeACoudre
 database: false
 depend: [WorldEdit, ProdriversCommons, floodgate, InventoryGUIAPI]
 softdepend: [Vault]
 prefix: DaC
-api-version: "1.17"
 
 commands:
   DaC:

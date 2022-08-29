@@ -8,15 +8,22 @@
     <artifactId>deacoudre</artifactId>
     <version>3.0.0-SNAPSHOT</version>
     <name>DeACoudre</name>
-    <description>DAC minigame</description>
-
+    <description>The famous DeACoudre plugin remastered.</description>
     <packaging>jar</packaging>
+    <url>https://prodrivers.fr/</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.release>17</maven.compiler.release>
+
+        <spigot.api.version>1.17</spigot.api.version>
+        <paper.artifact.version>1.17.1-R0.1-SNAPSHOT</paper.artifact.version>
+
+        <project.plugin.name>DeACoudre</project.plugin.name>
+        <project.plugin.author>PoutineQc + Prodrivers</project.plugin.author>
+        <project.plugin.mainClass>me.poutineqc.deacoudre.DeACoudre</project.plugin.mainClass>
     </properties>
 
     <repositories>
@@ -47,7 +54,7 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.17.1-R0.1-SNAPSHOT</version>
+            <version>${paper.artifact.version}</version>
             <scope>provided</scope>
         </dependency>
         <!--Prodrivers Commons API-->
