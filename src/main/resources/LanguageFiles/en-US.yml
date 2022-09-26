@@ -10,8 +10,8 @@ languageName: "english"
 #   Genereal Plugin Messages
 ###################################################################
 
-prefixLong: "&1[&3DeACoudre&1]"
-prefixShort: "&1[&3DaC&1] "
+prefixLong: "&3Dé à Coudre &8&l|"
+prefixShort: "&3DéÀCoudre &8&l| "
 
 pluginDevelopper: "&3Developped by: &7%developper%"
 pluginVersion: "&3Version: &7%version%"
