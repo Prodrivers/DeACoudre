@@ -18,8 +18,8 @@
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.release>17</maven.compiler.release>
 
-        <spigot.api.version>1.17</spigot.api.version>
-        <paper.artifact.version>1.17.1-R0.1-SNAPSHOT</paper.artifact.version>
+        <spigot.api.version>1.18</spigot.api.version>
+        <paper.artifact.version>1.18.2-R0.1-SNAPSHOT</paper.artifact.version>
 
         <project.plugin.name>DeACoudre</project.plugin.name>
         <project.plugin.author>PoutineQc + Prodrivers</project.plugin.author>
