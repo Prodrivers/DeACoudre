@@ -158,15 +158,16 @@
     </build>
 
     <distributionManagement>
+        <downloadUrl>https://github.com/Prodrivers/DeACoudre/releases</downloadUrl>
         <repository>
             <id>prodrivers-repo</id>
-            <name>dac-releases</name>
-            <url>https://gitlab.com/api/v4/projects/18179347/packages/maven</url>
+            <name>deacoudre-releases</name>
+            <url>https://maven.pkg.github.com/Prodrivers/DeACoudre</url>
         </repository>
         <snapshotRepository>
             <id>prodrivers-repo</id>
-            <name>dac-snapshots</name>
-            <url>https://gitlab.com/api/v4/projects/18179347/packages/maven</url>
+            <name>deacoudre-snapshots</name>
+            <url>https://maven.pkg.github.com/Prodrivers/DeACoudre</url>
         </snapshotRepository>
     </distributionManagement>
 </project>
