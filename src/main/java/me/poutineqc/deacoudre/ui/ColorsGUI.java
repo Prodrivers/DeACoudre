@@ -84,7 +84,7 @@ public class ColorsGUI {
 			userCurrentItem.setTitle(ChatColor.translateAlternateColorCodes('&', locale.colorGuiCurrent));
 		}
 
-		userCurrentItem.addEnchantement(Enchantment.DURABILITY, 1);
+		userCurrentItem.addEnchantement(Enchantment.PUNCH, 1);
 
 		contents.add(GUIElementFactory.createLabelItem(
 				4,
@@ -103,7 +103,7 @@ public class ColorsGUI {
 
 			item.clearEnchantements();
 			if(!item.isAvailable()) {
-				item.addEnchantement(Enchantment.DURABILITY, 1);
+				item.addEnchantement(Enchantment.PUNCH, 1);
 				image = this.imageTaken;
 			}
 

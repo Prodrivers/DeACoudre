@@ -117,7 +117,7 @@ public class SetArenaBlocksGUI {
 			item.setTitle(ColorManager.getTranslatedMaterialName(item.getItem(), locale));
 
 			FormImage image = FormImage.DEFAULT;
-			if(authorizedGameBlock.hasEnchantment(Enchantment.DURABILITY)) {
+			if(authorizedGameBlock.hasEnchantment(Enchantment.PUNCH)) {
 				image = this.imageSelected;
 			}
 

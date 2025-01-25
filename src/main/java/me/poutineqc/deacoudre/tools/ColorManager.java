@@ -75,7 +75,7 @@ public class ColorManager {
 	}
 
 	private void markArenaBlockAsSelected(ItemStackManager item) {
-		item.addEnchantement(Enchantment.DURABILITY, 1);
+		item.addEnchantement(Enchantment.PUNCH, 1);
 	}
 
 	private void unmarkArenaBlockAsSelected(ItemStackManager item) {
